@@ -8,13 +8,19 @@ const PATH_WIDTH = .7
 const SHOW_PATHS = true
 
 var path_color = Color.BLACK
-var enemyScene = preload("res://enemy.tscn")
+var mouse_mode = MOUSE_MODE.WALL
 var enemies_count = 200
 var enemies_spawned = 0
 var enemies_alive = 0
 var lives = 20
-
 var astar_grid = AStarGrid2D.new()
+
+enum MOUSE_MODE { WALL, TURRET }
+enum TILEMAP_LAYERS { MAZE }
+enum TILEMAP_SOURCES { FLOOR, WALL }
+
+var enemyScene = preload("res://enemy.tscn")
+var turretScene = preload("res://turret.tscn")
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -58,28 +64,48 @@ func update_nav():
 	var map = $TileMap as TileMap
 	#astar_grid.clear() TODO: Figure out how to clear without breaking
 	
-	var cells = map.get_used_cells(0)
+	var cells = map.get_used_cells(TILEMAP_LAYERS.MAZE)
 	for cell in cells:
 		var cell_pos = Vector2i(cell.x, cell.y)
-		var source = map.get_cell_source_id(0, cell_pos)
+		var source = map.get_cell_source_id(TILEMAP_LAYERS.MAZE, cell_pos)
 		astar_grid.set_point_solid(cell_pos, source == 1)
 		
 	for enemy in $Enemies.get_children():
 		enemy.update_nav()
+	
 	queue_redraw()
 
 func _input(event):
 	if event.is_action_pressed("mouse_click"):
 		var map = $TileMap as TileMap
 		var coords = map.local_to_map(map.to_local(get_global_mouse_position()))
-		var tile_source = map.get_cell_source_id(0, coords)
-		var new_val = 1
-		if tile_source == 1:
-			new_val = 0
-		map.set_cell(0, coords, new_val, Vector2i(0,0))
-		update_nav()
+		
+		if mouse_mode == MOUSE_MODE.WALL:
+			var tile_source = map.get_cell_source_id(TILEMAP_LAYERS.MAZE, coords)
+			var new_val = 1
+			if tile_source == 1:
+				new_val = 0
+			map.set_cell(TILEMAP_LAYERS.MAZE, coords, new_val, Vector2i(0,0))
+			update_nav()
+		
+		if mouse_mode == MOUSE_MODE.TURRET:
+			# set base tilemap layer as a wall
+			map.set_cell(TILEMAP_LAYERS.MAZE, coords, TILEMAP_SOURCES.WALL, Vector2i.ZERO)
+			var t = turretScene.instantiate()
+			t.coords = coords
+			t.position = map.map_to_local(coords)
+			$Turrets.add_child(t)
+			update_nav()
+			# TODO: ensure turret doesn't already exist
+	
+	if event.is_action_pressed("1"):
+		mouse_mode = MOUSE_MODE.WALL
+		
+	if event.is_action_pressed("2"):
+		mouse_mode = MOUSE_MODE.TURRET
 
 func game_over():
+	$Timers/SpawnTimer.stop()
 	print('game over')
 
 func _draw():
@@ -91,7 +117,6 @@ func _draw():
 			draw_circle(point, PATH_WIDTH * 3, path_color)
 			draw_line(prev, point, path_color, PATH_WIDTH, true)
 			prev = point
-
 
 func force_draw():
 	queue_redraw()

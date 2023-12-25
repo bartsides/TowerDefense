@@ -53,5 +53,7 @@ script = ExtResource("4_ldriw")
 
 [node name="DrawPathsTimer" type="Timer" parent="Timers"]
 
+[node name="Turrets" type="Node2D" parent="."]
+
 [connection signal="timeout" from="Timers/SpawnTimer" to="." method="add_enemy"]
 [connection signal="timeout" from="Timers/DrawPathsTimer" to="." method="force_draw"]

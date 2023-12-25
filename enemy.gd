@@ -2,8 +2,9 @@ extends CharacterBody2D
 
 class_name Enemy
 
-const SPEED = .7
-const DISTANCE_MARGIN = 3
+@export var SPEED = .7
+@export var DISTANCE_MARGIN = 3
+@export var HEALTH = 10
 
 var number : int
 var half_cell_size
