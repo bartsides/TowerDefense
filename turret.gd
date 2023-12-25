@@ -19,45 +19,46 @@ func _process(_delta):
 		$Sprite2D.look_at(target_enemy.position)
 
 func _target_enemy():
-	# TODO: Handle attack range
 	var enemies = get_node("/root/TD/Enemies").get_children()
 	if len(enemies) < 1:
 		return
 	var enemy_dist = -1.0
 	var selected_enemy : Enemy = null
 	for enemy in enemies:
+		var dist = enemy.position.distance_to(position)
+		if dist > ATTACK_RANGE:
+			continue
+		
 		if selected_enemy == null:
 			selected_enemy = enemy
-			enemy_dist = enemy.position.distance_to(position)
+			enemy_dist = dist
 			continue
-			
-		var select = false
+		
+		var select_enemy = false
 		
 		match AIM_STYLE:
 			AIM_STYLES.FIRST:
-				select = enemy.number < selected_enemy.number
+				select_enemy = enemy.number < selected_enemy.number
 			AIM_STYLES.FOCUS_FIRST:
-				select = enemy.number < selected_enemy.number
+				select_enemy = enemy.number < selected_enemy.number
 			AIM_STYLES.LAST:
-				select = enemy.number > selected_enemy.number
+				select_enemy = enemy.number > selected_enemy.number
 			AIM_STYLES.FOCUS_LAST:
-				select = enemy.number > selected_enemy.number
+				select_enemy = enemy.number > selected_enemy.number
 			AIM_STYLES.CLOSEST:
-				var dist = enemy.position.distance_to(position)
-				select = enemy_dist < dist
-				if select:
+				select_enemy = enemy_dist < dist
+				if select_enemy:
 					enemy_dist = dist
 			AIM_STYLES.FURTHEST:
-				var dist = enemy.position.distance_to(position)
-				select = enemy_dist < dist
-				if select:
+				select_enemy = enemy_dist < dist
+				if select_enemy:
 					enemy_dist = dist
 			AIM_STYLES.STRONGEST:
-				select = enemy.health > selected_enemy.HEALTH
+				select_enemy = enemy.health > selected_enemy.HEALTH
 			AIM_STYLES.WEAKEST:
-				select = enemy.health < selected_enemy.HEALTH
+				select_enemy = enemy.health < selected_enemy.HEALTH
 		
-		if select:
+		if select_enemy:
 			selected_enemy = enemy
 	
 	if AIM_STYLE == AIM_STYLES.FOCUS_FIRST || AIM_STYLE == AIM_STYLES.FOCUS_LAST:
