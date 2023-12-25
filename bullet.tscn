@@ -8,6 +8,9 @@ size = Vector2(5, 3)
 
 [node name="Bullet" type="RigidBody2D"]
 mass = 0.01
+continuous_cd = 1
+max_contacts_reported = 5
+contact_monitor = true
 script = ExtResource("1_lxdmn")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
@@ -19,4 +22,5 @@ shape = SubResource("RectangleShape2D_q3eu8")
 
 [node name="LifespanTimer" type="Timer" parent="."]
 
+[connection signal="body_entered" from="." to="." method="_hit"]
 [connection signal="timeout" from="LifespanTimer" to="." method="_kill"]

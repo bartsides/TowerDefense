@@ -5,7 +5,7 @@ class_name Turret
 @export var AIM_STYLE = AIM_STYLES.FIRST
 @export var ATTACK_RANGE = 60
 @export var ATTACK_TIME = 1.0
-@export var DAMAGE = 1.0
+@export var DAMAGE = 3.0
 @export var BULLET_SPEED = 100.0
 
 var bullet_scene = preload("res://bullet.tscn")
@@ -71,7 +71,8 @@ func _attack():
 	if target_enemy == null:
 		return
 	var direction = position.direction_to(target_enemy.position)
-	var bullet = bullet_scene.instantiate()	
+	var bullet = bullet_scene.instantiate()
+	bullet.damage = DAMAGE
 	bullet.visible = true
 	bullet.look_at(target_enemy.position)
 	bullet.apply_central_force(direction * BULLET_SPEED)

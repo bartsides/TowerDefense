@@ -2,10 +2,12 @@ extends CharacterBody2D
 
 class_name Enemy
 
-@export var SPEED = .2
+@export var SPEED = 20
 @export var DISTANCE_MARGIN = 3
 @export var HEALTH = 10
 
+var is_enemy = true
+var health = 10
 var number : int
 var half_cell_size
 var map
@@ -18,24 +20,24 @@ func _ready():
 	half_cell_size = td.CELL_SIZE / 2
 	update_nav()
 
-func _physics_process(_delta):
-	follow_path()
+func _physics_process(delta):
+	follow_path(delta)
 
 func update_nav():
 	var end = td.get_node("End") as Marker2D
 	var astar_grid = td.astar_grid as AStarGrid2D
 	
-	var navStart = map.local_to_map(position)
-	var navEnd = map.local_to_map(end.position)
-	path = astar_grid.get_point_path(navStart, navEnd)
-	if len(path) > 0 && Vector2i(path[0]) == navStart:
+	var nav_start = map.local_to_map(position)
+	var nav_end = map.local_to_map(end.position)
+	path = astar_grid.get_point_path(nav_start, nav_end)
+	if len(path) > 0 && Vector2i(path[0]) == nav_start:
 		path.remove_at(0)
 	for i in range(0, len(path)):
 		path[i] = map.to_global(path[i]) + Vector2(half_cell_size, half_cell_size)
 
-func follow_path():
+func follow_path(delta):
 	if path.size() <= 0:
-		kill()
+		call_deferred('kill') # TODO: Handle enemy reaching end better
 		return
 	var point = path[0]
 	if position.distance_to(point) <= DISTANCE_MARGIN:
@@ -43,9 +45,13 @@ func follow_path():
 		if path.size() <= 0:
 			return
 		point = path[0]
-	position = position.move_toward(point, SPEED)
+	position = position.move_toward(point, SPEED * delta)
 	move_and_slide()
 
 func kill():
 	get_node("/root/TD").enemy_killed(self)
 
+func take_damage(damage):
+	health -= damage
+	if health <= 0:
+		call_deferred('kill')
