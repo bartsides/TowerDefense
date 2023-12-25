@@ -1,0 +1,28 @@
+[gd_scene load_steps=4 format=3 uid="uid://b48qqnlexk22n"]
+
+[ext_resource type="Texture2D" uid="uid://cfwxxcc55ap66" path="res://assets/turret.png" id="1_l7t6t"]
+[ext_resource type="Script" path="res://turret.gd" id="1_lv4ic"]
+[ext_resource type="PackedScene" uid="uid://16wea2ohr4ub" path="res://bullet.tscn" id="3_kdx7q"]
+
+[node name="Turret" type="Node2D"]
+script = ExtResource("1_lv4ic")
+AIM_STYLE = 1
+BULLET_SPEED = 60.0
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("1_l7t6t")
+
+[node name="TargetEnemyTimer" type="Timer" parent="."]
+autostart = true
+
+[node name="AttackTimer" type="Timer" parent="."]
+autostart = true
+
+[node name="Bullet" parent="." instance=ExtResource("3_kdx7q")]
+process_mode = 1
+visible = false
+
+[node name="Bullets" type="Node2D" parent="."]
+
+[connection signal="timeout" from="TargetEnemyTimer" to="." method="_target_enemy"]
+[connection signal="timeout" from="AttackTimer" to="." method="_attack"]
