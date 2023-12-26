@@ -2,11 +2,11 @@ extends Node2D
 
 class_name TD
 
-const CELL_SIZE = 16
 const REGION_SIZE = 1024
 const PATH_WIDTH = .7
 const SHOW_PATHS = true
 
+var cell_size = 16
 var path_color = Color.BLACK
 var mouse_mode = MOUSE_MODE.WALL
 var enemies_count = 200
@@ -24,8 +24,11 @@ var turretScene = preload("res://turret.tscn")
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	var map = $TileMap as TileMap
+	cell_size = map.tile_set.tile_size.x * map.transform.get_scale().x
+	
 	astar_grid.region = Rect2i(REGION_SIZE/-2.0, REGION_SIZE/-2.0, REGION_SIZE, REGION_SIZE)
-	astar_grid.cell_size = Vector2(CELL_SIZE, CELL_SIZE)
+	astar_grid.cell_size = Vector2(cell_size, cell_size)
 	astar_grid.jumping_enabled = true
 	astar_grid.diagonal_mode = AStarGrid2D.DIAGONAL_MODE_ONLY_IF_NO_OBSTACLES
 	astar_grid.update()

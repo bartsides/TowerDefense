@@ -16,6 +16,6 @@ func _kill():
 	queue_free()
 
 func _hit(body):
-	if body.is_enemy:
+	if body.has_method("is_enemy"):
 		body.take_damage(damage)
 		call_deferred('_kill')

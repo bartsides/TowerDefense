@@ -4,7 +4,7 @@
 [ext_resource type="Script" path="res://td.gd" id="1_nle1t"]
 [ext_resource type="Texture2D" uid="uid://c2bihybgn18hx" path="res://assets/indigo.png" id="2_n43rg"]
 [ext_resource type="Script" path="res://Camera2D.gd" id="4_ldriw"]
-[ext_resource type="PackedScene" uid="uid://b48qqnlexk22n" path="res://turret.tscn" id="5_0m2nu"]
+[ext_resource type="PackedScene" path="res://turret.tscn" id="5_0m2nu"]
 
 [sub_resource type="NavigationPolygon" id="NavigationPolygon_3i534"]
 vertices = PackedVector2Array(8, 8, -8, 8, -8, -8, 8, -8)
