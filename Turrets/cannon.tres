@@ -1,0 +1,44 @@
+[gd_resource type="SpriteFrames" load_steps=6 format=3 uid="uid://cx75m6s1w6e1c"]
+
+[ext_resource type="Texture2D" uid="uid://chpea5i20id5" path="res://assets/Cannon1.png" id="1_2jcyk"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_gw43n"]
+atlas = ExtResource("1_2jcyk")
+region = Rect2(64, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ygvmu"]
+atlas = ExtResource("1_2jcyk")
+region = Rect2(96, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_be027"]
+atlas = ExtResource("1_2jcyk")
+region = Rect2(0, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_wrdnx"]
+atlas = ExtResource("1_2jcyk")
+region = Rect2(32, 0, 32, 32)
+
+[resource]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_gw43n")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ygvmu")
+}],
+"loop": true,
+"name": &"attack",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_be027")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_wrdnx")
+}],
+"loop": false,
+"name": &"default",
+"speed": 5.0
+}]

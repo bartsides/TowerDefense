@@ -1,0 +1,88 @@
+[gd_scene load_steps=14 format=3 uid="uid://xveup30ye4hh"]
+
+[ext_resource type="PackedScene" uid="uid://16wea2ohr4ub" path="res://Turrets/Projectiles/bullet.tscn" id="1_pesd5"]
+[ext_resource type="Texture2D" uid="uid://bwqxhvf83vnfc" path="res://assets/Cannonball.png" id="2_4fn7s"]
+[ext_resource type="Texture2D" uid="uid://b8b013vaughod" path="res://assets/Explosion.png" id="2_kmiyj"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_1a4jm"]
+atlas = ExtResource("2_kmiyj")
+region = Rect2(0, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_33yh6"]
+atlas = ExtResource("2_kmiyj")
+region = Rect2(32, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_41kyk"]
+atlas = ExtResource("2_kmiyj")
+region = Rect2(64, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_uh1pp"]
+atlas = ExtResource("2_kmiyj")
+region = Rect2(96, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_13d2f"]
+atlas = ExtResource("2_kmiyj")
+region = Rect2(128, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_w57h5"]
+atlas = ExtResource("2_4fn7s")
+region = Rect2(0, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_yfohi"]
+atlas = ExtResource("2_4fn7s")
+region = Rect2(32, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_asuho"]
+atlas = ExtResource("2_4fn7s")
+region = Rect2(64, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_j6fti"]
+atlas = ExtResource("2_4fn7s")
+region = Rect2(96, 0, 32, 32)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_atflx"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_1a4jm")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_33yh6")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_41kyk")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_uh1pp")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_13d2f")
+}],
+"loop": true,
+"name": &"death",
+"speed": 20.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_w57h5")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_yfohi")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_asuho")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_j6fti")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[node name="Bullet" instance=ExtResource("1_pesd5")]
+
+[node name="AnimatedSprite2D" parent="." index="2"]
+scale = Vector2(0.5, 0.5)
+sprite_frames = SubResource("SpriteFrames_atflx")
+animation = &"default"

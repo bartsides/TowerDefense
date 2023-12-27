@@ -1,10 +1,46 @@
-[gd_scene load_steps=4 format=3 uid="uid://lfp4ldguca3u"]
+[gd_scene load_steps=9 format=3 uid="uid://lfp4ldguca3u"]
 
 [ext_resource type="Script" path="res://enemy.gd" id="1_evcp5"]
-[ext_resource type="Texture2D" uid="uid://de004lif5mktr" path="res://assets/red.png" id="1_q5ksq"]
+[ext_resource type="Texture2D" uid="uid://cjl2w1oix2g6m" path="res://assets/Shipsheet.png" id="2_lmqaa"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_gtovr"]
 size = Vector2(8, 8)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_01gfo"]
+atlas = ExtResource("2_lmqaa")
+region = Rect2(0, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_lbu31"]
+atlas = ExtResource("2_lmqaa")
+region = Rect2(32, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_eym87"]
+atlas = ExtResource("2_lmqaa")
+region = Rect2(64, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_pvns6"]
+atlas = ExtResource("2_lmqaa")
+region = Rect2(96, 0, 32, 32)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_es73f"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_01gfo")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_lbu31")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_eym87")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_pvns6")
+}],
+"loop": true,
+"name": &"default",
+"speed": 4.0
+}]
 
 [node name="Enemy" type="CharacterBody2D"]
 motion_mode = 1
@@ -13,5 +49,6 @@ script = ExtResource("1_evcp5")
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("RectangleShape2D_gtovr")
 
-[node name="Sprite2D" type="Sprite2D" parent="."]
-texture = ExtResource("1_q5ksq")
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+rotation = -1.5708
+sprite_frames = SubResource("SpriteFrames_es73f")

@@ -1,0 +1,47 @@
+[gd_scene load_steps=6 format=3 uid="uid://16wea2ohr4ub"]
+
+[ext_resource type="Script" path="res://Turrets/Projectiles/bullet.gd" id="1_okufc"]
+[ext_resource type="Texture2D" uid="uid://c8leuwxu3bmju" path="res://assets/bullet.png" id="2_lw7r5"]
+[ext_resource type="Script" path="res://Turrets/Projectiles/AnimatedSprite2D.gd" id="3_2ohus"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_q3eu8"]
+size = Vector2(5, 3)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_e3omw"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("2_lw7r5")
+}],
+"loop": true,
+"name": &"death",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("2_lw7r5")
+}],
+"loop": false,
+"name": &"default",
+"speed": 5.0
+}]
+
+[node name="Bullet" type="RigidBody2D"]
+mass = 0.01
+continuous_cd = 1
+max_contacts_reported = 5
+contact_monitor = true
+script = ExtResource("1_okufc")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+rotation = -3.14159
+shape = SubResource("RectangleShape2D_q3eu8")
+
+[node name="LifespanTimer" type="Timer" parent="."]
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+sprite_frames = SubResource("SpriteFrames_e3omw")
+script = ExtResource("3_2ohus")
+
+[connection signal="body_entered" from="." to="." method="_hit"]
+[connection signal="timeout" from="LifespanTimer" to="." method="_kill"]

@@ -1,0 +1,17 @@
+[gd_scene load_steps=4 format=3 uid="uid://cjgq3fwrv3h4k"]
+
+[ext_resource type="PackedScene" uid="uid://dv1qs465qpw2i" path="res://Turrets/turret.tscn" id="1_mghsx"]
+[ext_resource type="Script" path="res://Turrets/cannon.gd" id="2_dgf3g"]
+[ext_resource type="SpriteFrames" uid="uid://cx75m6s1w6e1c" path="res://Turrets/cannon.tres" id="3_ld5m8"]
+
+[node name="Turret" instance=ExtResource("1_mghsx")]
+script = ExtResource("2_dgf3g")
+DAMAGE = 7.0
+BULLET_SPEED = 100.0
+
+[node name="AttackTimer" parent="." index="1"]
+wait_time = 3.0
+
+[node name="AnimatedSprite2D" parent="." index="3"]
+sprite_frames = ExtResource("3_ld5m8")
+animation = &"default"

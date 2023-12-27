@@ -16,12 +16,13 @@ var lives = 20
 var astar_grid = AStarGrid2D.new()
 var map : TileMap
 
-enum MOUSE_MODE { WALL, TURRET }
+enum MOUSE_MODE { WALL, TURRET, CANNON }
 enum TILEMAP_LAYERS { MAZE }
 enum TILEMAP_SOURCES { FLOOR, WALL }
 
+var cannonScene = preload("res://Turrets/cannon.tscn")
 var enemyScene = preload("res://enemy.tscn")
-var turretScene = preload("res://turret.tscn")
+var turretScene = preload("res://Turrets/turret.tscn")
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -34,7 +35,18 @@ func _ready():
 	astar_grid.diagonal_mode = AStarGrid2D.DIAGONAL_MODE_ONLY_IF_NO_OBSTACLES
 	astar_grid.update()
 	
+	add_debug_turrets()
 	start_round()
+
+func add_debug_turrets():
+	var prev_mouse_mode = mouse_mode
+	mouse_mode = MOUSE_MODE.TURRET
+	for coords in [Vector2(0, -1), Vector2(0, 3)]:
+		handle_click(coords)
+	mouse_mode = MOUSE_MODE.CANNON
+	for coords in [Vector2(-2, 1)]:
+		handle_click(coords)
+	mouse_mode = prev_mouse_mode
 	
 func _process(_delta):
 	if lives <= 0:
@@ -81,30 +93,37 @@ func update_nav():
 func _input(event):
 	if event.is_action_pressed("mouse_click"):
 		var coords = map.local_to_map(map.to_local(get_global_mouse_position()))
-		
-		if mouse_mode == MOUSE_MODE.WALL:
-			var tile_source = map.get_cell_source_id(TILEMAP_LAYERS.MAZE, coords)
-			var new_val = 1
-			if tile_source == 1:
-				new_val = 0
-			map.set_cell(TILEMAP_LAYERS.MAZE, coords, new_val, Vector2i(0,0))
-			update_nav()
-		
-		if mouse_mode == MOUSE_MODE.TURRET:
-			# set base tilemap layer as a wall
-			map.set_cell(TILEMAP_LAYERS.MAZE, coords, TILEMAP_SOURCES.WALL, Vector2i.ZERO)
-			var t = turretScene.instantiate()
-			t.coords = coords
-			t.position = map.map_to_local(coords)
-			$Turrets.add_child(t)
-			update_nav()
-			# TODO: ensure turret doesn't already exist
+		handle_click(coords)
 	
 	if event.is_action_pressed("1"):
 		mouse_mode = MOUSE_MODE.WALL
 	
 	if event.is_action_pressed("2"):
 		mouse_mode = MOUSE_MODE.TURRET
+
+func handle_click(coords : Vector2):
+	if mouse_mode == MOUSE_MODE.WALL:
+		var tile_source = map.get_cell_source_id(TILEMAP_LAYERS.MAZE, coords)
+		var new_val = 1
+		if tile_source == 1:
+			new_val = 0
+		map.set_cell(TILEMAP_LAYERS.MAZE, coords, new_val, Vector2i(0,0))
+		update_nav()
+	
+	if mouse_mode == MOUSE_MODE.TURRET || mouse_mode == MOUSE_MODE.CANNON:
+		# TODO: Ensure turret placement is valid
+		
+		# set base tilemap layer as a wall
+		map.set_cell(TILEMAP_LAYERS.MAZE, coords, TILEMAP_SOURCES.WALL, Vector2i.ZERO)
+		var t : Turret
+		if mouse_mode == MOUSE_MODE.TURRET:
+			t = turretScene.instantiate()
+		elif mouse_mode == MOUSE_MODE.CANNON:
+			t = cannonScene.instantiate()
+		t.coords = coords
+		t.position = map.map_to_local(coords)
+		$Turrets.add_child(t)
+		update_nav()
 
 func game_over():
 	$Timers/SpawnTimer.stop()

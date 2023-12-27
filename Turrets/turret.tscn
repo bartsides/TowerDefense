@@ -1,0 +1,43 @@
+[gd_scene load_steps=5 format=3 uid="uid://dv1qs465qpw2i"]
+
+[ext_resource type="Script" path="res://Turrets/turret.gd" id="1_1bkf4"]
+[ext_resource type="Texture2D" uid="uid://cfwxxcc55ap66" path="res://assets/turret.png" id="2_846nd"]
+[ext_resource type="Script" path="res://Turrets/AnimatedSprite2D.gd" id="3_x3btf"]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_kld0v"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("2_846nd")
+}],
+"loop": true,
+"name": &"attack",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("2_846nd")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[node name="Turret" type="Node2D"]
+script = ExtResource("1_1bkf4")
+
+[node name="TargetEnemyTimer" type="Timer" parent="."]
+autostart = true
+
+[node name="AttackTimer" type="Timer" parent="."]
+autostart = true
+
+[node name="Bullets" type="Node2D" parent="."]
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+sprite_frames = SubResource("SpriteFrames_kld0v")
+animation = &"attack"
+script = ExtResource("3_x3btf")
+
+[connection signal="timeout" from="TargetEnemyTimer" to="." method="_target_enemy"]
+[connection signal="timeout" from="AttackTimer" to="." method="_attack"]

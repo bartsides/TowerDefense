@@ -21,6 +21,7 @@ var path : PackedVector2Array
 func is_enemy(): pass
 
 func _ready():
+	$AnimatedSprite2D.play()
 	td = get_node("/root/TD")
 	map = td.get_node("TileMap") as TileMap
 	half_cell_size = td.cell_size / 2
@@ -59,6 +60,7 @@ func follow_path(delta):
 		if path.size() <= 0:
 			return
 		point = path[0]
+	look_at(point)
 	var dir = position.direction_to(point)
 	var vel = dir * SPEED * delta
 	move_and_collide(vel)
