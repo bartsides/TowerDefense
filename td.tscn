@@ -46,6 +46,7 @@ position = Vector2(-15, -110)
 position = Vector2(15, 142)
 
 [node name="Camera2D" type="Camera2D" parent="."]
+zoom = Vector2(1.7, 1.7)
 script = ExtResource("4_ldriw")
 
 [node name="Enemies" type="Node2D" parent="."]

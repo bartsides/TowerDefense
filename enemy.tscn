@@ -50,5 +50,6 @@ script = ExtResource("1_evcp5")
 shape = SubResource("RectangleShape2D_gtovr")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+texture_filter = 3
 rotation = -1.5708
 sprite_frames = SubResource("SpriteFrames_es73f")

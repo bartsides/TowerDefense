@@ -24,7 +24,6 @@ var cannonScene = preload("res://Turrets/cannon.tscn")
 var enemyScene = preload("res://enemy.tscn")
 var turretScene = preload("res://Turrets/turret.tscn")
 
-# Called when the node enters the scene tree for the first time.
 func _ready():
 	map = $TileMap
 	cell_size = map.tile_set.tile_size.x * map.transform.get_scale().x
@@ -97,9 +96,10 @@ func _input(event):
 	
 	if event.is_action_pressed("1"):
 		mouse_mode = MOUSE_MODE.WALL
-	
-	if event.is_action_pressed("2"):
+	elif event.is_action_pressed("2"):
 		mouse_mode = MOUSE_MODE.TURRET
+	elif event.is_action_pressed("3"):
+		mouse_mode = MOUSE_MODE.CANNON
 
 func handle_click(coords : Vector2):
 	if mouse_mode == MOUSE_MODE.WALL:
@@ -107,11 +107,14 @@ func handle_click(coords : Vector2):
 		var new_val = 1
 		if tile_source == 1:
 			new_val = 0
+		if new_val == TILEMAP_SOURCES.WALL && !can_navigate_with_change(coords, TILEMAP_LAYERS.MAZE, TILEMAP_SOURCES.WALL, Vector2i.ZERO):
+			return
 		map.set_cell(TILEMAP_LAYERS.MAZE, coords, new_val, Vector2i(0,0))
 		update_nav()
 	
 	if mouse_mode == MOUSE_MODE.TURRET || mouse_mode == MOUSE_MODE.CANNON:
-		# TODO: Ensure turret placement is valid
+		if !can_navigate_with_change(coords, TILEMAP_LAYERS.MAZE, TILEMAP_SOURCES.WALL, Vector2i.ZERO):
+			return
 		
 		# set base tilemap layer as a wall
 		map.set_cell(TILEMAP_LAYERS.MAZE, coords, TILEMAP_SOURCES.WALL, Vector2i.ZERO)
@@ -124,6 +127,24 @@ func handle_click(coords : Vector2):
 		t.position = map.map_to_local(coords)
 		$Turrets.add_child(t)
 		update_nav()
+
+func can_navigate_with_change(coords : Vector2, layer, source, atlas_coords : Vector2):
+	var orig_source = map.get_cell_source_id(layer, coords)
+	var orig_atlas_coords = map.get_cell_atlas_coords(layer, coords)
+	
+	var cell_pos = Vector2i(coords.x, coords.y)
+	astar_grid.set_point_solid(cell_pos, source == TILEMAP_SOURCES.WALL)
+	
+	var nav_start = map.local_to_map($Start.position)
+	var nav_end = map.local_to_map($End.position)
+	var path = astar_grid.get_point_path(nav_start, nav_end)
+	if len(path) > 0 && Vector2i(path[0]) == nav_start:
+		path.remove_at(0)
+	var result = len(path) > 0
+	
+	astar_grid.set_point_solid(cell_pos, orig_source == TILEMAP_SOURCES.WALL)
+	
+	return result
 
 func game_over():
 	$Timers/SpawnTimer.stop()

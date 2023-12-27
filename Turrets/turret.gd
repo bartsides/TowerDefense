@@ -12,13 +12,23 @@ var bullet_scene = preload("res://Turrets/Projectiles/bullet.tscn")
 var target_enemy : Enemy = null
 var coords
 var sprite : AnimatedSprite2D
+var ready_to_fire = false
 
 enum AIM_STYLES { FIRST, LAST, CLOSEST, FURTHEST, STRONGEST, WEAKEST, FOCUS_FIRST, FOCUS_LAST }
+
+# TODO: Add turret range indicator
 
 func _ready():
 	sprite = $AnimatedSprite2D
 
 func _process(_delta):
+	if ready_to_fire:
+		_target_enemy()
+		if target_enemy != null:
+			ready_to_fire = false
+			$AttackTimer.stop()
+			_attack()
+			$AttackTimer.start()
 	if target_enemy != null:
 		look_at(target_enemy.position)
 
@@ -65,7 +75,9 @@ func _target_enemy():
 		if select_enemy:
 			selected_enemy = enemy
 	
-	if AIM_STYLE == AIM_STYLES.FOCUS_FIRST || AIM_STYLE == AIM_STYLES.FOCUS_LAST:
+	if selected_enemy == null && target_enemy == null:
+		ready_to_fire = true
+	elif AIM_STYLE == AIM_STYLES.FOCUS_FIRST || AIM_STYLE == AIM_STYLES.FOCUS_LAST:
 		if target_enemy == null:
 			target_enemy = selected_enemy
 	else:
