@@ -2,11 +2,11 @@ extends Node2D
 
 class_name TD
 
-const CELL_SIZE = 16
 const REGION_SIZE = 1024
 const PATH_WIDTH = .7
 const SHOW_PATHS = true
 
+var cell_size = 16
 var path_color = Color.BLACK
 var mouse_mode = MOUSE_MODE.WALL
 var enemies_count = 200
@@ -14,6 +14,7 @@ var enemies_spawned = 0
 var enemies_alive = 0
 var lives = 20
 var astar_grid = AStarGrid2D.new()
+var map : TileMap
 
 enum MOUSE_MODE { WALL, TURRET }
 enum TILEMAP_LAYERS { MAZE }
@@ -24,8 +25,11 @@ var turretScene = preload("res://turret.tscn")
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	map = $TileMap
+	cell_size = map.tile_set.tile_size.x * map.transform.get_scale().x
+	
 	astar_grid.region = Rect2i(REGION_SIZE/-2.0, REGION_SIZE/-2.0, REGION_SIZE, REGION_SIZE)
-	astar_grid.cell_size = Vector2(CELL_SIZE, CELL_SIZE)
+	astar_grid.cell_size = Vector2(cell_size, cell_size)
 	astar_grid.jumping_enabled = true
 	astar_grid.diagonal_mode = AStarGrid2D.DIAGONAL_MODE_ONLY_IF_NO_OBSTACLES
 	astar_grid.update()
@@ -54,16 +58,15 @@ func add_enemy():
 	e.number = enemies_spawned
 	enemies_spawned += 1
 	$Enemies.add_child(e)
+	$UIControl.update()
 	
 func enemy_killed(enemy : Enemy):
 	$Enemies.remove_child(enemy)
 	enemy.queue_free()
 	enemies_alive -= 1
+	$UIControl.update()
 
 func update_nav():
-	var map = $TileMap as TileMap
-	#astar_grid.clear() TODO: Figure out how to clear without breaking
-	
 	var cells = map.get_used_cells(TILEMAP_LAYERS.MAZE)
 	for cell in cells:
 		var cell_pos = Vector2i(cell.x, cell.y)
@@ -77,7 +80,6 @@ func update_nav():
 
 func _input(event):
 	if event.is_action_pressed("mouse_click"):
-		var map = $TileMap as TileMap
 		var coords = map.local_to_map(map.to_local(get_global_mouse_position()))
 		
 		if mouse_mode == MOUSE_MODE.WALL:
@@ -100,7 +102,7 @@ func _input(event):
 	
 	if event.is_action_pressed("1"):
 		mouse_mode = MOUSE_MODE.WALL
-		
+	
 	if event.is_action_pressed("2"):
 		mouse_mode = MOUSE_MODE.TURRET
 

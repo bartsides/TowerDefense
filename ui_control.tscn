@@ -1,0 +1,23 @@
+[gd_scene load_steps=2 format=3 uid="uid://cnat1ck7efpht"]
+
+[ext_resource type="Script" path="res://UIControl.gd" id="1_l8s3q"]
+
+[node name="UIControl" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+script = ExtResource("1_l8s3q")
+
+[node name="TopLeftInfo" type="Panel" parent="."]
+layout_mode = 1
+offset_right = 153.0
+offset_bottom = 40.0
+
+[node name="Label" type="Label" parent="TopLeftInfo"]
+layout_mode = 1
+offset_left = 16.0
+offset_top = 8.0
+offset_right = 142.0
+offset_bottom = 31.0
+text = "Enemies Lives: 0"

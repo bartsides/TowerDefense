@@ -4,24 +4,38 @@ class_name Enemy
 
 @export var SPEED = 20
 @export var DISTANCE_MARGIN = 3
-@export var HEALTH = 10
+@export var TOTAL_HEALTH = 10
 
-var is_enemy = true
-var health = 10
+var health_bar_thickness = 0.25
+var health_bar_width = 8
+var health_bar_y = -5
+
+var health = 10.0
+var dead = false
 var number : int
 var half_cell_size
 var map
 var td
 var path : PackedVector2Array
 
+func is_enemy(): pass
+
 func _ready():
 	td = get_node("/root/TD")
 	map = td.get_node("TileMap") as TileMap
-	half_cell_size = td.CELL_SIZE / 2
+	half_cell_size = td.cell_size / 2
 	update_nav()
 
 func _physics_process(delta):
 	follow_path(delta)
+
+func _draw():
+	if health == 0: return
+	# draw health bar
+	var health_percentage = health / TOTAL_HEALTH
+	var start = Vector2(-health_bar_width / 2.0, health_bar_y)
+	var end = Vector2(health_bar_width * health_percentage - (health_bar_width / 2.0), health_bar_y)
+	draw_line(start, end, Color.RED, health_bar_thickness, true)
 
 func update_nav():
 	var end = td.get_node("End") as Marker2D
@@ -45,13 +59,19 @@ func follow_path(delta):
 		if path.size() <= 0:
 			return
 		point = path[0]
-	position = position.move_toward(point, SPEED * delta)
-	move_and_slide()
+	var dir = position.direction_to(point)
+	var vel = dir * SPEED * delta
+	move_and_collide(vel)
 
 func kill():
+	if dead: return
+	dead = true
 	get_node("/root/TD").enemy_killed(self)
+	# TODO: Consider emit_signal instead of getting TD node
 
 func take_damage(damage):
-	health -= damage
-	if health <= 0:
+	health = clamp(health - damage, 0, TOTAL_HEALTH)
+	if health == 0:
 		call_deferred('kill')
+	else:
+		queue_redraw()

@@ -1,10 +1,11 @@
-[gd_scene load_steps=10 format=3 uid="uid://bletemi2mekhr"]
+[gd_scene load_steps=11 format=3 uid="uid://bletemi2mekhr"]
 
 [ext_resource type="Texture2D" uid="uid://mfaw4goq8rsg" path="res://assets/grey.png" id="1_507cb"]
 [ext_resource type="Script" path="res://td.gd" id="1_nle1t"]
 [ext_resource type="Texture2D" uid="uid://c2bihybgn18hx" path="res://assets/indigo.png" id="2_n43rg"]
 [ext_resource type="Script" path="res://Camera2D.gd" id="4_ldriw"]
-[ext_resource type="PackedScene" uid="uid://b48qqnlexk22n" path="res://turret.tscn" id="5_0m2nu"]
+[ext_resource type="PackedScene" path="res://turret.tscn" id="5_0m2nu"]
+[ext_resource type="PackedScene" uid="uid://cnat1ck7efpht" path="res://ui_control.tscn" id="6_jay2i"]
 
 [sub_resource type="NavigationPolygon" id="NavigationPolygon_3i534"]
 vertices = PackedVector2Array(8, 8, -8, 8, -8, -8, 8, -8)
@@ -49,14 +50,24 @@ script = ExtResource("4_ldriw")
 [node name="Timers" type="Node2D" parent="."]
 
 [node name="SpawnTimer" type="Timer" parent="Timers"]
-wait_time = 3.0
+wait_time = 0.9
 
 [node name="DrawPathsTimer" type="Timer" parent="Timers"]
 
 [node name="Turrets" type="Node2D" parent="."]
 
-[node name="Turret" parent="." instance=ExtResource("5_0m2nu")]
+[node name="Turret" parent="Turrets" instance=ExtResource("5_0m2nu")]
 position = Vector2(8, -8)
+
+[node name="Turret2" parent="Turrets" instance=ExtResource("5_0m2nu")]
+position = Vector2(-8, 56)
+
+[node name="UIControl" parent="." instance=ExtResource("6_jay2i")]
+visible = false
+offset_left = -280.0
+offset_top = -154.0
+offset_right = -240.0
+offset_bottom = -114.0
 
 [connection signal="timeout" from="Timers/SpawnTimer" to="." method="add_enemy"]
 [connection signal="timeout" from="Timers/DrawPathsTimer" to="." method="force_draw"]
