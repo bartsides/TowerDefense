@@ -1,16 +1,13 @@
-[gd_scene load_steps=6 format=3 uid="uid://lfp4ldguca3u"]
+[gd_scene load_steps=4 format=3 uid="uid://lfp4ldguca3u"]
 
 [ext_resource type="Script" path="res://enemy.gd" id="1_evcp5"]
 [ext_resource type="Texture2D" uid="uid://de004lif5mktr" path="res://assets/red.png" id="1_q5ksq"]
-[ext_resource type="PackedScene" uid="uid://rnjb41wqawy7" path="res://health_bar.tscn" id="3_hm06p"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_gtovr"]
 size = Vector2(8, 8)
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_p6g2e"]
-size = Vector2(8, 8)
-
 [node name="Enemy" type="CharacterBody2D"]
+motion_mode = 1
 script = ExtResource("1_evcp5")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
@@ -18,13 +15,3 @@ shape = SubResource("RectangleShape2D_gtovr")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 texture = ExtResource("1_q5ksq")
-
-[node name="Area2D" type="Area2D" parent="."]
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
-shape = SubResource("RectangleShape2D_p6g2e")
-
-[node name="HealthBar" parent="." instance=ExtResource("3_hm06p")]
-visible = false
-offset_top = -6.0
-offset_bottom = -6.0

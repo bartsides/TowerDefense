@@ -6,6 +6,10 @@ class_name Enemy
 @export var DISTANCE_MARGIN = 3
 @export var TOTAL_HEALTH = 10
 
+var health_bar_thickness = 0.25
+var health_bar_width = 8
+var health_bar_y = -5
+
 var health = 10.0
 var dead = false
 var number : int
@@ -29,7 +33,9 @@ func _draw():
 	if health == 0: return
 	# draw health bar
 	var health_percentage = health / TOTAL_HEALTH
-	draw_line(Vector2(-4, -5), Vector2(8 * health_percentage - 4, -5), Color.RED, .25, true)
+	var start = Vector2(-health_bar_width / 2.0, health_bar_y)
+	var end = Vector2(health_bar_width * health_percentage - (health_bar_width / 2.0), health_bar_y)
+	draw_line(start, end, Color.RED, health_bar_thickness, true)
 
 func update_nav():
 	var end = td.get_node("End") as Marker2D
@@ -53,12 +59,12 @@ func follow_path(delta):
 		if path.size() <= 0:
 			return
 		point = path[0]
-	position = position.move_toward(point, SPEED * delta)
-	move_and_slide()
+	var dir = position.direction_to(point)
+	var vel = dir * SPEED * delta
+	move_and_collide(vel)
 
 func kill():
-	if dead:
-		return
+	if dead: return
 	dead = true
 	get_node("/root/TD").enemy_killed(self)
 	# TODO: Consider emit_signal instead of getting TD node
