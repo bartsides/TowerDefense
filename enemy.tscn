@@ -6,36 +6,36 @@
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_gtovr"]
 size = Vector2(8, 8)
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_01gfo"]
+[sub_resource type="AtlasTexture" id="AtlasTexture_an376"]
 atlas = ExtResource("2_lmqaa")
-region = Rect2(0, 0, 32, 32)
+region = Rect2(0, 192, 32, 32)
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_lbu31"]
+[sub_resource type="AtlasTexture" id="AtlasTexture_aom1d"]
 atlas = ExtResource("2_lmqaa")
-region = Rect2(32, 0, 32, 32)
+region = Rect2(0, 160, 32, 32)
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_eym87"]
+[sub_resource type="AtlasTexture" id="AtlasTexture_s8j4h"]
 atlas = ExtResource("2_lmqaa")
-region = Rect2(64, 0, 32, 32)
+region = Rect2(0, 128, 32, 32)
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_pvns6"]
+[sub_resource type="AtlasTexture" id="AtlasTexture_50lv4"]
 atlas = ExtResource("2_lmqaa")
-region = Rect2(96, 0, 32, 32)
+region = Rect2(0, 96, 32, 32)
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_es73f"]
 animations = [{
 "frames": [{
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_01gfo")
+"texture": SubResource("AtlasTexture_an376")
 }, {
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_lbu31")
+"texture": SubResource("AtlasTexture_aom1d")
 }, {
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_eym87")
+"texture": SubResource("AtlasTexture_s8j4h")
 }, {
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_pvns6")
+"texture": SubResource("AtlasTexture_50lv4")
 }],
 "loop": true,
 "name": &"default",
@@ -51,5 +51,9 @@ shape = SubResource("RectangleShape2D_gtovr")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 texture_filter = 3
-rotation = -1.5708
 sprite_frames = SubResource("SpriteFrames_es73f")
+
+[node name="UpdateNavTimer" type="Timer" parent="."]
+wait_time = 4.0
+
+[connection signal="timeout" from="UpdateNavTimer" to="." method="update_nav"]

@@ -7,12 +7,14 @@ class_name Turret
 @export var ATTACK_TIME = 1.0
 @export var DAMAGE = 3.0
 @export var BULLET_SPEED = 200.0
+@export var SHOW_RANGE = true
 
 var bullet_scene = preload("res://Turrets/Projectiles/bullet.tscn")
 var target_enemy : Enemy = null
 var coords
 var sprite : AnimatedSprite2D
 var ready_to_fire = false
+var range_thickness = .2
 
 enum AIM_STYLES { FIRST, LAST, CLOSEST, FURTHEST, STRONGEST, WEAKEST, FOCUS_FIRST, FOCUS_LAST }
 
@@ -95,3 +97,13 @@ func _attack():
 	$Bullets.add_child(bullet)
 	bullet.fire()
 	$AnimatedSprite2D.play("attack")
+
+func _draw():
+	if SHOW_RANGE:
+		draw_arc(Vector2.ZERO, ATTACK_RANGE, 0, 360, 100, Color.BLACK, range_thickness, true)
+		#draw_circle(position, ATTACK_RANGE, Color.AQUA)
+
+
+
+
+

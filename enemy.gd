@@ -3,7 +3,7 @@ extends CharacterBody2D
 class_name Enemy
 
 @export var SPEED = 20
-@export var DISTANCE_MARGIN = 3
+@export var DISTANCE_MARGIN = 2
 @export var TOTAL_HEALTH = 10
 
 var health_bar_thickness = 0.25
@@ -14,17 +14,18 @@ var health = 10.0
 var dead = false
 var number : int
 var half_cell_size
-var map
-var td
+var map : TileMap
+var td : TD
 var path : PackedVector2Array
 
 func is_enemy(): pass
 
 func _ready():
 	$AnimatedSprite2D.play()
+	$UpdateNavTimer.start()
 	td = get_node("/root/TD")
-	map = td.get_node("TileMap") as TileMap
-	half_cell_size = td.cell_size / 2
+	map = td.get_node("TileMap")
+	half_cell_size = td.cell_size / 2.0
 	update_nav()
 
 func _physics_process(delta):
@@ -39,16 +40,18 @@ func _draw():
 	draw_line(start, end, Color.RED, health_bar_thickness, true)
 
 func update_nav():
+	$UpdateNavTimer.stop()
 	var end = td.get_node("End") as Marker2D
 	var astar_grid = td.astar_grid as AStarGrid2D
 	
 	var nav_start = map.local_to_map(position)
 	var nav_end = map.local_to_map(end.position)
 	path = astar_grid.get_point_path(nav_start, nav_end)
-	if len(path) > 0 && Vector2i(path[0]) == nav_start:
+	if len(path) > 0 && Vector2i(map.local_to_map(path[0])) == nav_start:
 		path.remove_at(0)
 	for i in range(0, len(path)):
 		path[i] = map.to_global(path[i]) + Vector2(half_cell_size, half_cell_size)
+	$UpdateNavTimer.start()
 
 func follow_path(delta):
 	if path.size() <= 0:
@@ -68,7 +71,7 @@ func follow_path(delta):
 func kill():
 	if dead: return
 	dead = true
-	get_node("/root/TD").enemy_killed(self)
+	td.enemy_killed(self)
 	# TODO: Consider emit_signal instead of getting TD node
 
 func take_damage(damage):

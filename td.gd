@@ -4,7 +4,7 @@ class_name TD
 
 const REGION_SIZE = 1024
 const PATH_WIDTH = .7
-const SHOW_PATHS = true
+const SHOW_PATHS = false
 
 var cell_size = 16
 var path_color = Color.BLACK
@@ -107,32 +107,36 @@ func handle_click(coords : Vector2):
 		var new_val = 1
 		if tile_source == 1:
 			new_val = 0
-		if new_val == TILEMAP_SOURCES.WALL && !can_navigate_with_change(coords, TILEMAP_LAYERS.MAZE, TILEMAP_SOURCES.WALL, Vector2i.ZERO):
+		if new_val == TILEMAP_SOURCES.WALL && !can_navigate_with_change(coords, TILEMAP_LAYERS.MAZE, TILEMAP_SOURCES.WALL):
 			return
 		map.set_cell(TILEMAP_LAYERS.MAZE, coords, new_val, Vector2i(0,0))
 		update_nav()
 	
 	if mouse_mode == MOUSE_MODE.TURRET || mouse_mode == MOUSE_MODE.CANNON:
-		if !can_navigate_with_change(coords, TILEMAP_LAYERS.MAZE, TILEMAP_SOURCES.WALL, Vector2i.ZERO):
+		if !can_navigate_with_change(coords, TILEMAP_LAYERS.MAZE, TILEMAP_SOURCES.WALL):
 			return
 		
 		# set base tilemap layer as a wall
 		map.set_cell(TILEMAP_LAYERS.MAZE, coords, TILEMAP_SOURCES.WALL, Vector2i.ZERO)
-		var t : Turret
-		if mouse_mode == MOUSE_MODE.TURRET:
-			t = turretScene.instantiate()
-		elif mouse_mode == MOUSE_MODE.CANNON:
-			t = cannonScene.instantiate()
-		t.coords = coords
-		t.position = map.map_to_local(coords)
-		$Turrets.add_child(t)
+		var t : Turret = get_selected_turret_scene()
+		if t != null:
+			t.coords = coords
+			t.position = map.map_to_local(coords)
+			$Turrets.add_child(t)
 		update_nav()
 
-func can_navigate_with_change(coords : Vector2, layer, source, atlas_coords : Vector2):
+func get_selected_turret_scene() -> Turret:
+	if mouse_mode == MOUSE_MODE.TURRET:
+		return turretScene.instantiate()
+	if mouse_mode == MOUSE_MODE.CANNON:
+		return cannonScene.instantiate()
+	push_error('Unable to determine selected turret scene from mouse mode $s.' % mouse_mode)
+	return null
+
+func can_navigate_with_change(coords : Vector2, layer, source) -> bool:
 	var orig_source = map.get_cell_source_id(layer, coords)
-	var orig_atlas_coords = map.get_cell_atlas_coords(layer, coords)
 	
-	var cell_pos = Vector2i(coords.x, coords.y)
+	var cell_pos = Vector2i(int(coords.x), int(coords.y))
 	astar_grid.set_point_solid(cell_pos, source == TILEMAP_SOURCES.WALL)
 	
 	var nav_start = map.local_to_map($Start.position)
