@@ -1,26 +1,26 @@
 [gd_scene load_steps=10 format=3 uid="uid://lfp4ldguca3u"]
 
-[ext_resource type="Script" path="res://enemy.gd" id="1_evcp5"]
-[ext_resource type="Texture2D" uid="uid://cjl2w1oix2g6m" path="res://assets/Shipsheet.png" id="2_lmqaa"]
-[ext_resource type="PackedScene" uid="uid://rnjb41wqawy7" path="res://health_bar.tscn" id="3_xatcp"]
+[ext_resource type="Script" path="res://Enemies/enemy.gd" id="1_3212m"]
+[ext_resource type="Texture2D" uid="uid://cjl2w1oix2g6m" path="res://assets/Shipsheet.png" id="2_sp8ny"]
+[ext_resource type="PackedScene" uid="uid://rnjb41wqawy7" path="res://health_bar.tscn" id="3_jog57"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_gtovr"]
-size = Vector2(8, 8)
+size = Vector2(26, 8)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_an376"]
-atlas = ExtResource("2_lmqaa")
+atlas = ExtResource("2_sp8ny")
 region = Rect2(0, 192, 32, 32)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_aom1d"]
-atlas = ExtResource("2_lmqaa")
+atlas = ExtResource("2_sp8ny")
 region = Rect2(0, 160, 32, 32)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_s8j4h"]
-atlas = ExtResource("2_lmqaa")
+atlas = ExtResource("2_sp8ny")
 region = Rect2(0, 128, 32, 32)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_50lv4"]
-atlas = ExtResource("2_lmqaa")
+atlas = ExtResource("2_sp8ny")
 region = Rect2(0, 96, 32, 32)
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_es73f"]
@@ -45,19 +45,21 @@ animations = [{
 
 [node name="Enemy" type="CharacterBody2D"]
 motion_mode = 1
-script = ExtResource("1_evcp5")
+script = ExtResource("1_3212m")
+SPEED = 40
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("RectangleShape2D_gtovr")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="CollisionShape2D"]
 texture_filter = 3
+position = Vector2(-1, 0)
 sprite_frames = SubResource("SpriteFrames_es73f")
 
 [node name="UpdateNavTimer" type="Timer" parent="."]
 wait_time = 4.0
 
-[node name="HealthBar" parent="." instance=ExtResource("3_xatcp")]
+[node name="HealthBar" parent="." instance=ExtResource("3_jog57")]
 offset_top = -8.0
 offset_bottom = -8.0
 

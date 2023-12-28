@@ -20,9 +20,31 @@ enum MOUSE_MODE { WALL, TURRET, CANNON }
 enum TILEMAP_LAYERS { MAZE }
 enum TILEMAP_SOURCES { FLOOR, WALL }
 
-var cannonScene = preload("res://Turrets/cannon.tscn")
-var enemyScene = preload("res://enemy.tscn")
 var turretScene = preload("res://Turrets/turret.tscn")
+var cannonScene = preload("res://Turrets/cannon.tscn")
+var enemyScene = preload("res://Enemies/enemy.tscn")
+var fishScene = preload("res://Enemies/fish.tscn")
+
+var level : Level = null
+var round : Round = null
+var level_index = -1
+var round_index = -1
+var round_enemy_index = -1
+var round_enemy : Enemy
+var levels : Array[Level] = [ \
+	Level.new([ \
+		Round.new(1.4, [fishScene, enemyScene, fishScene, enemyScene]), \
+		Round.new(1.3, [fishScene, fishScene, fishScene, fishScene]), \
+		Round.new(1.2, [enemyScene, enemyScene, enemyScene, enemyScene]), \
+		Round.new(1.1, [enemyScene, fishScene, enemyScene, fishScene]), \
+	]), \
+	Level.new([ \
+		Round.new(2, [fishScene, fishScene, enemyScene, enemyScene]), \
+		Round.new(2.1, [fishScene, fishScene, enemyScene, enemyScene]), \
+		Round.new(2.2, [fishScene, fishScene, enemyScene, enemyScene]), \
+		Round.new(2.3, [fishScene, fishScene, enemyScene, enemyScene]), \
+	]), \
+]
 
 func _ready():
 	map = $TileMap
@@ -35,7 +57,7 @@ func _ready():
 	astar_grid.update()
 	
 	add_debug_turrets()
-	start_round()
+	next_level()
 
 func add_debug_turrets():
 	var prev_mouse_mode = mouse_mode
@@ -51,30 +73,52 @@ func _process(_delta):
 	if lives <= 0:
 		game_over()
 
-func start_round():
+func next_level():
+	stop_timers()
+	level_index += 1
+	round_index = -1
+	if level_index >= len(levels):
+		print('you have won the game')
+		return
+	level = levels[level_index]
+	next_round()
+
+func next_round():
+	stop_timers()
+	round_index += 1
+	if round_index >= len(level.rounds):
+		next_level()
+		return
+	print('Starting Level %s Round %s' % [level_index + 1, round_index + 1])
+	round = level.rounds[round_index]
+	round_enemy_index = -1
+	$Timers/SpawnTimer.wait_time = round.spawn_time
 	update_nav()
-	$Timers/SpawnTimer.start()
-	$Timers/DrawPathsTimer.start()
 	add_enemy()
+	start_timers()
 
 func add_enemy():
-	enemies_count -= 1
-	if enemies_count < 0:
+	round_enemy_index += 1
+	if round_enemy_index >= len(round.enemies):
 		$Timers/SpawnTimer.stop()
 		return
 	
-	enemies_alive += 1
-	var e = enemyScene.instantiate()
-	e.position = $Start.position
-	e.number = enemies_spawned
-	enemies_spawned += 1
-	$Enemies.add_child(e)
-	$UIControl.update()
+	var enemy = round.enemies[round_enemy_index].instantiate()
+	enemy.position = $Start.position
+	enemy.number = enemies_spawned
+	$Enemies.add_child(enemy)
 	
+	enemies_alive += 1
+	enemies_spawned += 1
+	$UIControl.update()
+
 func enemy_killed(enemy : Enemy):
 	$Enemies.remove_child(enemy)
 	enemy.queue_free()
 	enemies_alive -= 1
+	if enemies_alive <= 0 && round_enemy_index >= len(round.enemies):
+		next_round()
+	
 	$UIControl.update()
 
 func update_nav():
@@ -83,10 +127,8 @@ func update_nav():
 		var cell_pos = Vector2i(cell.x, cell.y)
 		var source = map.get_cell_source_id(TILEMAP_LAYERS.MAZE, cell_pos)
 		astar_grid.set_point_solid(cell_pos, source == 1)
-		
 	for enemy in $Enemies.get_children():
 		enemy.update_nav()
-	
 	queue_redraw()
 
 func _input(event):
@@ -135,7 +177,6 @@ func get_selected_turret_scene() -> Turret:
 
 func can_navigate_with_change(coords : Vector2, layer, source) -> bool:
 	var orig_source = map.get_cell_source_id(layer, coords)
-	
 	var cell_pos = Vector2i(int(coords.x), int(coords.y))
 	astar_grid.set_point_solid(cell_pos, source == TILEMAP_SOURCES.WALL)
 	
@@ -155,8 +196,7 @@ func game_over():
 	print('game over')
 
 func _draw():
-	if !SHOW_PATHS:
-		return
+	if !SHOW_PATHS: return
 	for enemy in $Enemies.get_children():
 		var prev = enemy.position
 		for point in enemy.path:
@@ -164,5 +204,12 @@ func _draw():
 			draw_line(prev, point, path_color, PATH_WIDTH, true)
 			prev = point
 
-func force_draw():
-	queue_redraw()
+func force_draw(): queue_redraw()
+
+func stop_timers():
+	$Timers/SpawnTimer.stop()
+	$Timers/DrawPathsTimer.stop()
+
+func start_timers():
+	$Timers/SpawnTimer.start()
+	$Timers/DrawPathsTimer.start()
