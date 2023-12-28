@@ -18,8 +18,6 @@ var range_thickness = .2
 
 enum AIM_STYLES { FIRST, LAST, CLOSEST, FURTHEST, STRONGEST, WEAKEST, FOCUS_FIRST, FOCUS_LAST }
 
-# TODO: Add turret range indicator
-
 func _ready():
 	sprite = $AnimatedSprite2D
 
@@ -100,8 +98,7 @@ func _attack():
 
 func _draw():
 	if SHOW_RANGE:
-		draw_arc(Vector2.ZERO, ATTACK_RANGE, 0, 360, 100, Color.BLACK, range_thickness, true)
-		#draw_circle(position, ATTACK_RANGE, Color.AQUA)
+		draw_arc(Vector2.ZERO, ATTACK_RANGE, 0, 360, 100, Color.AQUA, range_thickness, true)
 
 
 
