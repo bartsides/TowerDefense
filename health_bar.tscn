@@ -1,6 +1,16 @@
-[gd_scene load_steps=2 format=3 uid="uid://rnjb41wqawy7"]
+[gd_scene load_steps=4 format=3 uid="uid://rnjb41wqawy7"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_f16eo"]
+bg_color = Color(0.576471, 0.470588, 0.521569, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_oetjp"]
+bg_color = Color(0.894118, 0.192157, 0.270588, 1)
 
 [sub_resource type="Theme" id="Theme_7phcr"]
+/colors/progress_bar = Color(1, 0, 0, 1)
+ProgressBar/colors/font_outline_color = Color(0.694118, 0.227451, 0.192157, 1)
+ProgressBar/styles/background = SubResource("StyleBoxFlat_f16eo")
+ProgressBar/styles/fill = SubResource("StyleBoxFlat_oetjp")
 
 [node name="HealthBar" type="Control"]
 layout_mode = 3
@@ -13,12 +23,12 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -4.0
-offset_top = -2.0
-offset_right = 4.0
-offset_bottom = 2.0
+offset_left = -5.0
+offset_top = -1.0
+offset_right = 5.0
+offset_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 theme = SubResource("Theme_7phcr")
-value = 50.0
+value = 100.0
 show_percentage = false

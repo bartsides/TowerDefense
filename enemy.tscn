@@ -1,7 +1,8 @@
-[gd_scene load_steps=9 format=3 uid="uid://lfp4ldguca3u"]
+[gd_scene load_steps=10 format=3 uid="uid://lfp4ldguca3u"]
 
 [ext_resource type="Script" path="res://enemy.gd" id="1_evcp5"]
 [ext_resource type="Texture2D" uid="uid://cjl2w1oix2g6m" path="res://assets/Shipsheet.png" id="2_lmqaa"]
+[ext_resource type="PackedScene" uid="uid://rnjb41wqawy7" path="res://health_bar.tscn" id="3_xatcp"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_gtovr"]
 size = Vector2(8, 8)
@@ -49,11 +50,15 @@ script = ExtResource("1_evcp5")
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("RectangleShape2D_gtovr")
 
-[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="CollisionShape2D"]
 texture_filter = 3
 sprite_frames = SubResource("SpriteFrames_es73f")
 
 [node name="UpdateNavTimer" type="Timer" parent="."]
 wait_time = 4.0
+
+[node name="HealthBar" parent="." instance=ExtResource("3_xatcp")]
+offset_top = -8.0
+offset_bottom = -8.0
 
 [connection signal="timeout" from="UpdateNavTimer" to="." method="update_nav"]

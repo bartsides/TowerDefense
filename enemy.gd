@@ -6,10 +6,6 @@ class_name Enemy
 @export var DISTANCE_MARGIN = 2
 @export var TOTAL_HEALTH = 10
 
-var health_bar_thickness = 0.25
-var health_bar_width = 8
-var health_bar_y = -5
-
 var health = 10.0
 var dead = false
 var number : int
@@ -17,27 +13,23 @@ var half_cell_size
 var map : TileMap
 var td : TD
 var path : PackedVector2Array
+var health_bar : ProgressBar
 
 func is_enemy(): pass
 
 func _ready():
-	$AnimatedSprite2D.play()
-	$UpdateNavTimer.start()
+	$CollisionShape2D/AnimatedSprite2D.play()
 	td = get_node("/root/TD")
 	map = td.get_node("TileMap")
 	half_cell_size = td.cell_size / 2.0
+	health_bar = $HealthBar/ProgressBar
+	health_bar.max_value = TOTAL_HEALTH
+	health_bar.value = health
+	$UpdateNavTimer.start()
 	update_nav()
 
 func _physics_process(delta):
 	follow_path(delta)
-
-func _draw():
-	if health == 0: return
-	# draw health bar
-	var health_percentage = health / TOTAL_HEALTH
-	var start = Vector2(-health_bar_width / 2.0, health_bar_y)
-	var end = Vector2(health_bar_width * health_percentage - (health_bar_width / 2.0), health_bar_y)
-	draw_line(start, end, Color.RED, health_bar_thickness, true)
 
 func update_nav():
 	$UpdateNavTimer.stop()
@@ -54,7 +46,7 @@ func update_nav():
 	$UpdateNavTimer.start()
 
 func follow_path(delta):
-	if path.size() <= 0:
+	if len(path) <= 0:
 		call_deferred('kill') # TODO: Handle enemy reaching end better
 		return
 	var point = path[0]
@@ -63,7 +55,7 @@ func follow_path(delta):
 		if path.size() <= 0:
 			return
 		point = path[0]
-	look_at(point)
+	$CollisionShape2D.look_at(point)
 	var dir = position.direction_to(point)
 	var vel = dir * SPEED * delta
 	move_and_collide(vel)
@@ -79,4 +71,7 @@ func take_damage(damage):
 	if health == 0:
 		call_deferred('kill')
 	else:
-		queue_redraw()
+		update_health_bar()
+
+func update_health_bar():
+	health_bar.value = health
