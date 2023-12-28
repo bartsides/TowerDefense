@@ -4,5 +4,8 @@ func _ready():
 	connect("animation_looped", _animation_looped)
 
 func _animation_looped():
-	if animation == "death":
-		get_parent().kill()
+	match animation:
+		"intro":
+			play("default")
+		"death":
+			get_parent().kill()

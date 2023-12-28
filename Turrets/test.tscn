@@ -1,0 +1,5 @@
+[gd_scene load_steps=2 format=3 uid="uid://n4ilgjp06gnr"]
+
+[ext_resource type="PackedScene" uid="uid://dv1qs465qpw2i" path="res://Turrets/turret.tscn" id="1_k43ds"]
+
+[node name="Turret" instance=ExtResource("1_k43ds")]

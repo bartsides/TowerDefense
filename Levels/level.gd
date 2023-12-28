@@ -4,5 +4,5 @@ class_name Level
 
 var rounds: Array[Round]
 
-func _init(rounds : Array[Round] = []):
-	self.rounds = rounds
+func _init(level_rounds : Array[Round] = []):
+	rounds = level_rounds

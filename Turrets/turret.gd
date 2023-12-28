@@ -15,11 +15,14 @@ var coords
 var sprite : AnimatedSprite2D
 var ready_to_fire = false
 var range_thickness = .2
+var projectilesNode
 
 enum AIM_STYLES { FIRST, LAST, CLOSEST, FURTHEST, STRONGEST, WEAKEST, FOCUS_FIRST, FOCUS_LAST }
 
 func _ready():
+	projectilesNode = get_node("/root/TD/Projectiles")
 	sprite = $AnimatedSprite2D
+	$AttackTimer.wait_time = ATTACK_TIME
 
 func _process(_delta):
 	if ready_to_fire:
@@ -88,19 +91,19 @@ func _attack():
 		return
 	var direction = position.direction_to(target_enemy.position)
 	var bullet = bullet_scene.instantiate()
+	bullet.position = $BulletMarker2D.position
 	bullet.damage = DAMAGE
-	bullet.visible = true
-	bullet.look_at(target_enemy.position)
 	bullet.apply_central_force(direction * BULLET_SPEED)
-	$Bullets.add_child(bullet)
+	if bullet.IS_PROJECTILE:
+		projectilesNode.add_child(bullet)
+		bullet.position = to_global(bullet.position)
+		bullet.look_at(target_enemy.position)
+	else:
+		add_child(bullet)
+	
 	bullet.fire()
 	$AnimatedSprite2D.play("attack")
 
 func _draw():
 	if SHOW_RANGE:
 		draw_arc(Vector2.ZERO, ATTACK_RANGE, 0, 360, 100, Color.AQUA, range_thickness, true)
-
-
-
-
-

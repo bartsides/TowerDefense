@@ -9,53 +9,52 @@ const SHOW_PATHS = false
 var cell_size = 16
 var path_color = Color.BLACK
 var mouse_mode = MOUSE_MODE.WALL
-var enemies_count = 200
 var enemies_spawned = 0
 var enemies_alive = 0
 var lives = 20
 var astar_grid = AStarGrid2D.new()
 var map : TileMap
 
-enum MOUSE_MODE { WALL, TURRET, CANNON }
+enum MOUSE_MODE { WALL, TURRET, CANNON, FLAME_THROWER }
 enum TILEMAP_LAYERS { MAZE }
 enum TILEMAP_SOURCES { FLOOR, WALL }
 
-var turretScene = preload("res://Turrets/turret.tscn")
-var cannonScene = preload("res://Turrets/cannon.tscn")
-var enemyScene = preload("res://Enemies/enemy.tscn")
-var fishScene = preload("res://Enemies/fish.tscn")
+var turret_scene = preload("res://Turrets/turret.tscn")
+var cannon_scene = preload("res://Turrets/cannon.tscn")
+var flame_thrower_scene = preload("res://Turrets/flame_thrower.tscn")
 
-var level : Level = null
-var round : Round = null
+var enemy_scene = preload("res://Enemies/enemy.tscn")
+var fish_scene = preload("res://Enemies/fish.tscn")
+
+var current_level : Level = null
+var current_round : Round = null
 var level_index = -1
 var round_index = -1
 var round_enemy_index = -1
 var round_enemy : Enemy
 var levels : Array[Level] = [ \
 	Level.new([ \
-		Round.new(1.4, [fishScene, enemyScene, fishScene, enemyScene]), \
-		Round.new(1.3, [fishScene, fishScene, fishScene, fishScene]), \
-		Round.new(1.2, [enemyScene, enemyScene, enemyScene, enemyScene]), \
-		Round.new(1.1, [enemyScene, fishScene, enemyScene, fishScene]), \
+		Round.new(1.4, [fish_scene, enemy_scene, fish_scene, enemy_scene]), \
+		Round.new(1.3, [fish_scene, fish_scene, fish_scene, fish_scene]), \
+		Round.new(1.2, [enemy_scene, enemy_scene, enemy_scene, enemy_scene]), \
+		Round.new(1.1, [enemy_scene, fish_scene, enemy_scene, fish_scene]), \
 	]), \
 	Level.new([ \
-		Round.new(2, [fishScene, fishScene, enemyScene, enemyScene]), \
-		Round.new(2.1, [fishScene, fishScene, enemyScene, enemyScene]), \
-		Round.new(2.2, [fishScene, fishScene, enemyScene, enemyScene]), \
-		Round.new(2.3, [fishScene, fishScene, enemyScene, enemyScene]), \
+		Round.new(2, [fish_scene, fish_scene, enemy_scene, enemy_scene]), \
+		Round.new(2.1, [fish_scene, fish_scene, enemy_scene, enemy_scene]), \
+		Round.new(2.2, [fish_scene, fish_scene, enemy_scene, enemy_scene]), \
+		Round.new(2.3, [fish_scene, fish_scene, enemy_scene, enemy_scene]), \
 	]), \
 ]
 
 func _ready():
 	map = $TileMap
 	cell_size = map.tile_set.tile_size.x * map.transform.get_scale().x
-	
 	astar_grid.region = Rect2i(REGION_SIZE/-2.0, REGION_SIZE/-2.0, REGION_SIZE, REGION_SIZE)
 	astar_grid.cell_size = Vector2(cell_size, cell_size)
 	astar_grid.jumping_enabled = true
 	astar_grid.diagonal_mode = AStarGrid2D.DIAGONAL_MODE_ONLY_IF_NO_OBSTACLES
 	astar_grid.update()
-	
 	add_debug_turrets()
 	next_level()
 
@@ -66,6 +65,9 @@ func add_debug_turrets():
 		handle_click(coords)
 	mouse_mode = MOUSE_MODE.CANNON
 	for coords in [Vector2(-2, 1)]:
+		handle_click(coords)
+	mouse_mode = MOUSE_MODE.FLAME_THROWER
+	for coords in [Vector2(-3, -1)]:
 		handle_click(coords)
 	mouse_mode = prev_mouse_mode
 	
@@ -80,30 +82,30 @@ func next_level():
 	if level_index >= len(levels):
 		print('you have won the game')
 		return
-	level = levels[level_index]
+	current_level = levels[level_index]
 	next_round()
 
 func next_round():
 	stop_timers()
 	round_index += 1
-	if round_index >= len(level.rounds):
+	if round_index >= len(current_level.rounds):
 		next_level()
 		return
 	print('Starting Level %s Round %s' % [level_index + 1, round_index + 1])
-	round = level.rounds[round_index]
+	current_round = current_level.rounds[round_index]
 	round_enemy_index = -1
-	$Timers/SpawnTimer.wait_time = round.spawn_time
+	$Timers/SpawnTimer.wait_time = current_round.spawn_time
 	update_nav()
 	add_enemy()
 	start_timers()
 
 func add_enemy():
 	round_enemy_index += 1
-	if round_enemy_index >= len(round.enemies):
+	if round_enemy_index >= len(current_round.enemies):
 		$Timers/SpawnTimer.stop()
 		return
 	
-	var enemy = round.enemies[round_enemy_index].instantiate()
+	var enemy = current_round.enemies[round_enemy_index].instantiate()
 	enemy.position = $Start.position
 	enemy.number = enemies_spawned
 	$Enemies.add_child(enemy)
@@ -116,7 +118,7 @@ func enemy_killed(enemy : Enemy):
 	$Enemies.remove_child(enemy)
 	enemy.queue_free()
 	enemies_alive -= 1
-	if enemies_alive <= 0 && round_enemy_index >= len(round.enemies):
+	if enemies_alive <= 0 && round_enemy_index >= len(current_round.enemies):
 		next_round()
 	
 	$UIControl.update()
@@ -142,8 +144,11 @@ func _input(event):
 		mouse_mode = MOUSE_MODE.TURRET
 	elif event.is_action_pressed("3"):
 		mouse_mode = MOUSE_MODE.CANNON
+	elif event.is_action_pressed("4"):
+		mouse_mode = MOUSE_MODE.FLAME_THROWER
 
 func handle_click(coords : Vector2):
+	print('click ', coords)
 	if mouse_mode == MOUSE_MODE.WALL:
 		var tile_source = map.get_cell_source_id(TILEMAP_LAYERS.MAZE, coords)
 		var new_val = 1
@@ -154,7 +159,8 @@ func handle_click(coords : Vector2):
 		map.set_cell(TILEMAP_LAYERS.MAZE, coords, new_val, Vector2i(0,0))
 		update_nav()
 	
-	if mouse_mode == MOUSE_MODE.TURRET || mouse_mode == MOUSE_MODE.CANNON:
+	if mouse_mode == MOUSE_MODE.TURRET or mouse_mode == MOUSE_MODE.CANNON \
+	or mouse_mode == MOUSE_MODE.FLAME_THROWER:
 		if !can_navigate_with_change(coords, TILEMAP_LAYERS.MAZE, TILEMAP_SOURCES.WALL):
 			return
 		
@@ -168,10 +174,13 @@ func handle_click(coords : Vector2):
 		update_nav()
 
 func get_selected_turret_scene() -> Turret:
-	if mouse_mode == MOUSE_MODE.TURRET:
-		return turretScene.instantiate()
-	if mouse_mode == MOUSE_MODE.CANNON:
-		return cannonScene.instantiate()
+	match mouse_mode:
+		MOUSE_MODE.TURRET:
+			return turret_scene.instantiate()
+		MOUSE_MODE.CANNON:
+			return cannon_scene.instantiate()
+		MOUSE_MODE.FLAME_THROWER:
+			return flame_thrower_scene.instantiate()
 	push_error('Unable to determine selected turret scene from mouse mode $s.' % mouse_mode)
 	return null
 

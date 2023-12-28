@@ -5,7 +5,7 @@
 [ext_resource type="Script" path="res://Turrets/Projectiles/AnimatedSprite2D.gd" id="3_2ohus"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_q3eu8"]
-size = Vector2(5, 3)
+size = Vector2(4, 1.99999)
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_e3omw"]
 animations = [{
@@ -27,6 +27,7 @@ animations = [{
 }]
 
 [node name="Bullet" type="RigidBody2D"]
+collision_layer = 2
 mass = 0.01
 continuous_cd = 1
 max_contacts_reported = 5
@@ -34,14 +35,16 @@ contact_monitor = true
 script = ExtResource("1_okufc")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(9.53674e-07, 9.17912e-06)
 rotation = -3.14159
 shape = SubResource("RectangleShape2D_q3eu8")
 
 [node name="LifespanTimer" type="Timer" parent="."]
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+texture_filter = 1
 sprite_frames = SubResource("SpriteFrames_e3omw")
 script = ExtResource("3_2ohus")
 
 [connection signal="body_entered" from="." to="." method="_hit"]
-[connection signal="timeout" from="LifespanTimer" to="." method="_kill"]
+[connection signal="timeout" from="LifespanTimer" to="." method="kill"]

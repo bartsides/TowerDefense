@@ -85,4 +85,3 @@ animations = [{
 [node name="AnimatedSprite2D" parent="." index="2"]
 scale = Vector2(0.5, 0.5)
 sprite_frames = SubResource("SpriteFrames_atflx")
-animation = &"default"

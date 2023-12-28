@@ -25,6 +25,7 @@ animations = [{
 
 [node name="Turret" type="Node2D"]
 script = ExtResource("1_1bkf4")
+ATTACK_TIME = 0.5
 
 [node name="TargetEnemyTimer" type="Timer" parent="."]
 autostart = true
@@ -32,12 +33,12 @@ autostart = true
 [node name="AttackTimer" type="Timer" parent="."]
 autostart = true
 
-[node name="Bullets" type="Node2D" parent="."]
-
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 sprite_frames = SubResource("SpriteFrames_kld0v")
-animation = &"attack"
 script = ExtResource("3_x3btf")
+
+[node name="BulletMarker2D" type="Marker2D" parent="."]
+position = Vector2(5, 0)
 
 [connection signal="timeout" from="TargetEnemyTimer" to="." method="_target_enemy"]
 [connection signal="timeout" from="AttackTimer" to="." method="_attack"]

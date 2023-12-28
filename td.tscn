@@ -67,5 +67,7 @@ offset_top = -154.0
 offset_right = -240.0
 offset_bottom = -114.0
 
+[node name="Projectiles" type="Node2D" parent="."]
+
 [connection signal="timeout" from="Timers/SpawnTimer" to="." method="add_enemy"]
 [connection signal="timeout" from="Timers/DrawPathsTimer" to="." method="force_draw"]

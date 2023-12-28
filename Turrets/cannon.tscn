@@ -1,33 +1,33 @@
 [gd_scene load_steps=9 format=3 uid="uid://cjgq3fwrv3h4k"]
 
 [ext_resource type="PackedScene" uid="uid://dv1qs465qpw2i" path="res://Turrets/turret.tscn" id="1_mghsx"]
-[ext_resource type="Script" path="res://Turrets/cannon.gd" id="2_dgf3g"]
+[ext_resource type="Script" path="res://Turrets/cannon.gd" id="2_gylm1"]
 [ext_resource type="Texture2D" uid="uid://chpea5i20id5" path="res://assets/Cannon1.png" id="3_2s6ky"]
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_y2mhj"]
+[sub_resource type="AtlasTexture" id="AtlasTexture_y10ij"]
 atlas = ExtResource("3_2s6ky")
 region = Rect2(64, 0, 32, 32)
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_pgy8j"]
+[sub_resource type="AtlasTexture" id="AtlasTexture_t1i8v"]
 atlas = ExtResource("3_2s6ky")
 region = Rect2(96, 0, 32, 32)
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_mr4rc"]
+[sub_resource type="AtlasTexture" id="AtlasTexture_wcotk"]
 atlas = ExtResource("3_2s6ky")
 region = Rect2(0, 0, 32, 32)
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_e08jo"]
+[sub_resource type="AtlasTexture" id="AtlasTexture_2vx8k"]
 atlas = ExtResource("3_2s6ky")
 region = Rect2(32, 0, 32, 32)
 
-[sub_resource type="SpriteFrames" id="SpriteFrames_kunib"]
+[sub_resource type="SpriteFrames" id="SpriteFrames_h1mtq"]
 animations = [{
 "frames": [{
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_y2mhj")
+"texture": SubResource("AtlasTexture_y10ij")
 }, {
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_pgy8j")
+"texture": SubResource("AtlasTexture_t1i8v")
 }],
 "loop": true,
 "name": &"attack",
@@ -35,10 +35,10 @@ animations = [{
 }, {
 "frames": [{
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_mr4rc")
+"texture": SubResource("AtlasTexture_wcotk")
 }, {
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_e08jo")
+"texture": SubResource("AtlasTexture_2vx8k")
 }],
 "loop": true,
 "name": &"default",
@@ -46,15 +46,15 @@ animations = [{
 }]
 
 [node name="Turret" instance=ExtResource("1_mghsx")]
-script = ExtResource("2_dgf3g")
-ATTACK_RANGE = 60
+script = ExtResource("2_gylm1")
+ATTACK_RANGE = 90
+ATTACK_TIME = 3.0
 DAMAGE = 7.0
-BULLET_SPEED = 100.0
+BULLET_SPEED = 150.0
 
-[node name="AttackTimer" parent="." index="1"]
-wait_time = 3.0
+[node name="AnimatedSprite2D" parent="." index="2"]
+sprite_frames = SubResource("SpriteFrames_h1mtq")
+animation = &"attack"
 
-[node name="AnimatedSprite2D" parent="." index="3"]
-texture_filter = 3
-sprite_frames = SubResource("SpriteFrames_kunib")
-animation = &"default"
+[node name="BulletMarker2D" parent="." index="3"]
+position = Vector2(9, 0)

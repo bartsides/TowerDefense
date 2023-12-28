@@ -1,6 +1,8 @@
 extends RigidBody2D
 
 @export var LIFESPAN = 1.0
+@export var MAX_ENEMIES_HIT = 1
+@export var IS_PROJECTILE = true
 
 var damage = 1.0
 var dying = false
@@ -28,5 +30,6 @@ func _hit(body):
 	if dying: return
 	if body.has_method("is_enemy"):
 		body.take_damage(damage)
-		die()
-		
+		MAX_ENEMIES_HIT -= 1
+		if MAX_ENEMIES_HIT <= 0:
+			die()

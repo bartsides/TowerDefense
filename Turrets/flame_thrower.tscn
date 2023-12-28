@@ -1,0 +1,11 @@
+[gd_scene load_steps=3 format=3 uid="uid://bytorf21ckj6t"]
+
+[ext_resource type="PackedScene" uid="uid://dv1qs465qpw2i" path="res://Turrets/turret.tscn" id="1_ytkyn"]
+[ext_resource type="Script" path="res://Turrets/flame_thrower.gd" id="2_pp147"]
+
+[node name="Turret" instance=ExtResource("1_ytkyn")]
+script = ExtResource("2_pp147")
+ATTACK_RANGE = 50
+ATTACK_TIME = 0.3
+DAMAGE = 1.0
+BULLET_SPEED = 0.0
