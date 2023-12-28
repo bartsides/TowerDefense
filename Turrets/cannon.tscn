@@ -54,7 +54,6 @@ BULLET_SPEED = 150.0
 
 [node name="AnimatedSprite2D" parent="." index="2"]
 sprite_frames = SubResource("SpriteFrames_h1mtq")
-animation = &"attack"
 
 [node name="BulletMarker2D" parent="." index="3"]
 position = Vector2(9, 0)

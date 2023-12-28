@@ -27,7 +27,7 @@ animations = [{
 }]
 
 [node name="Bullet" type="RigidBody2D"]
-collision_layer = 2
+collision_layer = 0
 mass = 0.01
 continuous_cd = 1
 max_contacts_reported = 5

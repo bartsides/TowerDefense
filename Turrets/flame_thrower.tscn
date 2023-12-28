@@ -5,6 +5,7 @@
 
 [node name="Turret" instance=ExtResource("1_ytkyn")]
 script = ExtResource("2_pp147")
+AIM_STYLE = 2
 ATTACK_RANGE = 50
 ATTACK_TIME = 0.3
 DAMAGE = 1.0

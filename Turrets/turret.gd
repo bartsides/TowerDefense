@@ -17,7 +17,12 @@ var ready_to_fire = false
 var range_thickness = .2
 var projectilesNode
 
-enum AIM_STYLES { FIRST, LAST, CLOSEST, FURTHEST, STRONGEST, WEAKEST, FOCUS_FIRST, FOCUS_LAST }
+enum AIM_STYLES { \
+	FIRST, LAST, \
+	CLOSEST, FURTHEST, \
+	STRONGEST, WEAKEST, \
+	FOCUS_FIRST, FOCUS_LAST, \
+}
 
 func _ready():
 	projectilesNode = get_node("/root/TD/Projectiles")
@@ -52,7 +57,6 @@ func _target_enemy():
 			continue
 		
 		var select_enemy = false
-		
 		match AIM_STYLE:
 			AIM_STYLES.FIRST:
 				select_enemy = enemy.number < selected_enemy.number
@@ -63,21 +67,19 @@ func _target_enemy():
 			AIM_STYLES.FOCUS_LAST:
 				select_enemy = enemy.number > selected_enemy.number
 			AIM_STYLES.CLOSEST:
-				select_enemy = enemy_dist < dist
+				select_enemy = dist < enemy_dist
 				if select_enemy:
 					enemy_dist = dist
 			AIM_STYLES.FURTHEST:
-				select_enemy = enemy_dist < dist
+				select_enemy = dist > enemy_dist
 				if select_enemy:
 					enemy_dist = dist
 			AIM_STYLES.STRONGEST:
 				select_enemy = enemy.health > selected_enemy.HEALTH
 			AIM_STYLES.WEAKEST:
 				select_enemy = enemy.health < selected_enemy.HEALTH
-		
 		if select_enemy:
 			selected_enemy = enemy
-	
 	if selected_enemy == null && target_enemy == null:
 		ready_to_fire = true
 	elif AIM_STYLE == AIM_STYLES.FOCUS_FIRST || AIM_STYLE == AIM_STYLES.FOCUS_LAST:
@@ -89,18 +91,13 @@ func _target_enemy():
 func _attack():
 	if target_enemy == null:
 		return
-	var direction = position.direction_to(target_enemy.position)
 	var bullet = bullet_scene.instantiate()
-	bullet.position = $BulletMarker2D.position
+	bullet.position = to_global($BulletMarker2D.position)
 	bullet.damage = DAMAGE
-	bullet.apply_central_force(direction * BULLET_SPEED)
-	if bullet.IS_PROJECTILE:
-		projectilesNode.add_child(bullet)
-		bullet.position = to_global(bullet.position)
-		bullet.look_at(target_enemy.position)
-	else:
-		add_child(bullet)
-	
+	if bullet.has_method("apply_central_force"):
+		bullet.apply_central_force(position.direction_to(target_enemy.position) * BULLET_SPEED)
+	bullet.look_at(target_enemy.position)
+	projectilesNode.add_child(bullet)
 	bullet.fire()
 	$AnimatedSprite2D.play("attack")
 

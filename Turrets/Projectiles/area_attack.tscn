@@ -1,0 +1,111 @@
+[gd_scene load_steps=15 format=3 uid="uid://csj2uhjgf6a8x"]
+
+[ext_resource type="Script" path="res://Turrets/Projectiles/area_attack.gd" id="1_58v83"]
+[ext_resource type="Texture2D" uid="uid://xjgcabq3fl3l" path="res://assets/Flamethrow.png" id="1_fa7cv"]
+[ext_resource type="Script" path="res://Turrets/Projectiles/area_attack_AnimatedSprite2D.gd" id="3_1k8tu"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ueq8d"]
+size = Vector2(51, 26)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_kj1um"]
+atlas = ExtResource("1_fa7cv")
+region = Rect2(160, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_8o7a8"]
+atlas = ExtResource("1_fa7cv")
+region = Rect2(192, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_f7f0n"]
+atlas = ExtResource("1_fa7cv")
+region = Rect2(96, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_mhgvv"]
+atlas = ExtResource("1_fa7cv")
+region = Rect2(128, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_co3d0"]
+atlas = ExtResource("1_fa7cv")
+region = Rect2(0, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_4sn53"]
+atlas = ExtResource("1_fa7cv")
+region = Rect2(32, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_b16ay"]
+atlas = ExtResource("1_fa7cv")
+region = Rect2(64, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_rpfhx"]
+atlas = ExtResource("1_fa7cv")
+region = Rect2(96, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_kfmmy"]
+atlas = ExtResource("1_fa7cv")
+region = Rect2(128, 0, 32, 32)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_yfi1r"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_kj1um")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_8o7a8")
+}],
+"loop": true,
+"name": &"death",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_f7f0n")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_mhgvv")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_co3d0")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_4sn53")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_b16ay")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_rpfhx")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_kfmmy")
+}],
+"loop": true,
+"name": &"intro",
+"speed": 5.0
+}]
+
+[node name="AreaAttack" type="StaticBody2D"]
+collision_layer = 0
+script = ExtResource("1_58v83")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(25.5, 0)
+shape = SubResource("RectangleShape2D_ueq8d")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+texture_filter = 3
+position = Vector2(23, 0)
+scale = Vector2(2.07261, 2.07261)
+sprite_frames = SubResource("SpriteFrames_yfi1r")
+animation = &"intro"
+frame_progress = 0.745605
+script = ExtResource("3_1k8tu")
+
+[node name="LifespanTimer" type="Timer" parent="."]
+autostart = true
+
+[connection signal="timeout" from="LifespanTimer" to="." method="kill"]

@@ -1,4 +1,4 @@
-extends RigidBody2D
+extends StaticBody2D
 
 @export var LIFESPAN = 1.0
 @export var MAX_ENEMIES_HIT = 1
@@ -14,7 +14,6 @@ func fire():
 func die():
 	dying = true
 	$AnimatedSprite2D.play("death")
-	linear_velocity = Vector2i.ZERO
 	collision_layer = 0
 
 func kill():
