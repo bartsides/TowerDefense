@@ -4,9 +4,6 @@
 [ext_resource type="Texture2D" uid="uid://xjgcabq3fl3l" path="res://assets/Flamethrow.png" id="1_fa7cv"]
 [ext_resource type="Script" path="res://Turrets/Projectiles/area_attack_AnimatedSprite2D.gd" id="3_1k8tu"]
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_ueq8d"]
-size = Vector2(51, 26)
-
 [sub_resource type="AtlasTexture" id="AtlasTexture_kj1um"]
 atlas = ExtResource("1_fa7cv")
 region = Rect2(160, 0, 32, 32)
@@ -85,16 +82,14 @@ animations = [{
 }],
 "loop": true,
 "name": &"intro",
-"speed": 5.0
+"speed": 10.0
 }]
 
-[node name="AreaAttack" type="StaticBody2D"]
-collision_layer = 0
-script = ExtResource("1_58v83")
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ueq8d"]
+size = Vector2(51, 26)
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-position = Vector2(25.5, 0)
-shape = SubResource("RectangleShape2D_ueq8d")
+[node name="AreaAttack" type="Area2D"]
+script = ExtResource("1_58v83")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 texture_filter = 3
@@ -102,10 +97,14 @@ position = Vector2(23, 0)
 scale = Vector2(2.07261, 2.07261)
 sprite_frames = SubResource("SpriteFrames_yfi1r")
 animation = &"intro"
-frame_progress = 0.745605
 script = ExtResource("3_1k8tu")
 
 [node name="LifespanTimer" type="Timer" parent="."]
 autostart = true
 
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(25.5, 0)
+shape = SubResource("RectangleShape2D_ueq8d")
+
+[connection signal="body_entered" from="." to="." method="_hit"]
 [connection signal="timeout" from="LifespanTimer" to="." method="kill"]

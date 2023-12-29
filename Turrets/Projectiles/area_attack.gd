@@ -1,7 +1,7 @@
-extends StaticBody2D
+extends Area2D
 
 @export var LIFESPAN = 1.0
-@export var MAX_ENEMIES_HIT = 1
+@export var MAX_ENEMIES_HIT = 100
 
 var damage = 1.0
 var dying = false

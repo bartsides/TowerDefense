@@ -1,0 +1,5 @@
+[gd_scene load_steps=2 format=3 uid="uid://bjalo4lj2w4bx"]
+
+[ext_resource type="PackedScene" uid="uid://csj2uhjgf6a8x" path="res://Turrets/Projectiles/area_attack.tscn" id="1_3eucq"]
+
+[node name="AreaAttack" instance=ExtResource("1_3eucq")]
