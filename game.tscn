@@ -1,0 +1,79 @@
+[gd_scene load_steps=7 format=3 uid="uid://bdde0uivg13pb"]
+
+[ext_resource type="Script" path="res://game.gd" id="1_fyolo"]
+[ext_resource type="Theme" uid="uid://c38gw33oeacv5" path="res://Themes/start_menu_buttons.tres" id="2_u3dqd"]
+
+[sub_resource type="Theme" id="Theme_02rtg"]
+Label/colors/font_color = Color(1, 0.65098, 1, 1)
+Label/colors/font_outline_color = Color(0, 0.611765, 0.611765, 1)
+Label/colors/font_shadow_color = Color(0, 0, 0, 0.592157)
+Label/constants/outline_size = 3
+Label/constants/shadow_offset_x = -9
+Label/constants/shadow_offset_y = 4
+Label/constants/shadow_outline_size = 8
+Label/font_sizes/font_size = 76
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_t0l6d"]
+
+[sub_resource type="InputEventKey" id="InputEventKey_30hey"]
+device = -1
+keycode = 32
+unicode = 32
+
+[sub_resource type="Shortcut" id="Shortcut_vxaud"]
+events = [SubResource("InputEventKey_30hey")]
+
+[node name="Game" type="Panel"]
+offset_right = 1154.0
+offset_bottom = 645.0
+script = ExtResource("1_fyolo")
+
+[node name="Label" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -575.0
+offset_top = -216.0
+offset_right = 575.0
+offset_bottom = -111.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = SubResource("Theme_02rtg")
+text = "Tower Defense"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -169.0
+offset_top = -112.5
+offset_right = 174.0
+offset_bottom = 174.5
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 22
+alignment = 1
+
+[node name="StartButton" type="Button" parent="VBoxContainer"]
+layout_mode = 2
+theme = ExtResource("2_u3dqd")
+theme_override_styles/normal = SubResource("StyleBoxFlat_t0l6d")
+shortcut = SubResource("Shortcut_vxaud")
+text = "Start"
+
+[node name="ExitButton" type="Button" parent="VBoxContainer"]
+layout_mode = 2
+theme = ExtResource("2_u3dqd")
+text = "Exit	"
+
+[connection signal="resized" from="." to="." method="_on_resized"]
+[connection signal="pressed" from="VBoxContainer/StartButton" to="." method="_start"]
+[connection signal="pressed" from="VBoxContainer/ExitButton" to="." method="_exit"]
