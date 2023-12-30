@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=3 uid="uid://bdde0uivg13pb"]
+[gd_scene load_steps=8 format=3 uid="uid://bdde0uivg13pb"]
 
 [ext_resource type="Script" path="res://game.gd" id="1_fyolo"]
 [ext_resource type="Theme" uid="uid://c38gw33oeacv5" path="res://Themes/start_menu_buttons.tres" id="2_u3dqd"]
@@ -13,8 +13,6 @@ Label/constants/shadow_offset_y = 4
 Label/constants/shadow_outline_size = 8
 Label/font_sizes/font_size = 76
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_t0l6d"]
-
 [sub_resource type="InputEventKey" id="InputEventKey_30hey"]
 device = -1
 keycode = 32
@@ -22,6 +20,13 @@ unicode = 32
 
 [sub_resource type="Shortcut" id="Shortcut_vxaud"]
 events = [SubResource("InputEventKey_30hey")]
+
+[sub_resource type="InputEventKey" id="InputEventKey_smnq4"]
+device = -1
+keycode = 4194305
+
+[sub_resource type="Shortcut" id="Shortcut_4fqjn"]
+events = [SubResource("InputEventKey_smnq4")]
 
 [node name="Game" type="Panel"]
 offset_right = 1154.0
@@ -65,13 +70,13 @@ alignment = 1
 [node name="StartButton" type="Button" parent="VBoxContainer"]
 layout_mode = 2
 theme = ExtResource("2_u3dqd")
-theme_override_styles/normal = SubResource("StyleBoxFlat_t0l6d")
 shortcut = SubResource("Shortcut_vxaud")
 text = "Start"
 
 [node name="ExitButton" type="Button" parent="VBoxContainer"]
 layout_mode = 2
 theme = ExtResource("2_u3dqd")
+shortcut = SubResource("Shortcut_4fqjn")
 text = "Exit	"
 
 [connection signal="resized" from="." to="." method="_on_resized"]
