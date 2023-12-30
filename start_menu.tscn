@@ -1,0 +1,91 @@
+[gd_scene load_steps=8 format=3 uid="uid://tvp6fgc72wr3"]
+
+[ext_resource type="Script" path="res://start_menu.gd" id="1_7r6sh"]
+[ext_resource type="Theme" uid="uid://c38gw33oeacv5" path="res://Themes/start_menu_buttons.tres" id="2_oalt0"]
+
+[sub_resource type="Theme" id="Theme_02rtg"]
+Label/colors/font_color = Color(1, 0.65098, 1, 1)
+Label/colors/font_outline_color = Color(0, 0.611765, 0.611765, 1)
+Label/colors/font_shadow_color = Color(0, 0, 0, 0.592157)
+Label/constants/outline_size = 3
+Label/constants/shadow_offset_x = -9
+Label/constants/shadow_offset_y = 4
+Label/constants/shadow_outline_size = 8
+Label/font_sizes/font_size = 76
+
+[sub_resource type="InputEventKey" id="InputEventKey_30hey"]
+device = -1
+keycode = 32
+unicode = 32
+
+[sub_resource type="Shortcut" id="Shortcut_vxaud"]
+events = [SubResource("InputEventKey_30hey")]
+
+[sub_resource type="InputEventKey" id="InputEventKey_smnq4"]
+device = -1
+keycode = 4194305
+
+[sub_resource type="Shortcut" id="Shortcut_4fqjn"]
+events = [SubResource("InputEventKey_smnq4")]
+
+[node name="StartMenu" type="PanelContainer"]
+offset_right = 1154.0
+offset_bottom = 645.0
+script = ExtResource("1_7r6sh")
+
+[node name="Panel" type="Panel" parent="."]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Panel"]
+layout_mode = 2
+offset_left = 1.0
+offset_top = 127.0
+offset_right = 1155.0
+offset_bottom = 232.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = SubResource("Theme_02rtg")
+text = "Tower Defense"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="CenterContainer" type="CenterContainer" parent="Panel"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -575.0
+offset_top = -75.5
+offset_right = 576.0
+offset_bottom = 327.5
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ScrollContainer" type="ScrollContainer" parent="Panel/CenterContainer"]
+custom_minimum_size = Vector2(300, 300)
+layout_mode = 2
+horizontal_scroll_mode = 0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Panel/CenterContainer/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 22
+alignment = 1
+
+[node name="StartButton" type="Button" parent="Panel/CenterContainer/ScrollContainer/VBoxContainer"]
+layout_mode = 2
+theme = ExtResource("2_oalt0")
+shortcut = SubResource("Shortcut_vxaud")
+text = "Start"
+
+[node name="ExitButton" type="Button" parent="Panel/CenterContainer/ScrollContainer/VBoxContainer"]
+layout_mode = 2
+theme = ExtResource("2_oalt0")
+shortcut = SubResource("Shortcut_4fqjn")
+text = "Exit	"
+
+[connection signal="resized" from="." to="." method="_on_resized"]
+[connection signal="pressed" from="Panel/CenterContainer/ScrollContainer/VBoxContainer/StartButton" to="." method="_start"]
+[connection signal="pressed" from="Panel/CenterContainer/ScrollContainer/VBoxContainer/ExitButton" to="." method="_exit"]

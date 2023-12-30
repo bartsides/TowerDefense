@@ -5,19 +5,40 @@
 [node name="UIControl" type="Control"]
 layout_mode = 3
 anchors_preset = 0
-offset_right = 40.0
-offset_bottom = 40.0
+offset_right = 1151.0
+offset_bottom = 648.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
 script = ExtResource("1_l8s3q")
 
-[node name="TopLeftInfo" type="Panel" parent="."]
+[node name="TopLeftPanel" type="Panel" parent="."]
 layout_mode = 1
 offset_right = 153.0
 offset_bottom = 40.0
 
-[node name="Label" type="Label" parent="TopLeftInfo"]
+[node name="Label" type="Label" parent="TopLeftPanel"]
 layout_mode = 1
 offset_left = 16.0
 offset_top = 8.0
 offset_right = 142.0
 offset_bottom = 31.0
 text = "Enemies Lives: 0"
+
+[node name="TopRightPanel" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -95.0
+offset_top = 4.0
+offset_right = -3.0
+offset_bottom = 43.0
+grow_horizontal = 0
+
+[node name="Label" type="Label" parent="TopRightPanel"]
+layout_mode = 1
+offset_left = 11.0
+offset_top = 6.0
+offset_right = 68.0
+offset_bottom = 29.0
+text = "Lives: 0"

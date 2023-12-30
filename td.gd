@@ -47,11 +47,11 @@ var levels: Array[Level] = [ \
 
 
 func _ready():
-	map = $TileMap
+	map = $GameLayer/TileMap
 	cell_size = map.tile_set.tile_size.x * map.transform.get_scale().x
 	setup_astar_grid()
 	next_level()
-	add_debug_turrets()
+	#add_debug_turrets()
 
 func add_debug_turrets():
 	var prev_mouse_mode = mouse_mode
@@ -90,7 +90,7 @@ func next_round():
 	print('Starting Level %s Round %s' % [level_index + 1, round_index + 1])
 	current_round = current_level.rounds[round_index]
 	round_enemy_index = -1
-	$Timers/SpawnTimer.wait_time = current_round.spawn_time
+	$GameLayer/Timers/SpawnTimer.wait_time = current_round.spawn_time
 	update_nav()
 	add_enemy()
 	start_timers()
@@ -98,26 +98,30 @@ func next_round():
 func add_enemy():
 	round_enemy_index += 1
 	if round_enemy_index >= len(current_round.enemies):
-		$Timers/SpawnTimer.stop()
+		$GameLayer/Timers/SpawnTimer.stop()
 		return
 	
 	var enemy = current_round.enemies[round_enemy_index].instantiate()
-	enemy.position = $Start.position
+	enemy.position = $GameLayer/Start.position
 	enemy.number = enemies_spawned
-	$Enemies.add_child(enemy)
+	$GameLayer/Enemies.add_child(enemy)
 	
 	enemies_alive += 1
 	enemies_spawned += 1
-	$UIControl.update()
+	$UILayer/UIControl.update()
 
-func enemy_killed(enemy: Enemy):
-	$Enemies.remove_child(enemy)
+func enemy_killed(enemy: Enemy, reached_end: bool):
+	$GameLayer/Enemies.remove_child(enemy)
 	enemy.queue_free()
 	enemies_alive -= 1
+	if reached_end:
+		lives -= 1
+		if lives <= 0:
+			game_over()
+			return
 	if enemies_alive <= 0 && round_enemy_index >= len(current_round.enemies):
 		next_round()
-	
-	$UIControl.update()
+	$UILayer/UIControl.update()
 
 func update_tilemap_sources():
 	tilemap_sources = []
@@ -151,7 +155,7 @@ func update_nav():
 		var cell_pos = Vector2i(cell.x, cell.y)
 		var source_id = map.get_cell_source_id(TILEMAP_LAYERS.MAZE, cell_pos)
 		astar_grid.set_point_solid(cell_pos, is_tilemap_source_id_wall(source_id))
-	for enemy in $Enemies.get_children():
+	for enemy in $GameLayer/Enemies.get_children():
 		enemy.update_nav()
 	queue_redraw()
 
@@ -169,7 +173,6 @@ func _input(event):
 		mouse_mode = MOUSE_MODE.FLAME_THROWER
 
 func handle_click(coords: Vector2):
-	print('click ', coords)
 	if mouse_mode == MOUSE_MODE.WALL:
 		var is_wall = is_tilemap_source_id_wall(map.get_cell_source_id(TILEMAP_LAYERS.MAZE, coords))
 		var new_source_id = get_walkable_tilemap_source() if is_wall else get_wall_tilemap_source()
@@ -190,7 +193,7 @@ func handle_click(coords: Vector2):
 		if t != null:
 			t.coords = coords
 			t.position = map.map_to_local(coords)
-			$Turrets.add_child(t)
+			$GameLayer/Turrets.add_child(t)
 		update_nav()
 
 func get_selected_turret_scene() -> Turret:
@@ -211,8 +214,8 @@ func can_navigate_with_change(coords: Vector2, is_wall: bool) -> bool:
 	var cell_pos = Vector2i(int(coords.x), int(coords.y))
 	astar_grid.set_point_solid(cell_pos, is_wall)
 	
-	var nav_start = map.local_to_map($Start.position)
-	var nav_end = map.local_to_map($End.position)
+	var nav_start = map.local_to_map($GameLayer/Start.position)
+	var nav_end = map.local_to_map($GameLayer/End.position)
 	var path = astar_grid.get_point_path(nav_start, nav_end)
 	if len(path) > 0 && Vector2i(path[0]) == nav_start:
 		path.remove_at(0)
@@ -222,12 +225,13 @@ func can_navigate_with_change(coords: Vector2, is_wall: bool) -> bool:
 	return result
 
 func game_over():
-	$Timers/SpawnTimer.stop()
+	$GameLayer/Timers/SpawnTimer.stop()
+	$UILayer/UIControl.update()
 	print('game over')
 
 func _draw():
 	if !SHOW_PATHS: return
-	for enemy in $Enemies.get_children():
+	for enemy in $GameLayer/Enemies.get_children():
 		var prev = enemy.position
 		for point in enemy.path:
 			draw_circle(point, PATH_WIDTH * 3, path_color)
@@ -237,12 +241,12 @@ func _draw():
 func force_draw(): queue_redraw()
 
 func stop_timers():
-	$Timers/SpawnTimer.stop()
-	$Timers/DrawPathsTimer.stop()
+	$GameLayer/Timers/SpawnTimer.stop()
+	$GameLayer/Timers/DrawPathsTimer.stop()
 
 func start_timers():
-	$Timers/SpawnTimer.start()
-	$Timers/DrawPathsTimer.start()
+	$GameLayer/Timers/SpawnTimer.start()
+	$GameLayer/Timers/DrawPathsTimer.start()
 
 func setup_astar_grid():
 	astar_grid.region = Rect2i(REGION_SIZE/-2.0, REGION_SIZE/-2.0, REGION_SIZE, REGION_SIZE)

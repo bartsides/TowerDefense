@@ -2,11 +2,16 @@ extends Control
 
 var td : TD
 
-# Called when the node enters the scene tree for the first time.
 func _ready():
+	get_tree().get_root().connect("size_changed", resized)
 	td = get_node("/root/TD")
+	resized()
 	update()
 
 func update():
-	$TopLeftInfo/Label.text = "Enemies alive: %s" % td.enemies_alive
-	#$Panel.position = get_screen_transform() * get_global_transform_with_canvas() * Vector2(0, 0)
+	$TopLeftPanel/Label.text = "Enemies alive: %s" % td.enemies_alive
+	$TopRightPanel/Label.text = "Lives: %s" % td.lives
+
+func resized():
+	size = get_viewport_rect().size
+	print('resize ', size)

@@ -25,7 +25,7 @@ enum AIM_STYLES { \
 }
 
 func _ready():
-	projectilesNode = get_node("/root/TD/Projectiles")
+	projectilesNode = get_node("/root/TD/GameLayer/Projectiles")
 	sprite = $AnimatedSprite2D
 	$AttackTimer.wait_time = ATTACK_TIME
 
@@ -41,7 +41,7 @@ func _process(_delta):
 		look_at(target_enemy.position)
 
 func _target_enemy():
-	var enemies = get_node("/root/TD/Enemies").get_children()
+	var enemies = get_node("/root/TD/GameLayer/Enemies").get_children()
 	if len(enemies) < 1:
 		return
 	var enemy_dist = -1.0

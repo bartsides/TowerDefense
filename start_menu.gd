@@ -1,4 +1,4 @@
-extends Panel
+extends PanelContainer
 
 func _ready():
 	get_tree().get_root().connect("size_changed", _on_resized)

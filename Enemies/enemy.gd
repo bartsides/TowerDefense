@@ -4,6 +4,7 @@ class_name Enemy
 
 @export var SPEED = 20
 @export var DISTANCE_MARGIN = 1
+@export var END_DISTANCE_MARGIN = 16
 @export var TOTAL_HEALTH = 10
 
 var health = 10.0
@@ -16,11 +17,12 @@ var path: PackedVector2Array
 var health_bar: ProgressBar
 
 func is_enemy(): pass
+func get_end_point() -> Marker2D: return td.get_node("GameLayer/End")
 
 func _ready():
 	$CollisionShape2D/AnimatedSprite2D.play()
 	td = get_node("/root/TD")
-	map = td.get_node("TileMap")
+	map = td.get_node("GameLayer/TileMap")
 	half_cell_size = td.cell_size / 2.0
 	health_bar = $HealthBar/ProgressBar
 	health_bar.max_value = TOTAL_HEALTH
@@ -33,11 +35,11 @@ func _physics_process(delta):
 
 func update_nav():
 	$UpdateNavTimer.stop()
-	var end = td.get_node("End") as Marker2D
+	if check_if_at_end():
+		return
 	var astar_grid = td.astar_grid as AStarGrid2D
-	
 	var nav_start = map.local_to_map(position)
-	var nav_end = map.local_to_map(end.position)
+	var nav_end = map.local_to_map(get_end_point().position)
 	path = astar_grid.get_point_path(nav_start, nav_end)
 	if len(path) > 0 && Vector2i(map.local_to_map(path[0])) == nav_start:
 		path.remove_at(0)
@@ -47,12 +49,13 @@ func update_nav():
 
 func follow_path(delta):
 	if len(path) <= 0:
-		call_deferred('kill') # TODO: Handle enemy reaching end better
+		check_if_at_end()
 		return
 	var point = path[0]
 	if position.distance_to(point) <= DISTANCE_MARGIN:
 		path.remove_at(0)
 		if path.size() <= 0:
+			check_if_at_end()
 			return
 		point = path[0]
 	$CollisionShape2D.look_at(point)
@@ -60,11 +63,16 @@ func follow_path(delta):
 	var vel = dir * SPEED * delta
 	move_and_collide(vel)
 
-func kill():
+func check_if_at_end() -> bool:
+	if position.distance_to(get_end_point().position) <= END_DISTANCE_MARGIN:
+		call_deferred('kill', true)
+		return true
+	return false
+
+func kill(reached_end: bool):
 	if dead: return
 	dead = true
-	td.enemy_killed(self)
-	# TODO: Consider emit_signal instead of getting TD node
+	td.enemy_killed(self, reached_end)
 
 func take_damage(damage):
 	health = clamp(health - damage, 0, TOTAL_HEALTH)
