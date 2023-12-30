@@ -28,7 +28,7 @@ texture_region_size = Vector2i(32, 32)
 0:0/0/navigation_layer_0/polygon = SubResource("NavigationPolygon_ri0du")
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_5onlm"]
-resource_name = "Wall"
+resource_name = "Stone Brick Wall"
 texture = ExtResource("3_e2380")
 texture_region_size = Vector2i(32, 32)
 0:0/0 = 0
@@ -73,8 +73,6 @@ wait_time = 1.607
 
 [node name="DrawPathsTimer" type="Timer" parent="GameLayer/Timers"]
 
-[node name="RandomizeTilemapAnimationTimer" type="Timer" parent="GameLayer/Timers"]
-
 [node name="Turrets" type="Node2D" parent="GameLayer"]
 
 [node name="Projectiles" type="Node2D" parent="GameLayer"]
@@ -88,4 +86,3 @@ offset_bottom = 380.0
 
 [connection signal="timeout" from="GameLayer/Timers/SpawnTimer" to="." method="add_enemy"]
 [connection signal="timeout" from="GameLayer/Timers/DrawPathsTimer" to="." method="force_draw"]
-[connection signal="timeout" from="GameLayer/Timers/RandomizeTilemapAnimationTimer" to="." method="randomize_animated_tilemap"]

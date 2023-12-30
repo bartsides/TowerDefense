@@ -77,7 +77,7 @@ func kill(reached_end: bool):
 func take_damage(damage):
 	health = clamp(health - damage, 0, TOTAL_HEALTH)
 	if health == 0:
-		call_deferred('kill')
+		call_deferred('kill', false)
 	else:
 		update_health_bar()
 

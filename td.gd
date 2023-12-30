@@ -51,7 +51,7 @@ func _ready():
 	cell_size = map.tile_set.tile_size.x * map.transform.get_scale().x
 	setup_astar_grid()
 	next_level()
-	#add_debug_turrets()
+	add_debug_turrets()
 
 func add_debug_turrets():
 	var prev_mouse_mode = mouse_mode
@@ -108,7 +108,7 @@ func add_enemy():
 	
 	enemies_alive += 1
 	enemies_spawned += 1
-	$UILayer/UIControl.update()
+	update_ui()
 
 func enemy_killed(enemy: Enemy, reached_end: bool):
 	$GameLayer/Enemies.remove_child(enemy)
@@ -121,7 +121,7 @@ func enemy_killed(enemy: Enemy, reached_end: bool):
 			return
 	if enemies_alive <= 0 && round_enemy_index >= len(current_round.enemies):
 		next_round()
-	$UILayer/UIControl.update()
+	update_ui()
 
 func update_tilemap_sources():
 	tilemap_sources = []
@@ -226,7 +226,7 @@ func can_navigate_with_change(coords: Vector2, is_wall: bool) -> bool:
 
 func game_over():
 	$GameLayer/Timers/SpawnTimer.stop()
-	$UILayer/UIControl.update()
+	update_ui()
 	print('game over')
 
 func _draw():
@@ -254,3 +254,6 @@ func setup_astar_grid():
 	astar_grid.jumping_enabled = true
 	astar_grid.diagonal_mode = AStarGrid2D.DIAGONAL_MODE_ONLY_IF_NO_OBSTACLES
 	astar_grid.update()
+
+func update_ui():
+	$UILayer/UIControl.update()

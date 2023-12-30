@@ -9,8 +9,8 @@ func _ready():
 	update()
 
 func update():
-	$TopLeftPanel/Label.text = "Enemies alive: %s" % td.enemies_alive
-	$TopRightPanel/Label.text = "Lives: %s" % td.lives
+	$TopLeftPanel/CenterContainer/Label.text = "Enemies alive: %s" % td.enemies_alive
+	$TopRightPanel/CenterContainer/Label.text = "Lives: %s" % td.lives
 
 func resized():
 	size = get_viewport_rect().size
