@@ -8,12 +8,12 @@ class_name Enemy
 
 var health = 10.0
 var dead = false
-var number : int
+var number: int
 var half_cell_size
-var map : TileMap
-var td : TD
-var path : PackedVector2Array
-var health_bar : ProgressBar
+var map: TileMap
+var td: TD
+var path: PackedVector2Array
+var health_bar: ProgressBar
 
 func is_enemy(): pass
 

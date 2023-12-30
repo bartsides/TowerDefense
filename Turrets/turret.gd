@@ -10,9 +10,9 @@ class_name Turret
 @export var SHOW_RANGE = true
 
 var bullet_scene = preload("res://Turrets/Projectiles/bullet.tscn")
-var target_enemy : Enemy = null
+var target_enemy: Enemy = null
 var coords
-var sprite : AnimatedSprite2D
+var sprite: AnimatedSprite2D
 var ready_to_fire = false
 var range_thickness = .2
 var projectilesNode
@@ -45,7 +45,7 @@ func _target_enemy():
 	if len(enemies) < 1:
 		return
 	var enemy_dist = -1.0
-	var selected_enemy : Enemy = null
+	var selected_enemy: Enemy = null
 	for enemy in enemies:
 		var dist = enemy.position.distance_to(position)
 		if dist == null || dist > ATTACK_RANGE:
