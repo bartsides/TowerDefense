@@ -25,6 +25,8 @@ texture_region_size = Vector2i(32, 32)
 0:0/animation_frame_2/duration = 1.0
 0:0/animation_frame_3/duration = 1.0
 0:0/0 = 0
+0:0/0/physics_layer_0/linear_velocity = Vector2(0, 0)
+0:0/0/physics_layer_0/angular_velocity = 0.0
 0:0/0/navigation_layer_0/polygon = SubResource("NavigationPolygon_ri0du")
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_5onlm"]
@@ -32,10 +34,17 @@ resource_name = "Stone Brick Wall"
 texture = ExtResource("3_e2380")
 texture_region_size = Vector2i(32, 32)
 0:0/0 = 0
+0:0/0/physics_layer_0/linear_velocity = Vector2(0, 0)
+0:0/0/physics_layer_0/angular_velocity = 0.0
+0:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(-16, -16, -16, 16, 16, 16, 16, -16)
 1:0/0 = 0
+1:0/0/physics_layer_0/linear_velocity = Vector2(0, 0)
+1:0/0/physics_layer_0/angular_velocity = 0.0
+1:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(-16, -16, 16, -16, 16, 16, -16, 16)
 
 [sub_resource type="TileSet" id="TileSet_4ue8t"]
 tile_size = Vector2i(32, 32)
+physics_layer_0/collision_layer = 2
 navigation_layer_0/layers = 1
 sources/0 = SubResource("TileSetAtlasSource_f6tir")
 sources/1 = SubResource("TileSetAtlasSource_5onlm")
