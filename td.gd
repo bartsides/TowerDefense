@@ -14,6 +14,7 @@ var cannon_scene = preload("res://Turrets/cannon.tscn")
 var flame_thrower_scene = preload("res://Turrets/flame_thrower.tscn")
 var enemy_scene = preload("res://Enemies/enemy.tscn")
 var fish_scene = preload("res://Enemies/fish.tscn")
+var jet_ski_scene = preload("res://Enemies/jet_ski.tscn")
 
 var cell_size = 16
 var path_color = Color.BLACK
@@ -32,8 +33,10 @@ var round_enemy: Enemy
 var tilemap_sources: Array[TileSetSource] = []
 var levels: Array[Level] = [ \
 	Level.new([ \
-		Round.new(1.4, [fish_scene, enemy_scene, fish_scene, enemy_scene]), \
-		Round.new(1.3, [fish_scene, fish_scene, fish_scene, fish_scene]), \
+		Round.new(.3, [enemy_scene, fish_scene, enemy_scene, fish_scene, jet_ski_scene, jet_ski_scene, jet_ski_scene]), \
+		Round.new(.5, [jet_ski_scene, jet_ski_scene, jet_ski_scene, jet_ski_scene, jet_ski_scene, jet_ski_scene, jet_ski_scene]), \
+		Round.new(1.4, [fish_scene, enemy_scene, fish_scene, enemy_scene, jet_ski_scene, jet_ski_scene, jet_ski_scene]), \
+		Round.new(1.3, [fish_scene, fish_scene, fish_scene, fish_scene, jet_ski_scene, jet_ski_scene, jet_ski_scene]), \
 		Round.new(1.2, [enemy_scene, enemy_scene, enemy_scene, enemy_scene]), \
 		Round.new(1.1, [enemy_scene, fish_scene, enemy_scene, fish_scene]), \
 	]), \

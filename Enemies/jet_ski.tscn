@@ -1,0 +1,48 @@
+[gd_scene load_steps=8 format=3 uid="uid://bfheqf2w20ucb"]
+
+[ext_resource type="PackedScene" uid="uid://lfp4ldguca3u" path="res://Enemies/enemy.tscn" id="1_51475"]
+[ext_resource type="Texture2D" uid="uid://bsgws8domjl1m" path="res://assets/Jet Ski.png" id="2_oj36j"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_rtche"]
+atlas = ExtResource("2_oj36j")
+region = Rect2(0, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_qv1hw"]
+atlas = ExtResource("2_oj36j")
+region = Rect2(32, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_pgmqr"]
+atlas = ExtResource("2_oj36j")
+region = Rect2(64, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_75imr"]
+atlas = ExtResource("2_oj36j")
+region = Rect2(96, 0, 32, 32)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_0dji8"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_rtche")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_qv1hw")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_pgmqr")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_75imr")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[node name="JetSki" instance=ExtResource("1_51475")]
+SPEED = 140
+
+[node name="AnimatedSprite2D" parent="CollisionShape2D" index="0"]
+position = Vector2(0, 0)
+sprite_frames = SubResource("SpriteFrames_0dji8")
+frame_progress = 0.717549

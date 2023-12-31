@@ -5,7 +5,7 @@
 [ext_resource type="Script" path="res://Turrets/Projectiles/AnimatedSprite2D.gd" id="3_2ohus"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_q3eu8"]
-size = Vector2(4, 1.99999)
+size = Vector2(30, 30)
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_e3omw"]
 animations = [{
@@ -35,7 +35,7 @@ contact_monitor = true
 script = ExtResource("1_okufc")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-position = Vector2(9.53674e-07, 9.17912e-06)
+position = Vector2(-3.57585e-07, -2.38419e-07)
 rotation = -3.14159
 shape = SubResource("RectangleShape2D_q3eu8")
 

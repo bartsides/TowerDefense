@@ -3,7 +3,7 @@ extends CharacterBody2D
 class_name Enemy
 
 @export var SPEED = 20
-@export var DISTANCE_MARGIN = 1
+@export var DISTANCE_MARGIN = 3
 @export var END_DISTANCE_MARGIN = 16
 @export var TOTAL_HEALTH = 10
 

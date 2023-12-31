@@ -5,7 +5,7 @@
 [ext_resource type="PackedScene" uid="uid://rnjb41wqawy7" path="res://health_bar.tscn" id="3_jog57"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_gtovr"]
-size = Vector2(26, 8)
+size = Vector2(26, 15)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_an376"]
 atlas = ExtResource("2_sp8ny")
@@ -43,9 +43,8 @@ animations = [{
 "speed": 4.0
 }]
 
-[node name="Enemy" type="CharacterBody2D"]
-collision_layer = 3
-collision_mask = 3
+[node name="Enemy" type="CharacterBody2D" groups=["Enemies"]]
+collision_mask = 2
 motion_mode = 1
 script = ExtResource("1_3212m")
 SPEED = 40
@@ -55,7 +54,7 @@ shape = SubResource("RectangleShape2D_gtovr")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="CollisionShape2D"]
 texture_filter = 3
-position = Vector2(-1, 0)
+position = Vector2(-2, 0)
 sprite_frames = SubResource("SpriteFrames_es73f")
 
 [node name="UpdateNavTimer" type="Timer" parent="."]
