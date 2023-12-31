@@ -21,6 +21,7 @@ var path_color = Color.BLACK
 var mouse_mode = MOUSE_MODE.WALL
 var enemies_spawned = 0
 var enemies_alive = 0
+var game_active = true
 var lives = 20
 var astar_grid = AStarGrid2D.new()
 var map: TileMap
@@ -33,19 +34,19 @@ var round_enemy: Enemy
 var tilemap_sources: Array[TileSetSource] = []
 var levels: Array[Level] = [ \
 	Level.new([ \
-	Round.new(.1, [jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,]), \
-		Round.new(.3, [enemy_scene, fish_scene, enemy_scene, fish_scene, jet_ski_scene, jet_ski_scene, jet_ski_scene]), \
-		Round.new(.5, [jet_ski_scene, jet_ski_scene, jet_ski_scene, jet_ski_scene, jet_ski_scene, jet_ski_scene, jet_ski_scene]), \
-		Round.new(1.4, [fish_scene, enemy_scene, fish_scene, enemy_scene, jet_ski_scene, jet_ski_scene, jet_ski_scene]), \
-		Round.new(1.3, [fish_scene, fish_scene, fish_scene, fish_scene, jet_ski_scene, jet_ski_scene, jet_ski_scene]), \
-		Round.new(1.2, [enemy_scene, enemy_scene, enemy_scene, enemy_scene]), \
-		Round.new(1.1, [enemy_scene, fish_scene, enemy_scene, fish_scene]), \
+		Round.new(10, .1, [jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,]), \
+		Round.new(2, .3, [enemy_scene, fish_scene, enemy_scene, fish_scene, jet_ski_scene, jet_ski_scene, jet_ski_scene]), \
+		Round.new(2, .5, [jet_ski_scene, jet_ski_scene, jet_ski_scene, jet_ski_scene, jet_ski_scene, jet_ski_scene, jet_ski_scene]), \
+		Round.new(2, 1.4, [fish_scene, enemy_scene, fish_scene, enemy_scene, jet_ski_scene, jet_ski_scene, jet_ski_scene]), \
+		Round.new(2, 1.3, [fish_scene, fish_scene, fish_scene, fish_scene, jet_ski_scene, jet_ski_scene, jet_ski_scene]), \
+		Round.new(2, 1.2, [enemy_scene, enemy_scene, enemy_scene, enemy_scene]), \
+		Round.new(2, 1.1, [enemy_scene, fish_scene, enemy_scene, fish_scene]), \
 	]), \
 	Level.new([ \
-		Round.new(2, [fish_scene, fish_scene, enemy_scene, enemy_scene]), \
-		Round.new(2.1, [fish_scene, fish_scene, enemy_scene, enemy_scene]), \
-		Round.new(2.2, [fish_scene, fish_scene, enemy_scene, enemy_scene]), \
-		Round.new(2.3, [fish_scene, fish_scene, enemy_scene, enemy_scene]), \
+		Round.new(10, 2, [fish_scene, fish_scene, enemy_scene, enemy_scene]), \
+		Round.new(2, 2.1, [fish_scene, fish_scene, enemy_scene, enemy_scene]), \
+		Round.new(2, 2.2, [fish_scene, fish_scene, enemy_scene, enemy_scene]), \
+		Round.new(2, 2.3, [fish_scene, fish_scene, enemy_scene, enemy_scene]), \
 	]), \
 ]
 
@@ -53,6 +54,9 @@ var levels: Array[Level] = [ \
 func _ready():
 	map = $GameLayer/TileMap
 	cell_size = map.tile_set.tile_size.x * map.transform.get_scale().x
+	start_game()
+
+func start_game():
 	setup_astar_grid()
 	next_level()
 	add_debug_turrets()
@@ -69,8 +73,9 @@ func add_debug_turrets():
 	for coords in [Vector2(-3, -1)]:
 		handle_click(coords)
 	mouse_mode = prev_mouse_mode
-	
+
 func _process(_delta):
+	if !game_active: return
 	if lives <= 0:
 		game_over()
 
@@ -91,15 +96,21 @@ func next_round():
 	if round_index >= len(current_level.rounds):
 		next_level()
 		return
-	print('Starting Level %s Round %s' % [level_index + 1, round_index + 1])
-	current_round = current_level.rounds[round_index]
 	round_enemy_index = -1
+	current_round = current_level.rounds[round_index]
+	$GameLayer/Timers/StartRoundTimer.wait_time = current_round.wait_time
+	$GameLayer/Timers/StartRoundTimer.start()
+	print('waiting ', current_round.wait_time, 's')
 	$GameLayer/Timers/SpawnTimer.wait_time = current_round.spawn_time
 	update_nav()
+
+func start_round():
+	print('Starting Level %s Round %s' % [level_index + 1, round_index + 1])
 	add_enemy()
 	start_timers()
 
 func add_enemy():
+	if !game_active: return
 	round_enemy_index += 1
 	if round_enemy_index >= len(current_round.enemies):
 		$GameLayer/Timers/SpawnTimer.stop()
@@ -230,6 +241,7 @@ func can_navigate_with_change(coords: Vector2, is_wall: bool) -> bool:
 
 func game_over():
 	$GameLayer/Timers/SpawnTimer.stop()
+	game_active = false
 	update_ui()
 	print('game over')
 
