@@ -6,9 +6,6 @@ const REGION_SIZE = 1024
 const PATH_WIDTH = .7
 const SHOW_PATHS = false
 
-enum MOUSE_MODE { WALL, TURRET, CANNON, FLAME_THROWER }
-enum TILEMAP_LAYERS { MAZE }
-
 var turret_scene = preload("res://Turrets/turret.tscn")
 var cannon_scene = preload("res://Turrets/cannon.tscn")
 var flame_thrower_scene = preload("res://Turrets/flame_thrower.tscn")
@@ -18,9 +15,10 @@ var jet_ski_scene = preload("res://Enemies/jet_ski.tscn")
 
 var cell_size = 16
 var path_color = Color.BLACK
-var mouse_mode = MOUSE_MODE.WALL
+var mouse_mode = TdEnums.MOUSE_MODE.WALL
 var enemies_spawned = 0
 var enemies_alive = 0
+var total_enemies = 0
 var game_active = true
 var lives = 20
 var astar_grid = AStarGrid2D.new()
@@ -63,13 +61,13 @@ func start_game():
 
 func add_debug_turrets():
 	var prev_mouse_mode = mouse_mode
-	mouse_mode = MOUSE_MODE.TURRET
+	mouse_mode = TdEnums.MOUSE_MODE.TURRET
 	for coords in [Vector2(0, -1), Vector2(0, 3)]:
 		handle_click(coords)
-	mouse_mode = MOUSE_MODE.CANNON
+	mouse_mode = TdEnums.MOUSE_MODE.CANNON
 	for coords in [Vector2(-2, 1)]:
 		handle_click(coords)
-	mouse_mode = MOUSE_MODE.FLAME_THROWER
+	mouse_mode = TdEnums.MOUSE_MODE.FLAME_THROWER
 	for coords in [Vector2(-3, -1)]:
 		handle_click(coords)
 	mouse_mode = prev_mouse_mode
@@ -88,7 +86,17 @@ func next_level():
 		return
 	current_level = levels[level_index]
 	update_tilemap_sources()
+	update_wall_texture_in_ui()
 	next_round()
+
+func update_wall_texture_in_ui():
+	var wall_source_id = get_wall_tilemap_source()
+	var wall_source: TileSetAtlasSource = map.tile_set.get_source(wall_source_id)
+	var texture = wall_source.texture
+	var atlas_texture: AtlasTexture = AtlasTexture.new()
+	atlas_texture.atlas = texture
+	atlas_texture.region = Rect2(0, 0, 32, 32)
+	$UILayer/UIControl.set_wall_texture(atlas_texture)
 
 func next_round():
 	stop_timers()
@@ -98,11 +106,13 @@ func next_round():
 		return
 	round_enemy_index = -1
 	current_round = current_level.rounds[round_index]
+	total_enemies = len(current_round.enemies)
 	$GameLayer/Timers/StartRoundTimer.wait_time = current_round.wait_time
 	$GameLayer/Timers/StartRoundTimer.start()
 	print('waiting ', current_round.wait_time, 's')
 	$GameLayer/Timers/SpawnTimer.wait_time = current_round.spawn_time
 	update_nav()
+	update_ui()
 
 func start_round():
 	print('Starting Level %s Round %s' % [level_index + 1, round_index + 1])
@@ -165,10 +175,10 @@ func get_walkable_tilemap_source() -> int:
 	return -1
 
 func update_nav():
-	var cells = map.get_used_cells(TILEMAP_LAYERS.MAZE)
+	var cells = map.get_used_cells(TdEnums.TILEMAP_LAYERS.MAZE)
 	for cell in cells:
 		var cell_pos = Vector2i(cell.x, cell.y)
-		var source_id = map.get_cell_source_id(TILEMAP_LAYERS.MAZE, cell_pos)
+		var source_id = map.get_cell_source_id(TdEnums.TILEMAP_LAYERS.MAZE, cell_pos)
 		astar_grid.set_point_solid(cell_pos, is_tilemap_source_id_wall(source_id))
 	for enemy in $GameLayer/Enemies.get_children():
 		enemy.update_nav()
@@ -179,31 +189,31 @@ func _input(event):
 		var coords = map.local_to_map(map.to_local(get_global_mouse_position()))
 		handle_click(coords)
 	elif event.is_action_pressed("1"):
-		mouse_mode = MOUSE_MODE.WALL
+		mouse_mode = TdEnums.MOUSE_MODE.WALL
 	elif event.is_action_pressed("2"):
-		mouse_mode = MOUSE_MODE.TURRET
+		mouse_mode = TdEnums.MOUSE_MODE.TURRET
 	elif event.is_action_pressed("3"):
-		mouse_mode = MOUSE_MODE.CANNON
+		mouse_mode = TdEnums.MOUSE_MODE.CANNON
 	elif event.is_action_pressed("4"):
-		mouse_mode = MOUSE_MODE.FLAME_THROWER
+		mouse_mode = TdEnums.MOUSE_MODE.FLAME_THROWER
 
 func handle_click(coords: Vector2):
-	if mouse_mode == MOUSE_MODE.WALL:
-		var is_wall = is_tilemap_source_id_wall(map.get_cell_source_id(TILEMAP_LAYERS.MAZE, coords))
+	if mouse_mode == TdEnums.MOUSE_MODE.WALL:
+		var is_wall = is_tilemap_source_id_wall(map.get_cell_source_id(TdEnums.TILEMAP_LAYERS.MAZE, coords))
 		var new_source_id = get_walkable_tilemap_source() if is_wall else get_wall_tilemap_source()
 		if !is_wall && !can_navigate_with_change(coords, true):
 			return # Prevent player from blocking path
-		map.set_cell(TILEMAP_LAYERS.MAZE, coords, new_source_id, Vector2i.ZERO)
+		map.set_cell(TdEnums.TILEMAP_LAYERS.MAZE, coords, new_source_id, Vector2i.ZERO)
 		update_nav()
 	
-	if mouse_mode == MOUSE_MODE.TURRET \
-	or mouse_mode == MOUSE_MODE.CANNON \
-	or mouse_mode == MOUSE_MODE.FLAME_THROWER:
+	if mouse_mode == TdEnums.MOUSE_MODE.TURRET \
+	or mouse_mode == TdEnums.MOUSE_MODE.CANNON \
+	or mouse_mode == TdEnums.MOUSE_MODE.FLAME_THROWER:
 		if !can_navigate_with_change(coords, true):
 			return
 		
 		# set base tilemap layer as a wall
-		map.set_cell(TILEMAP_LAYERS.MAZE, coords, get_wall_tilemap_source(), Vector2i.ZERO)
+		map.set_cell(TdEnums.TILEMAP_LAYERS.MAZE, coords, get_wall_tilemap_source(), Vector2i.ZERO)
 		var t: Turret = get_selected_turret_scene()
 		if t != null:
 			t.coords = coords
@@ -214,11 +224,11 @@ func handle_click(coords: Vector2):
 func get_selected_turret_scene() -> Turret:
 	var scene = null
 	match mouse_mode:
-		MOUSE_MODE.TURRET:
+		TdEnums.MOUSE_MODE.TURRET:
 			scene = turret_scene
-		MOUSE_MODE.CANNON:
+		TdEnums.MOUSE_MODE.CANNON:
 			scene = cannon_scene
-		MOUSE_MODE.FLAME_THROWER:
+		TdEnums.MOUSE_MODE.FLAME_THROWER:
 			scene =  flame_thrower_scene
 	if scene != null:
 		return scene.instantiate()

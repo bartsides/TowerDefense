@@ -7,7 +7,7 @@ class_name Turret
 @export var ATTACK_TIME = 1.0
 @export var DAMAGE = 3.0
 @export var BULLET_SPEED = 200.0
-@export var SHOW_RANGE = true
+@export var SHOW_RANGE = false
 
 var bullet_scene = preload("res://Turrets/Projectiles/bullet.tscn")
 var target_enemy: Enemy = null

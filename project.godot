@@ -11,9 +11,13 @@ config_version=5
 [application]
 
 config/name="TowerDefense"
-run/main_scene="res://start_menu.tscn"
+run/main_scene="res://td.tscn"
 config/features=PackedStringArray("4.2", "Mobile")
 config/icon="res://icon.svg"
+
+[autoload]
+
+TdEnums="*res://td_enums.gd"
 
 [display]
 
