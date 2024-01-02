@@ -1,0 +1,89 @@
+[gd_scene load_steps=12 format=3 uid="uid://bg4qfqmymvfky"]
+
+[ext_resource type="Texture2D" uid="uid://b5mxt2pm2c54r" path="res://assets/Water.png" id="1_2om76"]
+[ext_resource type="Texture2D" uid="uid://1mp4mrxnamfy" path="res://assets/stone platform.png" id="2_kkndv"]
+[ext_resource type="Texture2D" uid="uid://rwlwx4sgy4qu" path="res://assets/Water Swirl.png" id="3_h4sjp"]
+[ext_resource type="Script" path="res://Levels/level_tile_map.gd" id="4_5dds5"]
+[ext_resource type="Texture2D" uid="uid://d2c123qwyfmjr" path="res://assets/wood platform.png" id="4_e4css"]
+
+[sub_resource type="NavigationPolygon" id="NavigationPolygon_ri0du"]
+vertices = PackedVector2Array(16, 16, -16, 16, -16, -16, 16, -16)
+polygons = Array[PackedInt32Array]([PackedInt32Array(0, 1, 2, 3)])
+outlines = Array[PackedVector2Array]([PackedVector2Array(-16, -16, -16, 16, 16, 16, 16, -16)])
+source_geometry_group_name = &"navigation_polygon_source_group"
+agent_radius = 0.0
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_f6tir"]
+resource_name = "Animated Water"
+texture = ExtResource("1_2om76")
+texture_region_size = Vector2i(32, 32)
+0:0/animation_columns = 4
+0:0/animation_speed = 2.0
+0:0/animation_mode = 1
+0:0/animation_frame_0/duration = 1.0
+0:0/animation_frame_1/duration = 1.0
+0:0/animation_frame_2/duration = 1.0
+0:0/animation_frame_3/duration = 1.0
+0:0/0 = 0
+0:0/0/physics_layer_0/linear_velocity = Vector2(0, 0)
+0:0/0/physics_layer_0/angular_velocity = 0.0
+0:0/0/navigation_layer_0/polygon = SubResource("NavigationPolygon_ri0du")
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_5onlm"]
+resource_name = "Stone Brick Wall"
+texture = ExtResource("2_kkndv")
+texture_region_size = Vector2i(32, 32)
+0:0/0 = 0
+0:0/0/physics_layer_0/linear_velocity = Vector2(0, 0)
+0:0/0/physics_layer_0/angular_velocity = 0.0
+0:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(-16, -16, -16, 16, 16, 16, 16, -16)
+1:0/0 = 0
+1:0/0/physics_layer_0/linear_velocity = Vector2(0, 0)
+1:0/0/physics_layer_0/angular_velocity = 0.0
+1:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(-16, -16, 16, -16, 16, 16, -16, 16)
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_k0u2j"]
+resource_name = "Start and End"
+texture = ExtResource("3_h4sjp")
+texture_region_size = Vector2i(32, 32)
+0:0/animation_columns = 7
+0:0/animation_speed = 2.0
+0:0/animation_mode = 1
+0:0/animation_frame_0/duration = 1.0
+0:0/animation_frame_1/duration = 1.0
+0:0/animation_frame_2/duration = 1.0
+0:0/animation_frame_3/duration = 1.0
+0:0/animation_frame_4/duration = 1.0
+0:0/animation_frame_5/duration = 1.0
+0:0/animation_frame_6/duration = 1.0
+0:0/0 = 0
+0:0/0/physics_layer_0/linear_velocity = Vector2(0, 0)
+0:0/0/physics_layer_0/angular_velocity = 0.0
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_n20dn"]
+resource_name = "Border"
+texture = ExtResource("4_e4css")
+texture_region_size = Vector2i(32, 32)
+0:0/0 = 0
+0:0/0/physics_layer_0/linear_velocity = Vector2(0, 0)
+0:0/0/physics_layer_0/angular_velocity = 0.0
+1:0/0 = 0
+1:0/0/physics_layer_0/linear_velocity = Vector2(0, 0)
+1:0/0/physics_layer_0/angular_velocity = 0.0
+
+[sub_resource type="TileSet" id="TileSet_4ue8t"]
+tile_size = Vector2i(32, 32)
+physics_layer_0/collision_layer = 2
+navigation_layer_0/layers = 1
+sources/0 = SubResource("TileSetAtlasSource_f6tir")
+sources/1 = SubResource("TileSetAtlasSource_5onlm")
+sources/2 = SubResource("TileSetAtlasSource_k0u2j")
+sources/3 = SubResource("TileSetAtlasSource_n20dn")
+
+[node name="TileMap" type="TileMap"]
+z_index = -1
+tile_set = SubResource("TileSet_4ue8t")
+collision_animatable = true
+format = 2
+layer_0/name = "Maze"
+script = ExtResource("4_5dds5")

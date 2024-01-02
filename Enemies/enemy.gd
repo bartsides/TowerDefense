@@ -17,12 +17,12 @@ var path: PackedVector2Array
 var health_bar: ProgressBar
 
 func is_enemy(): pass
-func get_end_point() -> Marker2D: return td.get_node("GameLayer/End")
+func get_end_position() -> Vector2: return td.map.end_position
 
 func _ready():
 	$CollisionShape2D/AnimatedSprite2D.play()
 	td = get_node("/root/TD")
-	map = td.get_node("GameLayer/TileMap")
+	map = td.map
 	half_cell_size = td.cell_size / 2.0
 	health_bar = $HealthBar/ProgressBar
 	health_bar.max_value = TOTAL_HEALTH
@@ -39,7 +39,7 @@ func update_nav():
 		return
 	var astar_grid = td.astar_grid as AStarGrid2D
 	var nav_start = map.local_to_map(position)
-	var nav_end = map.local_to_map(get_end_point().position)
+	var nav_end = map.local_to_map(get_end_position())
 	path = astar_grid.get_point_path(nav_start, nav_end)
 	if len(path) > 0 && Vector2i(map.local_to_map(path[0])) == nav_start:
 		path.remove_at(0)
@@ -64,7 +64,7 @@ func follow_path(delta):
 	move_and_collide(vel)
 
 func check_if_at_end() -> bool:
-	if position.distance_to(get_end_point().position) <= END_DISTANCE_MARGIN:
+	if position.distance_to(get_end_position()) <= END_DISTANCE_MARGIN:
 		call_deferred('kill', true)
 		return true
 	return false

@@ -4,10 +4,8 @@ var td : TD
 var selected = false
 
 func _ready():
-	get_tree().get_root().connect("size_changed", resized)
 	td = get_node("/root/TD")
 	connect_buttons()
-	resized()
 	update()
 
 func connect_buttons():
@@ -27,10 +25,3 @@ func set_wall_texture(texture: Texture2D):
 func update():
 	$TopLeftPanel/CenterContainer/VBoxContainer/LivesLabel.text = "Lives: %s" % td.lives
 	$TopLeftPanel/CenterContainer/VBoxContainer/EnemiesLabel.text = "Enemies: %s/%s" % [td.enemies_alive, td.total_enemies]
-
-func resized():
-	size = get_viewport_rect().size
-
-func _unhandled_input(event):
-	print('eating ', event)
-

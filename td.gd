@@ -13,7 +13,7 @@ var enemy_scene = preload("res://Enemies/enemy.tscn")
 var fish_scene = preload("res://Enemies/fish.tscn")
 var jet_ski_scene = preload("res://Enemies/jet_ski.tscn")
 
-var cell_size = 16
+var cell_size = 32
 var path_color = Color.BLACK
 var mouse_mode = TdEnums.MOUSE_MODE.WALL
 var enemies_spawned = 0
@@ -22,36 +22,38 @@ var total_enemies = 0
 var game_active = true
 var lives = 20
 var astar_grid = AStarGrid2D.new()
-var map: TileMap
+var map: LevelTileMap = null
 var current_level: Level = null
 var current_round: Round = null
 var level_index = -1
 var round_index = -1
 var round_enemy_index = -1
 var round_enemy: Enemy
-var tilemap_sources: Array[TileSetSource] = []
+
 var levels: Array[Level] = [ \
-	Level.new([ \
-		Round.new(10, .1, [jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,]), \
-		Round.new(2, .3, [enemy_scene, fish_scene, enemy_scene, fish_scene, jet_ski_scene, jet_ski_scene, jet_ski_scene]), \
-		Round.new(2, .5, [jet_ski_scene, jet_ski_scene, jet_ski_scene, jet_ski_scene, jet_ski_scene, jet_ski_scene, jet_ski_scene]), \
-		Round.new(2, 1.4, [fish_scene, enemy_scene, fish_scene, enemy_scene, jet_ski_scene, jet_ski_scene, jet_ski_scene]), \
-		Round.new(2, 1.3, [fish_scene, fish_scene, fish_scene, fish_scene, jet_ski_scene, jet_ski_scene, jet_ski_scene]), \
-		Round.new(2, 1.2, [enemy_scene, enemy_scene, enemy_scene, enemy_scene]), \
-		Round.new(2, 1.1, [enemy_scene, fish_scene, enemy_scene, fish_scene]), \
-	]), \
-	Level.new([ \
-		Round.new(10, 2, [fish_scene, fish_scene, enemy_scene, enemy_scene]), \
-		Round.new(2, 2.1, [fish_scene, fish_scene, enemy_scene, enemy_scene]), \
-		Round.new(2, 2.2, [fish_scene, fish_scene, enemy_scene, enemy_scene]), \
-		Round.new(2, 2.3, [fish_scene, fish_scene, enemy_scene, enemy_scene]), \
-	]), \
+	Level.new(load("res://Levels/level1.tscn"), \
+		[ \
+			#Round.new(10, .1, [jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,]), \
+			#Round.new(2, .3, [enemy_scene, fish_scene, enemy_scene, fish_scene, jet_ski_scene, jet_ski_scene, jet_ski_scene]), \
+			#Round.new(2, .5, [jet_ski_scene, jet_ski_scene, jet_ski_scene, jet_ski_scene, jet_ski_scene, jet_ski_scene, jet_ski_scene]), \
+			#Round.new(2, 1.4, [fish_scene, enemy_scene, fish_scene, enemy_scene, jet_ski_scene, jet_ski_scene, jet_ski_scene]), \
+			#Round.new(2, 1.3, [fish_scene, fish_scene, fish_scene, fish_scene, jet_ski_scene, jet_ski_scene, jet_ski_scene]), \
+			#Round.new(2, 1.2, [enemy_scene, enemy_scene, enemy_scene, enemy_scene]), \
+			Round.new(2, 1.1, [enemy_scene, fish_scene, enemy_scene, fish_scene]), \
+		] \
+	), \
+	Level.new(load("res://Levels/level2.tscn"), \
+		[ \
+			Round.new(10, 2, [fish_scene, fish_scene, enemy_scene, enemy_scene]), \
+			Round.new(2, 2.1, [fish_scene, fish_scene, enemy_scene, enemy_scene]), \
+			Round.new(2, 2.2, [fish_scene, fish_scene, enemy_scene, enemy_scene]), \
+			Round.new(2, 2.3, [fish_scene, fish_scene, enemy_scene, enemy_scene]), \
+		] \
+	), \
 ]
 
 
 func _ready():
-	map = $GameLayer/TileMap
-	cell_size = map.tile_set.tile_size.x * map.transform.get_scale().x
 	start_game()
 
 func start_game():
@@ -85,13 +87,18 @@ func next_level():
 		print('you have won the game')
 		return
 	current_level = levels[level_index]
-	update_tilemap_sources()
+	if map != null:
+		$GameLayer.remove_child(map)
+		map.queue_free()
+	map = current_level.tile_map.instantiate()
+	$GameLayer.add_child(map)
+	update_nav()
 	update_wall_texture_in_ui()
 	next_round()
 
 func update_wall_texture_in_ui():
 	var atlas_texture = AtlasTexture.new()
-	atlas_texture.atlas = map.tile_set.get_source(get_wall_tilemap_source()).texture
+	atlas_texture.atlas = map.tile_set.get_source(map.wall_source).texture
 	atlas_texture.region = Rect2(4, 4, 24, 24)
 	$UILayer/UIControl.set_wall_texture(atlas_texture)
 
@@ -119,12 +126,12 @@ func start_round():
 func add_enemy():
 	if !game_active: return
 	round_enemy_index += 1
-	if round_enemy_index >= len(current_round.enemies):
+	if round_enemy_index >= total_enemies:
 		$GameLayer/Timers/SpawnTimer.stop()
 		return
 	
 	var enemy = current_round.enemies[round_enemy_index].instantiate()
-	enemy.position = $GameLayer/Start.position
+	enemy.position = map.start_position
 	enemy.number = enemies_spawned
 	$GameLayer/Enemies.add_child(enemy)
 	
@@ -141,42 +148,16 @@ func enemy_killed(enemy: Enemy, reached_end: bool):
 		if lives <= 0:
 			game_over()
 			return
-	if enemies_alive <= 0 && round_enemy_index >= len(current_round.enemies):
+	if enemies_alive <= 0 && round_enemy_index >= total_enemies - 1:
 		next_round()
 	update_ui()
-
-func update_tilemap_sources():
-	tilemap_sources = []
-	for i in range(0, map.tile_set.get_next_source_id()):
-		var source: TileSetSource = map.tile_set.get_source(i)
-		if source != null: 
-			tilemap_sources.insert(i, source)
-
-func is_tilemap_source_id_wall(source_id) -> bool: return is_tilemap_source_wall(tilemap_sources[source_id])
-func is_tilemap_source_wall(source) -> bool: return source != null && source.resource_name.find("Wall") > -1
-
-func get_wall_tilemap_source() -> int:
-	for i in range(0, len(tilemap_sources)):
-		var source = tilemap_sources[i]
-		if source == null: continue
-		if is_tilemap_source_wall(source):
-			return i
-	return -1
-
-func get_walkable_tilemap_source() -> int:
-	for i in range(0, len(tilemap_sources)):
-		var source = tilemap_sources[i]
-		if source == null: continue
-		if !is_tilemap_source_wall(source):
-			return i
-	return -1
 
 func update_nav():
 	var cells = map.get_used_cells(TdEnums.TILEMAP_LAYERS.MAZE)
 	for cell in cells:
 		var cell_pos = Vector2i(cell.x, cell.y)
 		var source_id = map.get_cell_source_id(TdEnums.TILEMAP_LAYERS.MAZE, cell_pos)
-		astar_grid.set_point_solid(cell_pos, is_tilemap_source_id_wall(source_id))
+		astar_grid.set_point_solid(cell_pos, map.wall_source == source_id || map.border_source == source_id)
 	for enemy in $GameLayer/Enemies.get_children():
 		enemy.update_nav()
 	queue_redraw()
@@ -195,11 +176,16 @@ func _input(event):
 		mouse_mode = TdEnums.MOUSE_MODE.FLAME_THROWER
 
 func handle_click(coords: Vector2):
+	var source_id = map.get_cell_source_id(TdEnums.TILEMAP_LAYERS.MAZE, coords)
+	if source_id == map.border_source || source_id == map.start_end_source:
+		return
+	
 	if mouse_mode == TdEnums.MOUSE_MODE.WALL:
-		var is_wall = is_tilemap_source_id_wall(map.get_cell_source_id(TdEnums.TILEMAP_LAYERS.MAZE, coords))
-		var new_source_id = get_walkable_tilemap_source() if is_wall else get_wall_tilemap_source()
+		var is_wall = map.wall_source == source_id
+		var new_source_id = map.walkable_source if is_wall else map.wall_source
 		if !is_wall && !can_navigate_with_change(coords, true):
-			return # Prevent player from blocking path
+			# Prevent player from blocking path
+			return
 		map.set_cell(TdEnums.TILEMAP_LAYERS.MAZE, coords, new_source_id, Vector2i.ZERO)
 		update_nav()
 	
@@ -207,10 +193,11 @@ func handle_click(coords: Vector2):
 	or mouse_mode == TdEnums.MOUSE_MODE.CANNON \
 	or mouse_mode == TdEnums.MOUSE_MODE.FLAME_THROWER:
 		if !can_navigate_with_change(coords, true):
+			# Prevent player from blocking path
 			return
 		
 		# set base tilemap layer as a wall
-		map.set_cell(TdEnums.TILEMAP_LAYERS.MAZE, coords, get_wall_tilemap_source(), Vector2i.ZERO)
+		map.set_cell(TdEnums.TILEMAP_LAYERS.MAZE, coords, map.wall_source, Vector2i.ZERO)
 		var t: Turret = get_selected_turret_scene()
 		if t != null:
 			t.coords = coords
@@ -226,7 +213,7 @@ func get_selected_turret_scene() -> Turret:
 		TdEnums.MOUSE_MODE.CANNON:
 			scene = cannon_scene
 		TdEnums.MOUSE_MODE.FLAME_THROWER:
-			scene =  flame_thrower_scene
+			scene = flame_thrower_scene
 	if scene != null:
 		return scene.instantiate()
 	push_error('Unable to determine selected turret scene from mouse mode $s.' % mouse_mode)
@@ -236,8 +223,8 @@ func can_navigate_with_change(coords: Vector2, is_wall: bool) -> bool:
 	var cell_pos = Vector2i(int(coords.x), int(coords.y))
 	astar_grid.set_point_solid(cell_pos, is_wall)
 	
-	var nav_start = map.local_to_map($GameLayer/Start.position)
-	var nav_end = map.local_to_map($GameLayer/End.position)
+	var nav_start = map.local_to_map(map.start_position)
+	var nav_end = map.local_to_map(map.end_position)
 	var path = astar_grid.get_point_path(nav_start, nav_end)
 	if len(path) > 0 && Vector2i(path[0]) == nav_start:
 		path.remove_at(0)
@@ -251,7 +238,6 @@ func change_mouse_mode(mode: TdEnums.MOUSE_MODE):
 	for turret_button  in $UILayer/UIControl/Panel/MarginContainer/VBoxContainer.get_children():
 		if turret_button is TurretButton:
 			turret_button.focused = turret_button.MOUSE_MODE == mode
-			print(mode, ' == ', turret_button.MOUSE_MODE, ': ', turret_button.focused)
 			turret_button.update()
 
 func game_over():
@@ -269,8 +255,6 @@ func _draw():
 			draw_line(prev, point, path_color, PATH_WIDTH, true)
 			prev = point
 
-func force_draw(): queue_redraw()
-
 func stop_timers():
 	$GameLayer/Timers/SpawnTimer.stop()
 	$GameLayer/Timers/DrawPathsTimer.stop()
@@ -286,5 +270,5 @@ func setup_astar_grid():
 	astar_grid.diagonal_mode = AStarGrid2D.DIAGONAL_MODE_ONLY_IF_NO_OBSTACLES
 	astar_grid.update()
 
-func update_ui():
-	$UILayer/UIControl.update()
+func force_draw(): queue_redraw()
+func update_ui(): $UILayer/UIControl.update()
