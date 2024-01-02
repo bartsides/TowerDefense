@@ -90,12 +90,9 @@ func next_level():
 	next_round()
 
 func update_wall_texture_in_ui():
-	var wall_source_id = get_wall_tilemap_source()
-	var wall_source: TileSetAtlasSource = map.tile_set.get_source(wall_source_id)
-	var texture = wall_source.texture
-	var atlas_texture: AtlasTexture = AtlasTexture.new()
-	atlas_texture.atlas = texture
-	atlas_texture.region = Rect2(0, 0, 32, 32)
+	var atlas_texture = AtlasTexture.new()
+	atlas_texture.atlas = map.tile_set.get_source(get_wall_tilemap_source()).texture
+	atlas_texture.region = Rect2(4, 4, 24, 24)
 	$UILayer/UIControl.set_wall_texture(atlas_texture)
 
 func next_round():
@@ -248,6 +245,14 @@ func can_navigate_with_change(coords: Vector2, is_wall: bool) -> bool:
 	
 	astar_grid.set_point_solid(cell_pos, !is_wall)
 	return result
+
+func change_mouse_mode(mode: TdEnums.MOUSE_MODE):
+	mouse_mode = mode
+	for turret_button  in $UILayer/UIControl/Panel/MarginContainer/VBoxContainer.get_children():
+		if turret_button is TurretButton:
+			turret_button.focused = turret_button.MOUSE_MODE == mode
+			print(mode, ' == ', turret_button.MOUSE_MODE, ': ', turret_button.focused)
+			turret_button.update()
 
 func game_over():
 	$GameLayer/Timers/SpawnTimer.stop()

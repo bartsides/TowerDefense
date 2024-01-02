@@ -8,11 +8,18 @@ signal click(mouse_mode: TdEnums.MOUSE_MODE)
 @export var TEXTURE: Texture = null
 
 var mouse_within = false
+var focused = false
 var rect: NinePatchRect
 var button: TextureButton
+var selected_bg: AtlasTexture
+var unselected_bg: AtlasTexture
 
 func _ready():
 	rect = $NinePatchRect
+	unselected_bg = rect.texture
+	unselected_bg.region.position.x = 0
+	selected_bg = unselected_bg.duplicate(true)
+	selected_bg.region.position.x = 32
 	button = rect.get_node("Button") as TextureButton
 	if TEXTURE != null:
 		set_texture(TEXTURE)
@@ -33,10 +40,10 @@ func mouse_pressed():
 	click.emit(MOUSE_MODE)
 
 func update():
-	if mouse_within or button.button_pressed:
-		rect.texture.region.position.x = 0
+	if mouse_within or focused:
+		rect.texture = selected_bg
 	else:
-		rect.texture.region.position.x = 32
+		rect.texture = unselected_bg
 
 func set_texture(texture):
 	button.texture_normal = texture

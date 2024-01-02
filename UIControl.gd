@@ -1,7 +1,7 @@
 extends Control
 
 var td : TD
-var mouse_mode: TdEnums.MOUSE_MODE = TdEnums.MOUSE_MODE.CANNON
+var selected = false
 
 func _ready():
 	get_tree().get_root().connect("size_changed", resized)
@@ -16,12 +16,13 @@ func connect_buttons():
 			turret_button.connect("click", button_clicked)
 
 func button_clicked(mode: TdEnums.MOUSE_MODE):
-	print('button clicked ', mode)
-	mouse_mode = mode
-	# TODO: Update button pressed values
+	td.change_mouse_mode(mode)
 
 func set_wall_texture(texture: Texture2D):
-	$Panel/MarginContainer/VBoxContainer/WallButton.set_texture(texture)
+	var button = $Panel/MarginContainer/VBoxContainer/WallButton as TurretButton
+	button.set_texture(texture)
+	button.size = Vector2(32, 32)
+	button.position = Vector2(19, 19)
 
 func update():
 	$TopLeftPanel/CenterContainer/VBoxContainer/LivesLabel.text = "Lives: %s" % td.lives
@@ -29,10 +30,6 @@ func update():
 
 func resized():
 	size = get_viewport_rect().size
-
-func set_turret(val):
-	mouse_mode = val
-	td.mouse_mode = mouse_mode
 
 func _unhandled_input(event):
 	print('eating ', event)
