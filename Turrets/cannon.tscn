@@ -53,6 +53,7 @@ DAMAGE = 7.0
 BULLET_SPEED = 150.0
 
 [node name="AnimatedSprite2D" parent="." index="2"]
+texture_filter = 3
 sprite_frames = SubResource("SpriteFrames_h1mtq")
 
 [node name="BulletMarker2D" parent="." index="3"]

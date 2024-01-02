@@ -1,7 +1,63 @@
-[gd_scene load_steps=3 format=3 uid="uid://bytorf21ckj6t"]
+[gd_scene load_steps=11 format=3 uid="uid://bytorf21ckj6t"]
 
 [ext_resource type="PackedScene" uid="uid://dv1qs465qpw2i" path="res://Turrets/turret.tscn" id="1_ytkyn"]
 [ext_resource type="Script" path="res://Turrets/flame_thrower.gd" id="2_pp147"]
+[ext_resource type="Texture2D" uid="uid://cxb0pv4a1hywb" path="res://assets/Fire tank.png" id="3_il1im"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_pjtfi"]
+atlas = ExtResource("3_il1im")
+region = Rect2(32, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ehh3x"]
+atlas = ExtResource("3_il1im")
+region = Rect2(64, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_0pul5"]
+atlas = ExtResource("3_il1im")
+region = Rect2(96, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_jbqne"]
+atlas = ExtResource("3_il1im")
+region = Rect2(128, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_671ks"]
+atlas = ExtResource("3_il1im")
+region = Rect2(160, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_j8b22"]
+atlas = ExtResource("3_il1im")
+region = Rect2(0, 0, 32, 32)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_g3sf4"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_pjtfi")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ehh3x")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_0pul5")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_jbqne")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_671ks")
+}],
+"loop": true,
+"name": &"attack",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_j8b22")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
 
 [node name="Turret" instance=ExtResource("1_ytkyn")]
 script = ExtResource("2_pp147")
@@ -10,3 +66,12 @@ ATTACK_RANGE = 50
 ATTACK_TIME = 0.3
 DAMAGE = 1.0
 BULLET_SPEED = 0.0
+
+[node name="AnimatedSprite2D" parent="." index="2"]
+position = Vector2(9, 0)
+sprite_frames = SubResource("SpriteFrames_g3sf4")
+animation = &"attack"
+frame_progress = 0.649953
+
+[node name="BulletMarker2D" parent="." index="3"]
+position = Vector2(20, -1)
