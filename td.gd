@@ -133,6 +133,7 @@ func enemy_killed(enemy: Enemy, reached_end: bool):
 	enemy.queue_free()
 	enemies_alive -= 1
 	if reached_end:
+		$Sounds/EnemyReachEnd.play()
 		lives -= 1
 		if lives <= 0:
 			game_over()
@@ -238,6 +239,7 @@ func change_mouse_mode(mode: TdEnums.MOUSE_MODE):
 func game_over():
 	$GameLayer/Timers/SpawnTimer.stop()
 	game_active = false
+	$Sounds/GameOver.play()
 	update_ui()
 	print('game over')
 

@@ -34,6 +34,7 @@ region = Rect2(32, 0, 32, 32)
 
 [sub_resource type="SystemFont" id="SystemFont_be1u0"]
 font_names = PackedStringArray("Indie Flower")
+subpixel_positioning = 0
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_dhage"]
 bg_color = Color(0.235294, 0.286275, 0.4, 1)
