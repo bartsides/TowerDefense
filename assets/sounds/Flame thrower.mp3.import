@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://cn6mpkpjryr47"
+path="res://.godot/imported/Flame thrower.mp3-536aad1e4fed393ffc9c39bb8eff6192.mp3str"
+
+[deps]
+
+source_file="res://assets/sounds/Flame thrower.mp3"
+dest_files=["res://.godot/imported/Flame thrower.mp3-536aad1e4fed393ffc9c39bb8eff6192.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

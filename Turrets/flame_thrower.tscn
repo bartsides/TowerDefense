@@ -1,6 +1,8 @@
-[gd_scene load_steps=10 format=3 uid="uid://bytorf21ckj6t"]
+[gd_scene load_steps=12 format=3 uid="uid://bytorf21ckj6t"]
 
 [ext_resource type="PackedScene" uid="uid://dv1qs465qpw2i" path="res://Turrets/turret.tscn" id="1_ytkyn"]
+[ext_resource type="PackedScene" uid="uid://bjalo4lj2w4bx" path="res://Turrets/Projectiles/flame.tscn" id="2_6fupd"]
+[ext_resource type="AudioStream" uid="uid://cn6mpkpjryr47" path="res://assets/sounds/Flame thrower.mp3" id="2_yvuug"]
 [ext_resource type="Texture2D" uid="uid://cxb0pv4a1hywb" path="res://assets/Fire tank.png" id="3_il1im"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_pjtfi"]
@@ -59,9 +61,10 @@ animations = [{
 }]
 
 [node name="FlameThrower" instance=ExtResource("1_ytkyn")]
-ATTACK_TIME = 1.0
 DAMAGE = 3.0
 BULLET_SPEED = 200.0
+PROJECTILE_SCENE = ExtResource("2_6fupd")
+ATTACK_SOUND = ExtResource("2_yvuug")
 
 [node name="AnimatedSprite2D" parent="." index="2"]
 position = Vector2(9, 0)

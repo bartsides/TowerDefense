@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://bp67yv8achrsc"
+path="res://.godot/imported/Electric shot.mp3-5767791a8fd85bd9b646ee1a2416360d.mp3str"
+
+[deps]
+
+source_file="res://assets/sounds/Electric shot.mp3"
+dest_files=["res://.godot/imported/Electric shot.mp3-5767791a8fd85bd9b646ee1a2416360d.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

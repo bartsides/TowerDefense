@@ -9,12 +9,13 @@ class_name Turret
 @export var BULLET_SPEED = 200.0
 @export var SHOW_RANGE = false
 @export var PROJECTILE_SCENE: PackedScene = preload("res://Turrets/Projectiles/bullet.tscn")
+@export var ATTACK_SOUND: AudioStreamMP3 = null
 
 var target_enemy: Enemy = null
 var coords
 var ready_to_fire = false
 var range_thickness = .2
-var projectilesNode
+@onready var projectilesNode = get_node("/root/TD/GameLayer/Projectiles")
 
 enum AIM_STYLES { \
 	FIRST, LAST, \
@@ -24,18 +25,20 @@ enum AIM_STYLES { \
 }
 
 func _ready():
-	projectilesNode = get_node("/root/TD/GameLayer/Projectiles")
+	if ATTACK_SOUND != null:
+		$AttackAudioPlayer2D.stream = ATTACK_SOUND
 	$AttackTimer.wait_time = ATTACK_TIME
 
 func _process(_delta):
 	if ready_to_fire:
 		_target_enemy()
 		if target_enemy != null:
-			ready_to_fire = false
 			$AttackTimer.stop()
+			ready_to_fire = false
+			look_at(target_enemy.position)
 			_attack()
 			$AttackTimer.start()
-	if target_enemy != null:
+	elif target_enemy != null:
 		look_at(target_enemy.position)
 
 func _target_enemy():
@@ -98,6 +101,7 @@ func _attack():
 	projectilesNode.add_child(bullet)
 	bullet.fire()
 	$AnimatedSprite2D.play("attack")
+	$AttackAudioPlayer2D.play()
 
 func _draw():
 	if SHOW_RANGE:
