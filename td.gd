@@ -9,9 +9,12 @@ const SHOW_PATHS = false
 var turret_scene = preload("res://Turrets/turret.tscn")
 var cannon_scene = preload("res://Turrets/cannon.tscn")
 var flame_thrower_scene = preload("res://Turrets/flame_thrower.tscn")
+
 var enemy_scene = preload("res://Enemies/enemy.tscn")
 var fish_scene = preload("res://Enemies/fish.tscn")
 var jet_ski_scene = preload("res://Enemies/jet_ski.tscn")
+
+@onready var turret_tile_map: TileMap = $GameLayer/TurretTileMap
 
 var cell_size = 32
 var path_color = Color.BLACK
@@ -87,6 +90,10 @@ func next_level():
 		print('you have won the game')
 		return
 	current_level = levels[level_index]
+	turret_tile_map.clear_layer(0)
+	for t in $GameLayer/Turrets.get_children():
+		$GameLayer/Turrets.remove_child(t)
+		t.queue_free()
 	if map != null:
 		$GameLayer.remove_child(map)
 		map.queue_free()
@@ -176,33 +183,33 @@ func _input(event):
 		mouse_mode = TdEnums.MOUSE_MODE.FLAME_THROWER
 
 func handle_click(coords: Vector2):
+	if turret_tile_map.get_cell_source_id(0, coords) == 0:
+		# Turret at clicked location
+		return
 	var source_id = map.get_cell_source_id(TdEnums.TILEMAP_LAYERS.MAZE, coords)
-	if source_id == map.border_source || source_id == map.start_end_source:
+	if [map.border_source, map.start_end_source].has(source_id):
 		return
 	
 	if mouse_mode == TdEnums.MOUSE_MODE.WALL:
 		var is_wall = map.wall_source == source_id
-		var new_source_id = map.walkable_source if is_wall else map.wall_source
 		if !is_wall && !can_navigate_with_change(coords, true):
 			# Prevent player from blocking path
 			return
+		var new_source_id = map.walkable_source if is_wall else map.wall_source
 		map.set_cell(TdEnums.TILEMAP_LAYERS.MAZE, coords, new_source_id, Vector2i.ZERO)
 		update_nav()
-	
 	if mouse_mode == TdEnums.MOUSE_MODE.TURRET \
 	or mouse_mode == TdEnums.MOUSE_MODE.CANNON \
 	or mouse_mode == TdEnums.MOUSE_MODE.FLAME_THROWER:
 		if !can_navigate_with_change(coords, true):
 			# Prevent player from blocking path
 			return
-		
-		# set base tilemap layer as a wall
 		map.set_cell(TdEnums.TILEMAP_LAYERS.MAZE, coords, map.wall_source, Vector2i.ZERO)
 		var t: Turret = get_selected_turret_scene()
-		if t != null:
-			t.coords = coords
-			t.position = map.map_to_local(coords)
-			$GameLayer/Turrets.add_child(t)
+		t.coords = coords
+		t.position = map.map_to_local(coords)
+		$GameLayer/Turrets.add_child(t)
+		turret_tile_map.set_cell(0, coords, 0, Vector2i.ZERO)
 		update_nav()
 
 func get_selected_turret_scene() -> Turret:
