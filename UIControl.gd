@@ -19,8 +19,6 @@ func button_clicked(mode: TdEnums.MOUSE_MODE):
 func set_wall_texture(texture: Texture2D):
 	var button = $Panel/MarginContainer/VBoxContainer/WallButton as TurretButton
 	button.set_texture(texture)
-	button.size = Vector2(32, 32)
-	button.position = Vector2(19, 19)
 
 func update():
 	$TopLeftPanel/CenterContainer/VBoxContainer/LivesLabel.text = "Lives: %s" % td.lives

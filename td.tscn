@@ -10,12 +10,6 @@ script = ExtResource("1_nle1t")
 [node name="GameLayer" type="CanvasLayer" parent="."]
 follow_viewport_enabled = true
 
-[node name="Start" type="Marker2D" parent="GameLayer"]
-position = Vector2(-15, -110)
-
-[node name="End" type="Marker2D" parent="GameLayer"]
-position = Vector2(15, 142)
-
 [node name="Camera2D" type="Camera2D" parent="GameLayer"]
 zoom = Vector2(1.7, 1.7)
 script = ExtResource("4_ldriw")

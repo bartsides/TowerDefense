@@ -7,6 +7,7 @@ class_name LevelTileMap
 
 var start_position: Vector2
 var end_position: Vector2
+
 var tilemap_sources: Array[TileSetSource] = []
 var walkable_source: int
 var wall_source: int

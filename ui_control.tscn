@@ -97,6 +97,7 @@ layout_mode = 2
 
 [node name="WallButton" parent="Panel/MarginContainer/VBoxContainer" instance=ExtResource("7_onvll")]
 layout_mode = 2
+PRICE = 10
 
 [node name="TurretButton" parent="Panel/MarginContainer/VBoxContainer" instance=ExtResource("7_onvll")]
 layout_mode = 2

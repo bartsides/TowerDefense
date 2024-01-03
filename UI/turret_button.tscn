@@ -41,12 +41,12 @@ patch_margin_bottom = 7
 
 [node name="Button" type="TextureButton" parent="NinePatchRect"]
 texture_filter = 3
-custom_minimum_size = Vector2(64, 64)
+custom_minimum_size = Vector2(50, 50)
 layout_mode = 2
-offset_left = 3.0
-offset_top = 3.0
-offset_right = 67.0
-offset_bottom = 67.0
+offset_left = 10.0
+offset_top = 10.0
+offset_right = 60.0
+offset_bottom = 60.0
 theme = ExtResource("1_qvkb2")
 theme_type_variation = &"ButtonNinePatchRect"
 toggle_mode = true

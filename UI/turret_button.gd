@@ -5,6 +5,7 @@ class_name TurretButton
 signal click(mouse_mode: TdEnums.MOUSE_MODE)
 
 @export var MOUSE_MODE: TdEnums.MOUSE_MODE
+@export var PRICE: int = 100
 @export var TEXTURE: Texture = null
 
 var mouse_within = false
@@ -15,6 +16,7 @@ var selected_bg: AtlasTexture
 var unselected_bg: AtlasTexture
 
 func _ready():
+	$PriceLabel.text = str(PRICE)
 	rect = $NinePatchRect
 	unselected_bg = rect.texture
 	unselected_bg.region.position.x = 0

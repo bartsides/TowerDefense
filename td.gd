@@ -99,7 +99,7 @@ func next_level():
 func update_wall_texture_in_ui():
 	var atlas_texture = AtlasTexture.new()
 	atlas_texture.atlas = map.tile_set.get_source(map.wall_source).texture
-	atlas_texture.region = Rect2(4, 4, 24, 24)
+	atlas_texture.region = Rect2(0, 0, 32, 32)
 	$UILayer/UIControl.set_wall_texture(atlas_texture)
 
 func next_round():
@@ -228,10 +228,9 @@ func can_navigate_with_change(coords: Vector2, is_wall: bool) -> bool:
 	var path = astar_grid.get_point_path(nav_start, nav_end)
 	if len(path) > 0 && Vector2i(path[0]) == nav_start:
 		path.remove_at(0)
-	var result = len(path) > 0
 	
 	astar_grid.set_point_solid(cell_pos, !is_wall)
-	return result
+	return len(path) > 0
 
 func change_mouse_mode(mode: TdEnums.MOUSE_MODE):
 	mouse_mode = mode
