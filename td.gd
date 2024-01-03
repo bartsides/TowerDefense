@@ -187,7 +187,7 @@ func handle_click(coords: Vector2):
 		# Turret at clicked location
 		return
 	var source_id = map.get_cell_source_id(TdEnums.TILEMAP_LAYERS.MAZE, coords)
-	if [map.border_source, map.start_end_source].has(source_id):
+	if [-1, map.border_source, map.start_end_source].has(source_id):
 		return
 	
 	if mouse_mode == TdEnums.MOUSE_MODE.WALL:
