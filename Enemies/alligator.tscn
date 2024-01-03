@@ -57,4 +57,4 @@ animations = [{
 
 [node name="AnimatedSprite2D" parent="CollisionShape2D" index="0"]
 sprite_frames = SubResource("SpriteFrames_hwepa")
-frame_progress = 0.287049
+frame_progress = 0.216637

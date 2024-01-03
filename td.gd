@@ -9,6 +9,7 @@ const SHOW_PATHS = false
 var turret_scene = preload("res://Turrets/turret.tscn")
 var cannon_scene = preload("res://Turrets/cannon.tscn")
 var flame_thrower_scene = preload("res://Turrets/flame_thrower.tscn")
+var ballista_scene = preload("res://Turrets/ballista.tscn")
 
 var enemy_scene = preload("res://Enemies/enemy.tscn")
 var alligator_scene = preload("res://Enemies/alligator.tscn")
@@ -37,7 +38,7 @@ var round_enemy: Enemy
 var levels: Array[Level] = [ \
 	Level.new(load("res://Levels/level1.tscn"), \
 		[ \
-			Round.new(10, .1, [alligator_scene, alligator_scene, jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,]), \
+			Round.new(2, .1, [alligator_scene, alligator_scene, jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,]), \
 			#Round.new(2, .3, [enemy_scene, fish_scene, enemy_scene, fish_scene, jet_ski_scene, jet_ski_scene, jet_ski_scene]), \
 			#Round.new(2, .5, [jet_ski_scene, jet_ski_scene, jet_ski_scene, jet_ski_scene, jet_ski_scene, jet_ski_scene, jet_ski_scene]), \
 			#Round.new(2, 1.4, [fish_scene, enemy_scene, fish_scene, enemy_scene, jet_ski_scene, jet_ski_scene, jet_ski_scene]), \
@@ -48,7 +49,7 @@ var levels: Array[Level] = [ \
 	), \
 	Level.new(load("res://Levels/level2.tscn"), \
 		[ \
-			Round.new(10, 2, [fish_scene, fish_scene, enemy_scene, enemy_scene]), \
+			Round.new(2, 2, [fish_scene, fish_scene, enemy_scene, enemy_scene]), \
 			Round.new(2, 2.1, [fish_scene, fish_scene, enemy_scene, enemy_scene]), \
 			Round.new(2, 2.2, [fish_scene, fish_scene, enemy_scene, enemy_scene]), \
 			Round.new(2, 2.3, [fish_scene, fish_scene, enemy_scene, enemy_scene]), \
@@ -63,7 +64,7 @@ func _ready():
 func start_game():
 	setup_astar_grid()
 	next_level()
-	add_debug_turrets()
+	#add_debug_turrets()
 
 func add_debug_turrets():
 	var prev_mouse_mode = mouse_mode
@@ -182,6 +183,8 @@ func _input(event):
 		mouse_mode = TdEnums.MOUSE_MODE.CANNON
 	elif event.is_action_pressed("4"):
 		mouse_mode = TdEnums.MOUSE_MODE.FLAME_THROWER
+	elif event.is_action_pressed("5"):
+		mouse_mode = TdEnums.MOUSE_MODE.BALLISTA
 
 func handle_click(coords: Vector2):
 	if turret_tile_map.get_cell_source_id(0, coords) == 0:
@@ -201,7 +204,8 @@ func handle_click(coords: Vector2):
 		update_nav()
 	if mouse_mode == TdEnums.MOUSE_MODE.TURRET \
 	or mouse_mode == TdEnums.MOUSE_MODE.CANNON \
-	or mouse_mode == TdEnums.MOUSE_MODE.FLAME_THROWER:
+	or mouse_mode == TdEnums.MOUSE_MODE.FLAME_THROWER \
+	or mouse_mode == TdEnums.MOUSE_MODE.BALLISTA:
 		if !can_navigate_with_change(coords, true):
 			# Prevent player from blocking path
 			return
@@ -222,6 +226,8 @@ func get_selected_turret_scene() -> Turret:
 			scene = cannon_scene
 		TdEnums.MOUSE_MODE.FLAME_THROWER:
 			scene = flame_thrower_scene
+		TdEnums.MOUSE_MODE.BALLISTA:
+			scene = ballista_scene
 	if scene != null:
 		return scene.instantiate()
 	push_error('Unable to determine selected turret scene from mouse mode $s.' % mouse_mode)

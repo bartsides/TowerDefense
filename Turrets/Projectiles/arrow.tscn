@@ -1,0 +1,40 @@
+[gd_scene load_steps=6 format=3 uid="uid://cjvoalj1n7myv"]
+
+[ext_resource type="PackedScene" uid="uid://16wea2ohr4ub" path="res://Turrets/Projectiles/bullet.tscn" id="1_e7ma2"]
+[ext_resource type="Texture2D" uid="uid://8skxr2tuupj1" path="res://assets/Bow.png" id="2_bam3c"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_jj5h6"]
+atlas = ExtResource("2_bam3c")
+region = Rect2(160, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ink1b"]
+atlas = ExtResource("2_bam3c")
+region = Rect2(160, 0, 32, 32)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_g8xsw"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_jj5h6")
+}],
+"loop": true,
+"name": &"death",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ink1b")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[node name="Arrow" instance=ExtResource("1_e7ma2")]
+LIFESPAN = 10.0
+
+[node name="CollisionShape2D" parent="." index="0"]
+position = Vector2(1.5, -1.51992e-05)
+
+[node name="AnimatedSprite2D" parent="." index="2"]
+sprite_frames = SubResource("SpriteFrames_g8xsw")

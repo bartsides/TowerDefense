@@ -8,11 +8,10 @@ class_name Turret
 @export var DAMAGE = 3.0
 @export var BULLET_SPEED = 200.0
 @export var SHOW_RANGE = false
+@export var PROJECTILE_SCENE: PackedScene = preload("res://Turrets/Projectiles/bullet.tscn")
 
-var bullet_scene = preload("res://Turrets/Projectiles/bullet.tscn")
 var target_enemy: Enemy = null
 var coords
-var sprite: AnimatedSprite2D
 var ready_to_fire = false
 var range_thickness = .2
 var projectilesNode
@@ -26,7 +25,6 @@ enum AIM_STYLES { \
 
 func _ready():
 	projectilesNode = get_node("/root/TD/GameLayer/Projectiles")
-	sprite = $AnimatedSprite2D
 	$AttackTimer.wait_time = ATTACK_TIME
 
 func _process(_delta):
@@ -89,9 +87,9 @@ func _target_enemy():
 		target_enemy = selected_enemy
 
 func _attack():
-	if target_enemy == null:
+	if target_enemy == null or PROJECTILE_SCENE == null:
 		return
-	var bullet = bullet_scene.instantiate()
+	var bullet = PROJECTILE_SCENE.instantiate()
 	bullet.position = to_global($BulletMarker2D.position)
 	bullet.damage = DAMAGE
 	if bullet.has_method("apply_central_force"):

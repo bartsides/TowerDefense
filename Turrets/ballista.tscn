@@ -1,0 +1,68 @@
+[gd_scene load_steps=10 format=3 uid="uid://by5mnladfc756"]
+
+[ext_resource type="PackedScene" uid="uid://dv1qs465qpw2i" path="res://Turrets/turret.tscn" id="1_ktfj8"]
+[ext_resource type="PackedScene" uid="uid://cjvoalj1n7myv" path="res://Turrets/Projectiles/arrow.tscn" id="2_ed2tj"]
+[ext_resource type="Texture2D" uid="uid://8skxr2tuupj1" path="res://assets/Bow.png" id="2_wv1qd"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_lifnk"]
+atlas = ExtResource("2_wv1qd")
+region = Rect2(32, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_a55rr"]
+atlas = ExtResource("2_wv1qd")
+region = Rect2(64, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_68p5h"]
+atlas = ExtResource("2_wv1qd")
+region = Rect2(96, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_6wc8d"]
+atlas = ExtResource("2_wv1qd")
+region = Rect2(128, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_g84b6"]
+atlas = ExtResource("2_wv1qd")
+region = Rect2(0, 0, 32, 32)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_8d5p5"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_lifnk")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_a55rr")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_68p5h")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_6wc8d")
+}],
+"loop": true,
+"name": &"attack",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_g84b6")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[node name="Ballista" instance=ExtResource("1_ktfj8")]
+ATTACK_RANGE = 300
+ATTACK_TIME = 0.6
+DAMAGE = 8.0
+BULLET_SPEED = 160.0
+PROJECTILE_SCENE = ExtResource("2_ed2tj")
+
+[node name="AnimatedSprite2D" parent="." index="2"]
+sprite_frames = SubResource("SpriteFrames_8d5p5")
+animation = &"attack"
+frame_progress = 0.793945
+
+[node name="BulletMarker2D" parent="." index="3"]
+position = Vector2(13, 0)

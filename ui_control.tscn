@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=3 uid="uid://cnat1ck7efpht"]
+[gd_scene load_steps=13 format=3 uid="uid://cnat1ck7efpht"]
 
 [ext_resource type="Script" path="res://UIControl.gd" id="1_l8s3q"]
 [ext_resource type="Theme" uid="uid://e6e5pfjp1lkf" path="res://Themes/ui.tres" id="2_4am6b"]
@@ -6,6 +6,7 @@
 [ext_resource type="Texture2D" uid="uid://chpea5i20id5" path="res://assets/Cannon1.png" id="4_58uoh"]
 [ext_resource type="Texture2D" uid="uid://xjgcabq3fl3l" path="res://assets/Flamethrow.png" id="5_5vnle"]
 [ext_resource type="PackedScene" uid="uid://dennemnql8fa0" path="res://UI/turret_button.tscn" id="7_onvll"]
+[ext_resource type="Texture2D" uid="uid://8skxr2tuupj1" path="res://assets/Bow.png" id="7_yjmhc"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_q7uk0"]
 bg_color = Color(0.235294, 0.286275, 0.4, 1)
@@ -26,6 +27,10 @@ region = Rect2(96, 0, 32, 32)
 [sub_resource type="AtlasTexture" id="AtlasTexture_867ya"]
 atlas = SubResource("AtlasTexture_0rvy6")
 region = Rect2(0, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ry3js"]
+atlas = ExtResource("7_yjmhc")
+region = Rect2(32, 0, 32, 32)
 
 [node name="UIControl" type="Control"]
 layout_mode = 3
@@ -113,3 +118,8 @@ TEXTURE = SubResource("AtlasTexture_lx86f")
 layout_mode = 2
 MOUSE_MODE = 3
 TEXTURE = SubResource("AtlasTexture_867ya")
+
+[node name="BallistaButton" parent="Panel/MarginContainer/VBoxContainer" instance=ExtResource("7_onvll")]
+layout_mode = 2
+MOUSE_MODE = 4
+TEXTURE = SubResource("AtlasTexture_ry3js")

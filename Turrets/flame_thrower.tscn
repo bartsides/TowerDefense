@@ -1,7 +1,6 @@
-[gd_scene load_steps=11 format=3 uid="uid://bytorf21ckj6t"]
+[gd_scene load_steps=10 format=3 uid="uid://bytorf21ckj6t"]
 
 [ext_resource type="PackedScene" uid="uid://dv1qs465qpw2i" path="res://Turrets/turret.tscn" id="1_ytkyn"]
-[ext_resource type="Script" path="res://Turrets/flame_thrower.gd" id="2_pp147"]
 [ext_resource type="Texture2D" uid="uid://cxb0pv4a1hywb" path="res://assets/Fire tank.png" id="3_il1im"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_pjtfi"]
@@ -59,13 +58,10 @@ animations = [{
 "speed": 5.0
 }]
 
-[node name="Turret" instance=ExtResource("1_ytkyn")]
-script = ExtResource("2_pp147")
-AIM_STYLE = 2
-ATTACK_RANGE = 50
-ATTACK_TIME = 0.3
-DAMAGE = 1.0
-BULLET_SPEED = 0.0
+[node name="FlameThrower" instance=ExtResource("1_ytkyn")]
+ATTACK_TIME = 1.0
+DAMAGE = 3.0
+BULLET_SPEED = 200.0
 
 [node name="AnimatedSprite2D" parent="." index="2"]
 position = Vector2(9, 0)
@@ -74,4 +70,4 @@ animation = &"attack"
 frame_progress = 0.649953
 
 [node name="BulletMarker2D" parent="." index="3"]
-position = Vector2(20, -1)
+position = Vector2(16, 0)
