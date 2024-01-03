@@ -17,7 +17,7 @@ var start_end_source: int
 func _ready():
 	update_tilemap_sources()
 	set_cell(TdEnums.TILEMAP_LAYERS.MAZE, START, start_end_source, Vector2i.ZERO)
-	set_cell(TdEnums.TILEMAP_LAYERS.MAZE, END, start_end_source, Vector2i.ZERO)
+	set_cell(TdEnums.TILEMAP_LAYERS.MAZE, END, start_end_source, Vector2i(9, 0))
 	start_position = map_to_local(START)
 	end_position = map_to_local(END)
 	
