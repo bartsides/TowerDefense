@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=3 uid="uid://cnat1ck7efpht"]
+[gd_scene load_steps=19 format=3 uid="uid://cnat1ck7efpht"]
 
 [ext_resource type="Script" path="res://UIControl.gd" id="1_l8s3q"]
 [ext_resource type="Theme" uid="uid://e6e5pfjp1lkf" path="res://Themes/ui.tres" id="2_4am6b"]
@@ -32,6 +32,89 @@ region = Rect2(0, 0, 32, 32)
 atlas = ExtResource("7_yjmhc")
 region = Rect2(32, 0, 32, 32)
 
+[sub_resource type="SystemFont" id="SystemFont_be1u0"]
+font_names = PackedStringArray("Indie Flower")
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_dhage"]
+bg_color = Color(0.235294, 0.286275, 0.4, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0, 0.129412, 0.101961, 1)
+border_blend = true
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+shadow_color = Color(0, 0, 0, 0.129412)
+shadow_size = 2
+shadow_offset = Vector2(2, 2)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_3p6t1"]
+bg_color = Color(0.235294, 0.286275, 0.4, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0, 0.929412, 0.792157, 1)
+border_blend = true
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+shadow_color = Color(0, 0, 0, 0.129412)
+shadow_size = 2
+shadow_offset = Vector2(2, 2)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_uselw"]
+bg_color = Color(0.235294, 0.286275, 0.4, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0, 0.929412, 0.792157, 1)
+border_blend = true
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+shadow_color = Color(0, 0, 0, 0.129412)
+shadow_size = 2
+shadow_offset = Vector2(2, 2)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_3bu75"]
+bg_color = Color(0.235294, 0.286275, 0.4, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0, 0, 0, 1)
+border_blend = true
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+shadow_color = Color(0, 0, 0, 0.129412)
+shadow_size = 2
+shadow_offset = Vector2(2, 2)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_vhwne"]
+bg_color = Color(0.235294, 0.286275, 0.4, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0, 0.929412, 0.792157, 1)
+border_blend = true
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+shadow_color = Color(0, 0, 0, 0.129412)
+shadow_size = 2
+shadow_offset = Vector2(2, 2)
+
 [node name="UIControl" type="Control"]
 layout_mode = 3
 anchors_preset = 0
@@ -64,7 +147,7 @@ text = "Lives: "
 layout_mode = 2
 text = "Enemies:        "
 
-[node name="Panel" type="Panel" parent="."]
+[node name="RightSidebar" type="Panel" parent="."]
 custom_minimum_size = Vector2(74, 0)
 layout_mode = 1
 anchors_preset = 11
@@ -80,7 +163,7 @@ grow_vertical = 2
 theme = ExtResource("2_4am6b")
 theme_override_styles/panel = SubResource("StyleBoxFlat_q7uk0")
 
-[node name="MarginContainer" type="MarginContainer" parent="Panel"]
+[node name="MarginContainer" type="MarginContainer" parent="RightSidebar"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -92,34 +175,65 @@ theme_override_constants/margin_top = 5
 theme_override_constants/margin_right = 5
 theme_override_constants/margin_bottom = 5
 
-[node name="VBoxContainer" type="VBoxContainer" parent="Panel/MarginContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="RightSidebar/MarginContainer"]
 layout_mode = 2
 mouse_filter = 0
 theme_override_constants/separation = 15
 
-[node name="BoxContainer" type="BoxContainer" parent="Panel/MarginContainer/VBoxContainer"]
+[node name="BoxContainer" type="BoxContainer" parent="RightSidebar/MarginContainer/VBoxContainer"]
 layout_mode = 2
 
-[node name="WallButton" parent="Panel/MarginContainer/VBoxContainer" instance=ExtResource("7_onvll")]
+[node name="WallButton" parent="RightSidebar/MarginContainer/VBoxContainer" instance=ExtResource("7_onvll")]
 layout_mode = 2
 PRICE = 10
 
-[node name="TurretButton" parent="Panel/MarginContainer/VBoxContainer" instance=ExtResource("7_onvll")]
+[node name="TurretButton" parent="RightSidebar/MarginContainer/VBoxContainer" instance=ExtResource("7_onvll")]
 layout_mode = 2
 MOUSE_MODE = 1
 TEXTURE = ExtResource("3_7x5wo")
 
-[node name="CannonButton" parent="Panel/MarginContainer/VBoxContainer" instance=ExtResource("7_onvll")]
+[node name="CannonButton" parent="RightSidebar/MarginContainer/VBoxContainer" instance=ExtResource("7_onvll")]
 layout_mode = 2
 MOUSE_MODE = 2
 TEXTURE = SubResource("AtlasTexture_lx86f")
 
-[node name="FlamethrowerButton" parent="Panel/MarginContainer/VBoxContainer" instance=ExtResource("7_onvll")]
+[node name="FlamethrowerButton" parent="RightSidebar/MarginContainer/VBoxContainer" instance=ExtResource("7_onvll")]
 layout_mode = 2
 MOUSE_MODE = 3
 TEXTURE = SubResource("AtlasTexture_867ya")
 
-[node name="BallistaButton" parent="Panel/MarginContainer/VBoxContainer" instance=ExtResource("7_onvll")]
+[node name="BallistaButton" parent="RightSidebar/MarginContainer/VBoxContainer" instance=ExtResource("7_onvll")]
 layout_mode = 2
 MOUSE_MODE = 4
 TEXTURE = SubResource("AtlasTexture_ry3js")
+
+[node name="StartButton" type="Button" parent="."]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -332.0
+offset_top = -114.0
+offset_right = -128.0
+offset_bottom = -39.0
+grow_horizontal = 0
+grow_vertical = 0
+theme = ExtResource("2_4am6b")
+theme_override_colors/font_color = Color(0.823529, 0.823529, 0.823529, 1)
+theme_override_colors/font_pressed_color = Color(0, 0.929412, 0.792157, 1)
+theme_override_colors/font_hover_color = Color(0, 0.929412, 0.792157, 1)
+theme_override_colors/font_focus_color = Color(0, 0.929412, 0.792157, 1)
+theme_override_colors/font_hover_pressed_color = Color(0, 0.929412, 0.792157, 1)
+theme_override_colors/font_disabled_color = Color(0.129412, 0.129412, 0.129412, 1)
+theme_override_fonts/font = SubResource("SystemFont_be1u0")
+theme_override_font_sizes/font_size = 48
+theme_override_styles/normal = SubResource("StyleBoxFlat_dhage")
+theme_override_styles/hover = SubResource("StyleBoxFlat_3p6t1")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_uselw")
+theme_override_styles/disabled = SubResource("StyleBoxFlat_3bu75")
+theme_override_styles/focus = SubResource("StyleBoxFlat_vhwne")
+text = "Start"
+
+[connection signal="pressed" from="StartButton" to="." method="_start_level"]

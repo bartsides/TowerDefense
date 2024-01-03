@@ -10,19 +10,17 @@ signal click(mouse_mode: TdEnums.MOUSE_MODE)
 
 var mouse_within = false
 var focused = false
-var rect: NinePatchRect
 var button: TextureButton
 var selected_bg: AtlasTexture
 var unselected_bg: AtlasTexture
 
 func _ready():
 	$PriceLabel.text = str(PRICE)
-	rect = $NinePatchRect
-	unselected_bg = rect.texture
+	unselected_bg = $NinePatchRect.texture
 	unselected_bg.region.position.x = 0
 	selected_bg = unselected_bg.duplicate(true)
 	selected_bg.region.position.x = 32
-	button = rect.get_node("Button") as TextureButton
+	button = $NinePatchRect.get_node("Button") as TextureButton
 	if TEXTURE != null:
 		set_texture(TEXTURE)
 	button.connect("mouse_entered", mouse_entered)
@@ -42,10 +40,7 @@ func mouse_pressed():
 	click.emit(MOUSE_MODE)
 
 func update():
-	if mouse_within or focused:
-		rect.texture = selected_bg
-	else:
-		rect.texture = unselected_bg
+	$NinePatchRect.texture = selected_bg if mouse_within or focused else unselected_bg
 
 func set_texture(texture):
 	button.texture_normal = texture

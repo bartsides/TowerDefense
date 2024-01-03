@@ -66,24 +66,6 @@ func start_game():
 	next_level()
 	#add_debug_turrets()
 
-func add_debug_turrets():
-	var prev_mouse_mode = mouse_mode
-	mouse_mode = TdEnums.MOUSE_MODE.TURRET
-	for coords in [Vector2(0, -1), Vector2(0, 3)]:
-		handle_click(coords)
-	mouse_mode = TdEnums.MOUSE_MODE.CANNON
-	for coords in [Vector2(-2, 1)]:
-		handle_click(coords)
-	mouse_mode = TdEnums.MOUSE_MODE.FLAME_THROWER
-	for coords in [Vector2(-3, -1)]:
-		handle_click(coords)
-	mouse_mode = prev_mouse_mode
-
-func _process(_delta):
-	if !game_active: return
-	if lives <= 0:
-		game_over()
-
 func next_level():
 	stop_timers()
 	level_index += 1
@@ -103,13 +85,11 @@ func next_level():
 	$GameLayer.add_child(map)
 	update_nav()
 	update_wall_texture_in_ui()
-	next_round()
+	$UILayer/UIControl.show_start_level(true)
 
-func update_wall_texture_in_ui():
-	var atlas_texture = AtlasTexture.new()
-	atlas_texture.atlas = map.tile_set.get_source(map.wall_source).texture
-	atlas_texture.region = Rect2(0, 0, 32, 32)
-	$UILayer/UIControl.set_wall_texture(atlas_texture)
+func start_level():
+	$UILayer/UIControl.show_start_level(false)
+	next_round()
 
 func next_round():
 	stop_timers()
@@ -171,11 +151,16 @@ func update_nav():
 		enemy.update_nav()
 	queue_redraw()
 
+func update_wall_texture_in_ui():
+	var atlas_texture = AtlasTexture.new()
+	atlas_texture.atlas = map.tile_set.get_source(map.wall_source).texture
+	atlas_texture.region = Rect2(0, 0, 32, 32)
+	$UILayer/UIControl.set_wall_texture(atlas_texture)
+
 func _input(event):
 	if event.is_action_pressed("mouse_click"):
-		var coords = map.local_to_map(map.to_local(get_global_mouse_position()))
-		handle_click(coords)
-	elif event.is_action_pressed("1"):
+		handle_click(map.local_to_map(map.to_local(get_global_mouse_position())))
+	if event.is_action_pressed("1"):
 		mouse_mode = TdEnums.MOUSE_MODE.WALL
 	elif event.is_action_pressed("2"):
 		mouse_mode = TdEnums.MOUSE_MODE.TURRET
@@ -248,10 +233,7 @@ func can_navigate_with_change(coords: Vector2, is_wall: bool) -> bool:
 
 func change_mouse_mode(mode: TdEnums.MOUSE_MODE):
 	mouse_mode = mode
-	for turret_button  in $UILayer/UIControl/Panel/MarginContainer/VBoxContainer.get_children():
-		if turret_button is TurretButton:
-			turret_button.focused = turret_button.MOUSE_MODE == mode
-			turret_button.update()
+	$UILayer/UIControl.update_mouse_mode(mode)
 
 func game_over():
 	$GameLayer/Timers/SpawnTimer.stop()
@@ -285,3 +267,16 @@ func setup_astar_grid():
 
 func force_draw(): queue_redraw()
 func update_ui(): $UILayer/UIControl.update()
+
+func add_debug_turrets():
+	var prev_mouse_mode = mouse_mode
+	mouse_mode = TdEnums.MOUSE_MODE.TURRET
+	for coords in [Vector2(0, -1), Vector2(0, 3)]:
+		handle_click(coords)
+	mouse_mode = TdEnums.MOUSE_MODE.CANNON
+	for coords in [Vector2(-2, 1)]:
+		handle_click(coords)
+	mouse_mode = TdEnums.MOUSE_MODE.FLAME_THROWER
+	for coords in [Vector2(-3, -1)]:
+		handle_click(coords)
+	mouse_mode = prev_mouse_mode

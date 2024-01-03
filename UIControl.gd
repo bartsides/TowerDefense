@@ -9,7 +9,7 @@ func _ready():
 	update()
 
 func connect_buttons():
-	for turret_button in $Panel/MarginContainer/VBoxContainer.get_children():
+	for turret_button in $RightSidebar/MarginContainer/VBoxContainer.get_children():
 		if turret_button is TurretButton:
 			turret_button.connect("click", button_clicked)
 
@@ -17,9 +17,21 @@ func button_clicked(mode: TdEnums.MOUSE_MODE):
 	td.change_mouse_mode(mode)
 
 func set_wall_texture(texture: Texture2D):
-	var button = $Panel/MarginContainer/VBoxContainer/WallButton as TurretButton
+	var button = $RightSidebar/MarginContainer/VBoxContainer/WallButton as TurretButton
 	button.set_texture(texture)
 
 func update():
 	$TopLeftPanel/CenterContainer/VBoxContainer/LivesLabel.text = "Lives: %s" % td.lives
 	$TopLeftPanel/CenterContainer/VBoxContainer/EnemiesLabel.text = "Enemies: %s/%s" % [td.enemies_alive, td.total_enemies]
+
+func update_mouse_mode(mode: TdEnums.MOUSE_MODE):
+	for turret_button in $RightSidebar/MarginContainer/VBoxContainer.get_children():
+		if turret_button is TurretButton:
+			turret_button.focused = turret_button.MOUSE_MODE == mode
+			turret_button.update()
+
+func _start_level():
+	td.start_level()
+
+func show_start_level(show_start: bool):
+	$StartButton.visible = show_start
