@@ -11,6 +11,7 @@ var cannon_scene = preload("res://Turrets/cannon.tscn")
 var flame_thrower_scene = preload("res://Turrets/flame_thrower.tscn")
 
 var enemy_scene = preload("res://Enemies/enemy.tscn")
+var alligator_scene = preload("res://Enemies/alligator.tscn")
 var fish_scene = preload("res://Enemies/fish.tscn")
 var jet_ski_scene = preload("res://Enemies/jet_ski.tscn")
 
@@ -36,7 +37,7 @@ var round_enemy: Enemy
 var levels: Array[Level] = [ \
 	Level.new(load("res://Levels/level1.tscn"), \
 		[ \
-			#Round.new(10, .1, [jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,]), \
+			Round.new(10, .1, [alligator_scene, alligator_scene, jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,]), \
 			#Round.new(2, .3, [enemy_scene, fish_scene, enemy_scene, fish_scene, jet_ski_scene, jet_ski_scene, jet_ski_scene]), \
 			#Round.new(2, .5, [jet_ski_scene, jet_ski_scene, jet_ski_scene, jet_ski_scene, jet_ski_scene, jet_ski_scene, jet_ski_scene]), \
 			#Round.new(2, 1.4, [fish_scene, enemy_scene, fish_scene, enemy_scene, jet_ski_scene, jet_ski_scene, jet_ski_scene]), \
