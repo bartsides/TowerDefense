@@ -59,6 +59,7 @@ var levels: Array[Level] = [ \
 
 
 func _ready():
+	change_mouse_mode(TdEnums.MOUSE_MODE.WALL)
 	start_game()
 
 func start_game():
@@ -159,18 +160,19 @@ func update_wall_texture_in_ui():
 	$UILayer/UIControl.set_wall_texture(atlas_texture)
 
 func _input(event):
+	if event.is_action_pressed("1"):
+		change_mouse_mode(TdEnums.MOUSE_MODE.WALL)
+	elif event.is_action_pressed("2"):
+		change_mouse_mode(TdEnums.MOUSE_MODE.TURRET)
+	elif event.is_action_pressed("3"):
+		change_mouse_mode(TdEnums.MOUSE_MODE.CANNON)
+	elif event.is_action_pressed("4"):
+		change_mouse_mode(TdEnums.MOUSE_MODE.FLAME_THROWER)
+	elif event.is_action_pressed("5"):
+		change_mouse_mode(TdEnums.MOUSE_MODE.BALLISTA)
+	
 	if event.is_action_pressed("mouse_click"):
 		handle_click(map.local_to_map(map.to_local(get_global_mouse_position())))
-	if event.is_action_pressed("1"):
-		mouse_mode = TdEnums.MOUSE_MODE.WALL
-	elif event.is_action_pressed("2"):
-		mouse_mode = TdEnums.MOUSE_MODE.TURRET
-	elif event.is_action_pressed("3"):
-		mouse_mode = TdEnums.MOUSE_MODE.CANNON
-	elif event.is_action_pressed("4"):
-		mouse_mode = TdEnums.MOUSE_MODE.FLAME_THROWER
-	elif event.is_action_pressed("5"):
-		mouse_mode = TdEnums.MOUSE_MODE.BALLISTA
 
 func handle_click(coords: Vector2):
 	if turret_tile_map.get_cell_source_id(0, coords) == 0:
