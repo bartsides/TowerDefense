@@ -1,6 +1,6 @@
 [gd_scene load_steps=19 format=3 uid="uid://cnat1ck7efpht"]
 
-[ext_resource type="Script" path="res://UIControl.gd" id="1_l8s3q"]
+[ext_resource type="Script" path="res://UIControl.gd" id="1_hpe0u"]
 [ext_resource type="Theme" uid="uid://e6e5pfjp1lkf" path="res://Themes/ui.tres" id="2_4am6b"]
 [ext_resource type="Texture2D" uid="uid://cfwxxcc55ap66" path="res://assets/turret.png" id="3_7x5wo"]
 [ext_resource type="Texture2D" uid="uid://chpea5i20id5" path="res://assets/Cannon1.png" id="4_58uoh"]
@@ -124,7 +124,7 @@ offset_bottom = 648.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 mouse_filter = 1
-script = ExtResource("1_l8s3q")
+script = ExtResource("1_hpe0u")
 
 [node name="TopLeftPanel" type="Panel" parent="."]
 layout_mode = 1
