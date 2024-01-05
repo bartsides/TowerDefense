@@ -123,6 +123,7 @@ offset_right = 1151.0
 offset_bottom = 648.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
+mouse_filter = 1
 script = ExtResource("1_l8s3q")
 
 [node name="TopLeftPanel" type="Panel" parent="."]
@@ -131,6 +132,7 @@ offset_left = 6.0
 offset_top = 6.0
 offset_right = 159.0
 offset_bottom = 67.0
+mouse_filter = 1
 
 [node name="CenterContainer" type="CenterContainer" parent="TopLeftPanel"]
 layout_mode = 1

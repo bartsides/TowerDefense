@@ -103,7 +103,6 @@ func next_round():
 	total_enemies = len(current_round.enemies)
 	$GameLayer/Timers/StartRoundTimer.wait_time = current_round.wait_time
 	$GameLayer/Timers/StartRoundTimer.start()
-	print('waiting ', current_round.wait_time, 's')
 	$GameLayer/Timers/SpawnTimer.wait_time = current_round.spawn_time
 	update_nav()
 	update_ui()
@@ -159,22 +158,8 @@ func update_wall_texture_in_ui():
 	atlas_texture.region = Rect2(0, 0, 32, 32)
 	$UILayer/UIControl.set_wall_texture(atlas_texture)
 
-func _input(event):
-	if event.is_action_pressed("1"):
-		change_mouse_mode(TdEnums.MOUSE_MODE.WALL)
-	elif event.is_action_pressed("2"):
-		change_mouse_mode(TdEnums.MOUSE_MODE.TURRET)
-	elif event.is_action_pressed("3"):
-		change_mouse_mode(TdEnums.MOUSE_MODE.CANNON)
-	elif event.is_action_pressed("4"):
-		change_mouse_mode(TdEnums.MOUSE_MODE.FLAME_THROWER)
-	elif event.is_action_pressed("5"):
-		change_mouse_mode(TdEnums.MOUSE_MODE.BALLISTA)
-	
-	if event.is_action_pressed("mouse_click"):
-		handle_click(map.local_to_map(map.to_local(get_global_mouse_position())))
-
-func handle_click(coords: Vector2):
+func handle_click():
+	var coords = map.local_to_map(map.to_local(get_global_mouse_position()))
 	if turret_tile_map.get_cell_source_id(0, coords) == 0:
 		# Turret at clicked location
 		return
@@ -184,7 +169,7 @@ func handle_click(coords: Vector2):
 	
 	if mouse_mode == TdEnums.MOUSE_MODE.WALL:
 		var is_wall = map.wall_source == source_id
-		if !is_wall && !can_navigate_with_change(coords, true):
+		if !is_wall && !can_navigate_with_change(coords):
 			# Prevent player from blocking path
 			return
 		var new_source_id = map.walkable_source if is_wall else map.wall_source
@@ -194,7 +179,7 @@ func handle_click(coords: Vector2):
 	or mouse_mode == TdEnums.MOUSE_MODE.CANNON \
 	or mouse_mode == TdEnums.MOUSE_MODE.FLAME_THROWER \
 	or mouse_mode == TdEnums.MOUSE_MODE.BALLISTA:
-		if !can_navigate_with_change(coords, true):
+		if !can_navigate_with_change(coords):
 			# Prevent player from blocking path
 			return
 		map.set_cell(TdEnums.TILEMAP_LAYERS.MAZE, coords, map.wall_source, Vector2i.ZERO)
@@ -221,18 +206,28 @@ func get_selected_turret_scene() -> Turret:
 	push_error('Unable to determine selected turret scene from mouse mode $s.' % mouse_mode)
 	return null
 
-func can_navigate_with_change(coords: Vector2, is_wall: bool) -> bool:
-	var cell_pos = Vector2i(int(coords.x), int(coords.y))
-	astar_grid.set_point_solid(cell_pos, is_wall)
+func can_navigate_with_change(coords: Vector2) -> bool:
+	var cell_to_change = Vector2i(int(coords.x), int(coords.y))
+	astar_grid.set_point_solid(cell_to_change, true)
 	
-	var nav_start = map.local_to_map(map.start_position)
+	# Get cell coordinates for starting position and all enemies
+	var cells: Array[Vector2i] = [map.START]
+	for enemy in $GameLayer/Enemies.get_children():
+		var cell = map.local_to_map(enemy.position)
+		if !cells.has(cell):
+			cells.append(cell)
+	
+	var result = true
 	var nav_end = map.local_to_map(map.end_position)
-	var path = astar_grid.get_point_path(nav_start, nav_end)
-	if len(path) > 0 && Vector2i(path[0]) == nav_start:
-		path.remove_at(0)
+	for cell in cells:
+		var path = astar_grid.get_point_path(cell, nav_end)
+		if len(path) > 0 && Vector2i(path[0]) == cell:
+			path.remove_at(0)
+		if len(path) <= 0:
+			result = false
 	
-	astar_grid.set_point_solid(cell_pos, !is_wall)
-	return len(path) > 0
+	astar_grid.set_point_solid(cell_to_change, false)
+	return result
 
 func change_mouse_mode(mode: TdEnums.MOUSE_MODE):
 	mouse_mode = mode
@@ -271,16 +266,3 @@ func setup_astar_grid():
 
 func force_draw(): queue_redraw()
 func update_ui(): $UILayer/UIControl.update()
-
-func add_debug_turrets():
-	var prev_mouse_mode = mouse_mode
-	mouse_mode = TdEnums.MOUSE_MODE.TURRET
-	for coords in [Vector2(0, -1), Vector2(0, 3)]:
-		handle_click(coords)
-	mouse_mode = TdEnums.MOUSE_MODE.CANNON
-	for coords in [Vector2(-2, 1)]:
-		handle_click(coords)
-	mouse_mode = TdEnums.MOUSE_MODE.FLAME_THROWER
-	for coords in [Vector2(-3, -1)]:
-		handle_click(coords)
-	mouse_mode = prev_mouse_mode
