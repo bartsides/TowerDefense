@@ -3,8 +3,6 @@ extends Node2D
 class_name TD
 
 const REGION_SIZE = 1024
-const PATH_WIDTH = .7
-const SHOW_PATHS = false
 
 var turret_scene = preload("res://Turrets/turret.tscn")
 var cannon_scene = preload("res://Turrets/cannon.tscn")
@@ -19,8 +17,9 @@ var jet_ski_scene = preload("res://Enemies/jet_ski.tscn")
 @onready var turret_tile_map: TileMap = $GameLayer/TurretTileMap
 
 var cell_size = 32
-var path_color = Color.BLACK
+var placement_preview_alpha = 0.4196
 var mouse_mode = TdEnums.MOUSE_MODE.WALL
+var hover_location: Vector2i = Vector2i.MAX
 var enemies_spawned = 0
 var enemies_alive = 0
 var total_enemies = 0
@@ -65,7 +64,6 @@ func _ready():
 func start_game():
 	setup_astar_grid()
 	next_level()
-	#add_debug_turrets()
 
 func next_level():
 	stop_timers()
@@ -147,10 +145,10 @@ func update_nav():
 	for cell in cells:
 		var cell_pos = Vector2i(cell.x, cell.y)
 		var source_id = map.get_cell_source_id(TdEnums.TILEMAP_LAYERS.MAZE, cell_pos)
-		astar_grid.set_point_solid(cell_pos, map.wall_source == source_id || map.border_source == source_id)
+		astar_grid.set_point_solid(cell_pos, [map.wall_source, map.border_source].has(source_id))
 	for enemy in $GameLayer/Enemies.get_children():
 		enemy.update_nav()
-	queue_redraw()
+	force_draw()
 
 func update_wall_texture_in_ui():
 	var atlas_texture = AtlasTexture.new()
@@ -158,8 +156,12 @@ func update_wall_texture_in_ui():
 	atlas_texture.region = Rect2(0, 0, 32, 32)
 	$UILayer/UIControl.set_wall_texture(atlas_texture)
 
+func get_mouse_map_cell_pos() -> Vector2i:
+	if map == null: return Vector2i.ZERO
+	return Vector2i(map.local_to_map(map.to_local(get_global_mouse_position())))
+
 func handle_click():
-	var coords = map.local_to_map(map.to_local(get_global_mouse_position()))
+	var coords = get_mouse_map_cell_pos()
 	if turret_tile_map.get_cell_source_id(0, coords) == 0:
 		# Turret at clicked location
 		return
@@ -218,7 +220,7 @@ func can_navigate_with_change(coords: Vector2) -> bool:
 			cells.append(cell)
 	
 	var result = true
-	var nav_end = map.local_to_map(map.end_position)
+	var nav_end = map.END
 	for cell in cells:
 		var path = astar_grid.get_point_path(cell, nav_end)
 		if len(path) > 0 && Vector2i(path[0]) == cell:
@@ -233,21 +235,32 @@ func change_mouse_mode(mode: TdEnums.MOUSE_MODE):
 	mouse_mode = mode
 	$UILayer/UIControl.update_mouse_mode(mode)
 
+func _unhandled_input(event):
+	if event is InputEventMouseMotion:
+		var preview_layer = TdEnums.TILEMAP_LAYERS.PLACEMENT_PREVIEW
+		if hover_location != Vector2i.MAX:
+			# Remove previous placement preview
+			map.erase_cell(preview_layer, hover_location)
+			pass
+		hover_location = get_mouse_map_cell_pos()
+		for turret: Turret in $GameLayer/Turrets.get_children():
+			turret.SHOW_RANGE = turret.coords == hover_location
+			turret.queue_redraw()
+		if turret_tile_map.get_cell_source_id(0, hover_location) < 0:
+			if map.get_cell_source_id(TdEnums.TILEMAP_LAYERS.MAZE, hover_location) == map.walkable_source:
+				# Add placement preview
+				map.set_cell(preview_layer, hover_location, map.wall_source, Vector2i.ZERO)
+				var valid_placement = can_navigate_with_change(hover_location)
+				var mod_color = Color(1, 1 if valid_placement else 0, 1 if valid_placement else 0, placement_preview_alpha)
+				map.set_layer_modulate(preview_layer, mod_color)
+			# TODO: Add turret preview
+
 func game_over():
 	$GameLayer/Timers/SpawnTimer.stop()
 	game_active = false
 	$Sounds/GameOver.play()
 	update_ui()
 	print('game over')
-
-func _draw():
-	if !SHOW_PATHS: return
-	for enemy in $GameLayer/Enemies.get_children():
-		var prev = enemy.position
-		for point in enemy.path:
-			draw_circle(point, PATH_WIDTH * 3, path_color)
-			draw_line(prev, point, path_color, PATH_WIDTH, true)
-			prev = point
 
 func stop_timers():
 	$GameLayer/Timers/SpawnTimer.stop()
@@ -264,5 +277,9 @@ func setup_astar_grid():
 	astar_grid.diagonal_mode = AStarGrid2D.DIAGONAL_MODE_ONLY_IF_NO_OBSTACLES
 	astar_grid.update()
 
-func force_draw(): queue_redraw()
+func force_draw(): 
+	queue_redraw()
+	if map != null:
+		map.queue_redraw()
+
 func update_ui(): $UILayer/UIControl.update()

@@ -14,6 +14,9 @@ var walkable_source: int
 var wall_source: int
 var border_source: int
 var start_end_source: int
+var show_paths = true
+var path_width = .7
+var path_color = Color.RED
 
 func _ready():
 	update_tilemap_sources()
@@ -38,7 +41,6 @@ func update_tilemap_sources():
 				walkable_source = i
 
 func _unhandled_input(event):
-	print("unhandled input: ", event.has_method("is_action_pressed"))
 	if   event.is_action_pressed("1"):
 		td.change_mouse_mode(TdEnums.MOUSE_MODE.WALL)
 	elif event.is_action_pressed("2"):
@@ -51,5 +53,19 @@ func _unhandled_input(event):
 		td.change_mouse_mode(TdEnums.MOUSE_MODE.BALLISTA)
 	
 	if event.is_action_pressed("mouse_click"):
-		print('mouse click')
 		td.handle_click()
+
+func _draw():
+	if !show_paths: return
+	_draw_path(td.astar_grid.get_point_path(START, END))
+	for enemy in td.get_node("GameLayer/Enemies").get_children():
+		_draw_path(enemy.path)
+
+func _draw_path(path):
+	if len(path) < 2: return
+	var prev = path[0]
+	for i in range(1, len(path)):
+		var point = path[i]
+		draw_circle(point, path_width * 3, path_color)
+		draw_line(prev, point, path_color, path_width, true)
+		prev = point
