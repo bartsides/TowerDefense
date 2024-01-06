@@ -62,6 +62,7 @@ func _draw():
 		_draw_path(enemy.path)
 
 func _draw_path(path):
+	# TODO: Fix path drawing layer
 	if len(path) < 2: return
 	var prev = path[0]
 	for i in range(1, len(path)):

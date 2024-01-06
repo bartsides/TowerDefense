@@ -97,6 +97,7 @@ sources/2 = SubResource("TileSetAtlasSource_n20dn")
 sources/3 = SubResource("TileSetAtlasSource_j860p")
 
 [node name="TileMap" type="TileMap"]
+z_index = -1
 tile_set = SubResource("TileSet_4ue8t")
 collision_animatable = true
 format = 2
