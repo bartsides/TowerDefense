@@ -1,14 +1,13 @@
 extends RigidBody2D
 
-@export var LIFESPAN = 1.0
-@export var MAX_ENEMIES_HIT = 1
-
-var damage = 1.0
+var damage: Damage = Damage.new(1, 0, 0, 0)
+var lifespan = 1
+var max_enemies_hit = 1
 var dying = false
 
 func fire():
 	if $AnimatedSprite2D: $AnimatedSprite2D.play()
-	$LifespanTimer.wait_time = LIFESPAN
+	$LifespanTimer.wait_time = lifespan
 	$LifespanTimer.start()
 
 func die():
@@ -26,6 +25,6 @@ func _hit(body):
 	if dying: return
 	if body.has_method("is_enemy"):
 		body.take_damage(damage)
-		MAX_ENEMIES_HIT -= 1
-		if MAX_ENEMIES_HIT <= 0:
+		max_enemies_hit -= 1
+		if max_enemies_hit <= 0:
 			die()

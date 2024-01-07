@@ -5,26 +5,32 @@ class_name Turret
 @export var AIM_STYLE = AIM_STYLES.FIRST
 @export var ATTACK_RANGE = 120
 @export var ATTACK_TIME = 1.0
-@export var DAMAGE = 3.0
 @export var BULLET_SPEED = 200.0
 @export var SHOW_RANGE = false
 @export var PROJECTILE_SCENE: PackedScene = preload("res://Turrets/Projectiles/bullet.tscn")
 @export var ATTACK_SOUND: AudioStreamMP3 = null
+@export_group("Damage")
+@export var PHYSICAL_DAMAGE: float = 3
+@export var FIRE_DAMAGE: float = 0
+@export var FIRE_TIME: float = 0
+@export var FIRE_TICK: float = 0
 
+var damage: Damage
 var target_enemy: Enemy = null
 var coords
 var ready_to_fire = true
 var range_thickness = .2
 @onready var projectilesNode = get_node("/root/TD/GameLayer/Projectiles")
 
-enum AIM_STYLES { \
-	FIRST, LAST, \
-	CLOSEST, FURTHEST, \
-	STRONGEST, WEAKEST, \
-	FOCUS_FIRST, FOCUS_LAST, \
+enum AIM_STYLES {
+	FIRST, LAST,
+	CLOSEST, FURTHEST,
+	STRONGEST, WEAKEST,
+	FOCUS_FIRST, FOCUS_LAST,
 }
 
 func _ready():
+	damage = Damage.new(PHYSICAL_DAMAGE, FIRE_DAMAGE, FIRE_TIME, FIRE_TICK)
 	if ATTACK_SOUND != null:
 		$AttackAudioPlayer2D.stream = ATTACK_SOUND
 	$AttackTimer.wait_time = ATTACK_TIME
@@ -94,7 +100,7 @@ func _attack():
 		return
 	var bullet = PROJECTILE_SCENE.instantiate()
 	bullet.position = to_global($BulletMarker2D.position)
-	bullet.damage = DAMAGE
+	bullet.damage = damage
 	if bullet.has_method("apply_central_force"):
 		bullet.apply_central_force(position.direction_to(target_enemy.position) * BULLET_SPEED)
 	bullet.look_at(target_enemy.position)

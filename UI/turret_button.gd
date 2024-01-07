@@ -57,3 +57,4 @@ func set_texture(texture: Texture):
 func set_disabled(disabled: bool):
 	button.disabled = disabled
 	button.modulate = disabled_mod if disabled else Color(1, 1, 1)
+	# TODO: Fix clicking a disabled button causes button texture to no longer modulate

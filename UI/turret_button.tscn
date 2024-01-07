@@ -1,7 +1,6 @@
 [gd_scene load_steps=6 format=3 uid="uid://dennemnql8fa0"]
 
 [ext_resource type="Theme" uid="uid://e6e5pfjp1lkf" path="res://Themes/ui.tres" id="1_qvkb2"]
-[ext_resource type="Texture2D" uid="uid://mhqn1jfqddg7" path="res://assets/Buttons.png" id="2_3u0gi"]
 [ext_resource type="Script" path="res://UI/turret_button.gd" id="4_sv338"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_37hub"]
@@ -10,8 +9,11 @@ corner_radius_top_right = 6
 corner_radius_bottom_right = 6
 corner_radius_bottom_left = 6
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_cbagi"]
-atlas = ExtResource("2_3u0gi")
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_orufy"]
+load_path = "res://.godot/imported/Buttons.png-40dee453e7513d3ffc4efc07f24c81be.ctex"
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_eeoh3"]
+atlas = SubResource("CompressedTexture2D_orufy")
 region = Rect2(0, 0, 32, 32)
 
 [node name="TurretButton" type="Panel"]
@@ -32,7 +34,7 @@ grow_horizontal = 2
 grow_vertical = 2
 theme = ExtResource("1_qvkb2")
 theme_type_variation = &"TurretBtnContainer"
-texture = SubResource("AtlasTexture_cbagi")
+texture = SubResource("AtlasTexture_eeoh3")
 region_rect = Rect2(0, 0, 32, 32)
 patch_margin_left = 8
 patch_margin_top = 7

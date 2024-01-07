@@ -61,10 +61,13 @@ animations = [{
 }]
 
 [node name="FlameThrower" instance=ExtResource("1_ytkyn")]
-DAMAGE = 3.0
 BULLET_SPEED = 200.0
 PROJECTILE_SCENE = ExtResource("2_6fupd")
 ATTACK_SOUND = ExtResource("2_yvuug")
+PHYSICAL_DAMAGE = 0.0
+FIRE_DAMAGE = 1.0
+FIRE_TIME = 4.0
+FIRE_TICK = 0.5
 
 [node name="AnimatedSprite2D" parent="." index="2"]
 position = Vector2(9, 0)

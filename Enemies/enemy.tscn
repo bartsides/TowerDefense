@@ -53,6 +53,7 @@ collision_mask = 2
 motion_mode = 1
 script = ExtResource("1_3212m")
 SPEED = 40
+TOTAL_HEALTH = 100
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("RectangleShape2D_gtovr")
@@ -62,15 +63,25 @@ texture_filter = 3
 position = Vector2(-2, 0)
 sprite_frames = SubResource("SpriteFrames_es73f")
 
-[node name="UpdateNavTimer" type="Timer" parent="."]
-wait_time = 4.0
-
 [node name="HealthBar" parent="." instance=ExtResource("3_jog57")]
 offset_top = -8.0
 offset_bottom = -8.0
 
-[node name="CPUParticles2D" type="CPUParticles2D" parent="."]
+[node name="Timers" type="Node" parent="."]
+
+[node name="UpdateNavTimer" type="Timer" parent="Timers"]
+wait_time = 4.0
+
+[node name="FireTickTimer" type="Timer" parent="Timers"]
+
+[node name="FireTimer" type="Timer" parent="Timers"]
+one_shot = true
+
+[node name="FireParticles" type="Node2D" parent="."]
+
+[node name="CPUParticles2D" type="CPUParticles2D" parent="FireParticles"]
 texture_filter = 3
+emitting = false
 amount = 19
 lifetime = 0.3
 speed_scale = 0.3
@@ -91,7 +102,8 @@ color_ramp = SubResource("Gradient_bcks7")
 hue_variation_min = -0.36
 hue_variation_max = 0.12
 
-[node name="CPUParticles2D2" type="CPUParticles2D" parent="."]
+[node name="CPUParticles2D2" type="CPUParticles2D" parent="FireParticles"]
+emitting = false
 amount = 4
 lifetime = 0.3
 speed_scale = 0.3
@@ -109,4 +121,6 @@ scale_amount_max = 2.0
 hue_variation_min = 0.28
 hue_variation_max = 0.28
 
-[connection signal="timeout" from="UpdateNavTimer" to="." method="update_nav"]
+[connection signal="timeout" from="Timers/UpdateNavTimer" to="." method="update_nav"]
+[connection signal="timeout" from="Timers/FireTickTimer" to="." method="take_fire_damage"]
+[connection signal="timeout" from="Timers/FireTimer" to="." method="fire_complete"]

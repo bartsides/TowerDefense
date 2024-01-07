@@ -36,22 +36,22 @@ var round_index = -1
 var round_enemy_index = -1
 var round_enemy: Enemy
 
-var levels: Array[Level] = [ \
-	Level.new(60,
+var levels: Array[Level] = [
+	Level.new(200,
 		load("res://Levels/level1.tscn"),
-		[ \
+		[
 			Round.new(2, .1, [alligator_scene, alligator_scene, jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,]),
-			#Round.new(2, .3, [enemy_scene, fish_scene, enemy_scene, fish_scene, jet_ski_scene, jet_ski_scene, jet_ski_scene]), \
-			#Round.new(2, .5, [jet_ski_scene, jet_ski_scene, jet_ski_scene, jet_ski_scene, jet_ski_scene, jet_ski_scene, jet_ski_scene]), \
-			#Round.new(2, 1.4, [fish_scene, enemy_scene, fish_scene, enemy_scene, jet_ski_scene, jet_ski_scene, jet_ski_scene]), \
-			#Round.new(2, 1.3, [fish_scene, fish_scene, fish_scene, fish_scene, jet_ski_scene, jet_ski_scene, jet_ski_scene]), \
-			#Round.new(2, 1.2, [enemy_scene, enemy_scene, enemy_scene, enemy_scene]), \
+			#Round.new(2, .3, [enemy_scene, fish_scene, enemy_scene, fish_scene, jet_ski_scene, jet_ski_scene, jet_ski_scene]),
+			#Round.new(2, .5, [jet_ski_scene, jet_ski_scene, jet_ski_scene, jet_ski_scene, jet_ski_scene, jet_ski_scene, jet_ski_scene]),
+			#Round.new(2, 1.4, [fish_scene, enemy_scene, fish_scene, enemy_scene, jet_ski_scene, jet_ski_scene, jet_ski_scene]),
+			#Round.new(2, 1.3, [fish_scene, fish_scene, fish_scene, fish_scene, jet_ski_scene, jet_ski_scene, jet_ski_scene]),
+			#Round.new(2, 1.2, [enemy_scene, enemy_scene, enemy_scene, enemy_scene]),
 			Round.new(2, 1.1, [enemy_scene, fish_scene, enemy_scene, fish_scene]),
 		]
 	),
 	Level.new(400, 
 		load("res://Levels/level2.tscn"),
-		[ \
+		[
 			Round.new(2, 2, [fish_scene, fish_scene, enemy_scene, enemy_scene]),
 			Round.new(2, 2.1, [fish_scene, fish_scene, enemy_scene, enemy_scene]),
 			Round.new(2, 2.2, [fish_scene, fish_scene, enemy_scene, enemy_scene]),
@@ -247,6 +247,7 @@ func change_mouse_mode(mode: TdEnums.MOUSE_MODE):
 
 func _unhandled_input(event):
 	if event is InputEventMouseMotion:
+		# TODO: Fix placement previews colliding with enemies
 		var preview_layer = TdEnums.TILEMAP_LAYERS.PLACEMENT_PREVIEW
 		# Remove previous placement previews
 		if turret_preview_sprite != null:
