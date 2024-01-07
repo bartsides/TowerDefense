@@ -14,7 +14,8 @@ var alligator_scene = preload("res://Enemies/alligator.tscn")
 var fish_scene = preload("res://Enemies/fish.tscn")
 var jet_ski_scene = preload("res://Enemies/jet_ski.tscn")
 
-@onready var turret_tile_map: TileMap = $GameLayer/TurretTileMap
+@onready var preview_map: TileMap = $GameLayer/PreviewTileMap
+@onready var turret_map: TileMap = $GameLayer/TurretTileMap
 
 var cell_size = 32
 var placement_preview_alpha = 0.4196
@@ -78,7 +79,7 @@ func next_level():
 		return
 	current_level = levels[level_index]
 	gold = current_level.starting_gold
-	turret_tile_map.clear_layer(0)
+	turret_map.clear_layer(0)
 	for t in $GameLayer/Turrets.get_children():
 		$GameLayer/Turrets.remove_child(t)
 		t.queue_free()
@@ -86,6 +87,10 @@ func next_level():
 		$GameLayer.remove_child(map)
 		map.queue_free()
 	map = current_level.tile_map.instantiate()
+	preview_map.clear()
+	preview_map.tile_set = map.tile_set.duplicate(true)
+	preview_map.tile_set.set_physics_layer_collision_layer(0, 0)
+	preview_map.tile_set.set_physics_layer_collision_mask(0, 0)
 	$GameLayer.add_child(map)
 	update_nav()
 	update_wall_texture_in_ui()
@@ -168,7 +173,7 @@ func get_mouse_map_cell_pos() -> Vector2i:
 
 func handle_click():
 	var coords = get_mouse_map_cell_pos()
-	if turret_tile_map.get_cell_source_id(0, coords) == 0:
+	if turret_map.get_cell_source_id(0, coords) == 0:
 		# Turret at clicked location
 		return
 	var source_id = map.get_cell_source_id(TdEnums.TILEMAP_LAYERS.MAZE, coords)
@@ -195,7 +200,7 @@ func handle_click():
 		t.coords = coords
 		t.position = map.map_to_local(coords)
 		$GameLayer/Turrets.add_child(t)
-		turret_tile_map.set_cell(0, coords, 0, Vector2i.ZERO)
+		turret_map.set_cell(0, coords, 0, Vector2i.ZERO)
 		update_nav()
 
 func get_selected_turret_scene() -> Turret:
@@ -248,7 +253,6 @@ func change_mouse_mode(mode: TdEnums.MOUSE_MODE):
 func _unhandled_input(event):
 	if event is InputEventMouseMotion:
 		# TODO: Fix placement previews colliding with enemies
-		var preview_layer = TdEnums.TILEMAP_LAYERS.PLACEMENT_PREVIEW
 		# Remove previous placement previews
 		if turret_preview_sprite != null:
 			map.remove_child(turret_preview_sprite)
@@ -258,7 +262,7 @@ func _unhandled_input(event):
 			# TODO: Handle scenario where mouse stays in same position but selected turret changes
 			return
 		if hover_position != Vector2i.MAX:
-			map.erase_cell(preview_layer, hover_position)
+			preview_map.erase_cell(0, hover_position)
 		
 		# Show turret range if hovering over a turret
 		var turret_at_pos = false
@@ -278,10 +282,11 @@ func _unhandled_input(event):
 		var cell_source = map.get_cell_source_id(TdEnums.TILEMAP_LAYERS.MAZE, hover_position)
 		if cell_source == map.walkable_source:
 			# Add wall placement preview
-			map.set_cell(preview_layer, hover_position, map.wall_source, Vector2i.ZERO)
-			map.set_layer_modulate(preview_layer, mod_color)
+			preview_map.set_cell(0, hover_position, map.wall_source, Vector2i.ZERO)
+			preview_map.set_layer_modulate(0, mod_color)
 		
 		if mouse_mode != TdEnums.MOUSE_MODE.WALL && ![-1, map.border_source, map.start_end_source].has(cell_source):
+			print('adding turret')
 			# Add turret placement preview
 			var turret = get_selected_turret_scene() as Turret
 			turret_preview_sprite = turret.get_node("AnimatedSprite2D").duplicate() as AnimatedSprite2D

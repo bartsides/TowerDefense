@@ -46,6 +46,10 @@ visible = false
 tile_set = SubResource("TileSet_6387q")
 format = 2
 
+[node name="PreviewTileMap" type="TileMap" parent="GameLayer"]
+format = 2
+layer_0/modulate = Color(1, 0, 0, 0.419608)
+
 [node name="UILayer" type="CanvasLayer" parent="."]
 layer = 2
 
