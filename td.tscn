@@ -60,10 +60,10 @@ grow_vertical = 2
 
 [node name="Sounds" type="Node" parent="."]
 
-[node name="GameOver" type="AudioStreamPlayer2D" parent="Sounds"]
+[node name="GameOver" type="AudioStreamPlayer" parent="Sounds"]
 stream = ExtResource("5_bli65")
 
-[node name="EnemyReachEnd" type="AudioStreamPlayer2D" parent="Sounds"]
+[node name="EnemyReachEnd" type="AudioStreamPlayer" parent="Sounds"]
 stream = ExtResource("6_rrxsm")
 
 [connection signal="timeout" from="GameLayer/Timers/SpawnTimer" to="." method="add_enemy"]

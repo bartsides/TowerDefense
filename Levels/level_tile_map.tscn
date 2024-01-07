@@ -102,4 +102,7 @@ tile_set = SubResource("TileSet_4ue8t")
 collision_animatable = true
 format = 2
 layer_0/name = "Maze"
+layer_1/name = "Placement Preview"
+layer_1/modulate = Color(1, 0, 0, 0.419608)
+layer_1/tile_data = PackedInt32Array()
 script = ExtResource("4_5dds5")

@@ -13,7 +13,7 @@ class_name Turret
 
 var target_enemy: Enemy = null
 var coords
-var ready_to_fire = false
+var ready_to_fire = true
 var range_thickness = .2
 @onready var projectilesNode = get_node("/root/TD/GameLayer/Projectiles")
 

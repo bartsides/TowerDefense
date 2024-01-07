@@ -3,8 +3,6 @@ extends Node2D
 class_name TD
 
 const REGION_SIZE = 1024
-const PATH_WIDTH = .7
-const SHOW_PATHS = false
 
 var turret_scene = preload("res://Turrets/turret.tscn")
 var cannon_scene = preload("res://Turrets/cannon.tscn")
@@ -19,13 +17,16 @@ var jet_ski_scene = preload("res://Enemies/jet_ski.tscn")
 @onready var turret_tile_map: TileMap = $GameLayer/TurretTileMap
 
 var cell_size = 32
-var path_color = Color.BLACK
+var placement_preview_alpha = 0.4196
 var mouse_mode = TdEnums.MOUSE_MODE.WALL
+var hover_position: Vector2i = Vector2i.MAX
+var turret_preview_sprite: AnimatedSprite2D = null
 var enemies_spawned = 0
 var enemies_alive = 0
 var total_enemies = 0
 var game_active = true
 var lives = 20
+var gold = 0
 var astar_grid = AStarGrid2D.new()
 var map: LevelTileMap = null
 var current_level: Level = null
@@ -36,35 +37,37 @@ var round_enemy_index = -1
 var round_enemy: Enemy
 
 var levels: Array[Level] = [ \
-	Level.new(load("res://Levels/level1.tscn"), \
+	Level.new(60,
+		load("res://Levels/level1.tscn"),
 		[ \
-			Round.new(2, .1, [alligator_scene, alligator_scene, jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,]), \
+			Round.new(2, .1, [alligator_scene, alligator_scene, jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,]),
 			#Round.new(2, .3, [enemy_scene, fish_scene, enemy_scene, fish_scene, jet_ski_scene, jet_ski_scene, jet_ski_scene]), \
 			#Round.new(2, .5, [jet_ski_scene, jet_ski_scene, jet_ski_scene, jet_ski_scene, jet_ski_scene, jet_ski_scene, jet_ski_scene]), \
 			#Round.new(2, 1.4, [fish_scene, enemy_scene, fish_scene, enemy_scene, jet_ski_scene, jet_ski_scene, jet_ski_scene]), \
 			#Round.new(2, 1.3, [fish_scene, fish_scene, fish_scene, fish_scene, jet_ski_scene, jet_ski_scene, jet_ski_scene]), \
 			#Round.new(2, 1.2, [enemy_scene, enemy_scene, enemy_scene, enemy_scene]), \
-			Round.new(2, 1.1, [enemy_scene, fish_scene, enemy_scene, fish_scene]), \
-		] \
-	), \
-	Level.new(load("res://Levels/level2.tscn"), \
+			Round.new(2, 1.1, [enemy_scene, fish_scene, enemy_scene, fish_scene]),
+		]
+	),
+	Level.new(400, 
+		load("res://Levels/level2.tscn"),
 		[ \
-			Round.new(2, 2, [fish_scene, fish_scene, enemy_scene, enemy_scene]), \
-			Round.new(2, 2.1, [fish_scene, fish_scene, enemy_scene, enemy_scene]), \
-			Round.new(2, 2.2, [fish_scene, fish_scene, enemy_scene, enemy_scene]), \
-			Round.new(2, 2.3, [fish_scene, fish_scene, enemy_scene, enemy_scene]), \
-		] \
-	), \
+			Round.new(2, 2, [fish_scene, fish_scene, enemy_scene, enemy_scene]),
+			Round.new(2, 2.1, [fish_scene, fish_scene, enemy_scene, enemy_scene]),
+			Round.new(2, 2.2, [fish_scene, fish_scene, enemy_scene, enemy_scene]),
+			Round.new(2, 2.3, [fish_scene, fish_scene, enemy_scene, enemy_scene]),
+		]
+	),
 ]
 
 
 func _ready():
+	change_mouse_mode(TdEnums.MOUSE_MODE.WALL)
 	start_game()
 
 func start_game():
-	setup_astar_grid()
+	setup_astar_grid(astar_grid)
 	next_level()
-	#add_debug_turrets()
 
 func next_level():
 	stop_timers()
@@ -74,6 +77,7 @@ func next_level():
 		print('you have won the game')
 		return
 	current_level = levels[level_index]
+	gold = current_level.starting_gold
 	turret_tile_map.clear_layer(0)
 	for t in $GameLayer/Turrets.get_children():
 		$GameLayer/Turrets.remove_child(t)
@@ -86,6 +90,7 @@ func next_level():
 	update_nav()
 	update_wall_texture_in_ui()
 	$UILayer/UIControl.show_start_level(true)
+	update_ui()
 
 func start_level():
 	$UILayer/UIControl.show_start_level(false)
@@ -102,7 +107,6 @@ func next_round():
 	total_enemies = len(current_round.enemies)
 	$GameLayer/Timers/StartRoundTimer.wait_time = current_round.wait_time
 	$GameLayer/Timers/StartRoundTimer.start()
-	print('waiting ', current_round.wait_time, 's')
 	$GameLayer/Timers/SpawnTimer.wait_time = current_round.spawn_time
 	update_nav()
 	update_ui()
@@ -147,10 +151,10 @@ func update_nav():
 	for cell in cells:
 		var cell_pos = Vector2i(cell.x, cell.y)
 		var source_id = map.get_cell_source_id(TdEnums.TILEMAP_LAYERS.MAZE, cell_pos)
-		astar_grid.set_point_solid(cell_pos, map.wall_source == source_id || map.border_source == source_id)
+		astar_grid.set_point_solid(cell_pos, [map.wall_source, map.border_source].has(source_id))
 	for enemy in $GameLayer/Enemies.get_children():
 		enemy.update_nav()
-	queue_redraw()
+	force_draw()
 
 func update_wall_texture_in_ui():
 	var atlas_texture = AtlasTexture.new()
@@ -158,21 +162,12 @@ func update_wall_texture_in_ui():
 	atlas_texture.region = Rect2(0, 0, 32, 32)
 	$UILayer/UIControl.set_wall_texture(atlas_texture)
 
-func _input(event):
-	if event.is_action_pressed("mouse_click"):
-		handle_click(map.local_to_map(map.to_local(get_global_mouse_position())))
-	if event.is_action_pressed("1"):
-		mouse_mode = TdEnums.MOUSE_MODE.WALL
-	elif event.is_action_pressed("2"):
-		mouse_mode = TdEnums.MOUSE_MODE.TURRET
-	elif event.is_action_pressed("3"):
-		mouse_mode = TdEnums.MOUSE_MODE.CANNON
-	elif event.is_action_pressed("4"):
-		mouse_mode = TdEnums.MOUSE_MODE.FLAME_THROWER
-	elif event.is_action_pressed("5"):
-		mouse_mode = TdEnums.MOUSE_MODE.BALLISTA
+func get_mouse_map_cell_pos() -> Vector2i:
+	if map == null: return Vector2i.ZERO
+	return Vector2i(map.local_to_map(map.to_local(get_global_mouse_position())))
 
-func handle_click(coords: Vector2):
+func handle_click():
+	var coords = get_mouse_map_cell_pos()
 	if turret_tile_map.get_cell_source_id(0, coords) == 0:
 		# Turret at clicked location
 		return
@@ -182,7 +177,7 @@ func handle_click(coords: Vector2):
 	
 	if mouse_mode == TdEnums.MOUSE_MODE.WALL:
 		var is_wall = map.wall_source == source_id
-		if !is_wall && !can_navigate_with_change(coords, true):
+		if !is_wall && !can_navigate_with_change(coords):
 			# Prevent player from blocking path
 			return
 		var new_source_id = map.walkable_source if is_wall else map.wall_source
@@ -192,7 +187,7 @@ func handle_click(coords: Vector2):
 	or mouse_mode == TdEnums.MOUSE_MODE.CANNON \
 	or mouse_mode == TdEnums.MOUSE_MODE.FLAME_THROWER \
 	or mouse_mode == TdEnums.MOUSE_MODE.BALLISTA:
-		if !can_navigate_with_change(coords, true):
+		if !can_navigate_with_change(coords):
 			# Prevent player from blocking path
 			return
 		map.set_cell(TdEnums.TILEMAP_LAYERS.MAZE, coords, map.wall_source, Vector2i.ZERO)
@@ -219,22 +214,81 @@ func get_selected_turret_scene() -> Turret:
 	push_error('Unable to determine selected turret scene from mouse mode $s.' % mouse_mode)
 	return null
 
-func can_navigate_with_change(coords: Vector2, is_wall: bool) -> bool:
-	var cell_pos = Vector2i(int(coords.x), int(coords.y))
-	astar_grid.set_point_solid(cell_pos, is_wall)
+func can_navigate_with_change(coords: Vector2) -> bool:
+	var astar = AStarGrid2D.new()
+	setup_astar_grid(astar)
+	var used_cells = []
+	for blockable_source in [map.wall_source, map.border_source]:
+		used_cells.append_array(map.get_used_cells_by_id(TdEnums.TILEMAP_LAYERS.MAZE, blockable_source))
+	for cell in used_cells:
+		astar.set_point_solid(Vector2i(cell))
+	astar.set_point_solid(Vector2i(coords))
 	
-	var nav_start = map.local_to_map(map.start_position)
-	var nav_end = map.local_to_map(map.end_position)
-	var path = astar_grid.get_point_path(nav_start, nav_end)
-	if len(path) > 0 && Vector2i(path[0]) == nav_start:
-		path.remove_at(0)
+	# Get cell coordinates for starting position and all enemies
+	var cells: Array[Vector2i] = [map.START]
+	for enemy in $GameLayer/Enemies.get_children():
+		var cell = map.local_to_map(enemy.position)
+		if !cells.has(cell):
+			cells.append(cell)
 	
-	astar_grid.set_point_solid(cell_pos, !is_wall)
-	return len(path) > 0
+	var result = true
+	for cell in cells:
+		var path = astar.get_point_path(cell, map.END)
+		if len(path) > 0 && Vector2i(path[0]) == cell:
+			path.remove_at(0)
+		if len(path) < 1:
+			result = false
+	
+	return result
 
 func change_mouse_mode(mode: TdEnums.MOUSE_MODE):
 	mouse_mode = mode
 	$UILayer/UIControl.update_mouse_mode(mode)
+
+func _unhandled_input(event):
+	if event is InputEventMouseMotion:
+		var preview_layer = TdEnums.TILEMAP_LAYERS.PLACEMENT_PREVIEW
+		# Remove previous placement previews
+		if turret_preview_sprite != null:
+			map.remove_child(turret_preview_sprite)
+			turret_preview_sprite.queue_free()
+		var new_hover_position = get_mouse_map_cell_pos()
+		if new_hover_position == hover_position:
+			# TODO: Handle scenario where mouse stays in same position but selected turret changes
+			return
+		if hover_position != Vector2i.MAX:
+			map.erase_cell(preview_layer, hover_position)
+		
+		# Show turret range if hovering over a turret
+		var turret_at_pos = false
+		hover_position = new_hover_position
+		for turret: Turret in $GameLayer/Turrets.get_children():
+			turret.SHOW_RANGE = turret.coords == hover_position
+			if turret.SHOW_RANGE:
+				turret_at_pos = true
+			turret.queue_redraw()
+		if turret_at_pos:
+			return
+		
+		var valid_placement = can_navigate_with_change(hover_position)
+		var blue_green_mod = 1 if valid_placement else 0
+		var mod_color = Color(1, blue_green_mod, blue_green_mod, placement_preview_alpha)
+		
+		var cell_source = map.get_cell_source_id(TdEnums.TILEMAP_LAYERS.MAZE, hover_position)
+		if cell_source == map.walkable_source:
+			# Add wall placement preview
+			map.set_cell(preview_layer, hover_position, map.wall_source, Vector2i.ZERO)
+			map.set_layer_modulate(preview_layer, mod_color)
+		
+		if mouse_mode != TdEnums.MOUSE_MODE.WALL && ![-1, map.border_source, map.start_end_source].has(cell_source):
+			# Add turret placement preview
+			var turret = get_selected_turret_scene() as Turret
+			turret_preview_sprite = turret.get_node("AnimatedSprite2D").duplicate() as AnimatedSprite2D
+			turret_preview_sprite.modulate = mod_color
+			turret_preview_sprite.position = map.map_to_local(hover_position)
+			turret_preview_sprite.z_as_relative = false
+			turret_preview_sprite.z_index = 5
+			map.add_child(turret_preview_sprite)
 
 func game_over():
 	$GameLayer/Timers/SpawnTimer.stop()
@@ -242,15 +296,6 @@ func game_over():
 	$Sounds/GameOver.play()
 	update_ui()
 	print('game over')
-
-func _draw():
-	if !SHOW_PATHS: return
-	for enemy in $GameLayer/Enemies.get_children():
-		var prev = enemy.position
-		for point in enemy.path:
-			draw_circle(point, PATH_WIDTH * 3, path_color)
-			draw_line(prev, point, path_color, PATH_WIDTH, true)
-			prev = point
 
 func stop_timers():
 	$GameLayer/Timers/SpawnTimer.stop()
@@ -260,25 +305,16 @@ func start_timers():
 	$GameLayer/Timers/SpawnTimer.start()
 	$GameLayer/Timers/DrawPathsTimer.start()
 
-func setup_astar_grid():
-	astar_grid.region = Rect2i(REGION_SIZE/-2.0, REGION_SIZE/-2.0, REGION_SIZE, REGION_SIZE)
-	astar_grid.cell_size = Vector2(cell_size, cell_size)
-	astar_grid.jumping_enabled = true
-	astar_grid.diagonal_mode = AStarGrid2D.DIAGONAL_MODE_ONLY_IF_NO_OBSTACLES
-	astar_grid.update()
+func setup_astar_grid(grid: AStarGrid2D):
+	grid.region = Rect2i(REGION_SIZE/-2.0, REGION_SIZE/-2.0, REGION_SIZE, REGION_SIZE)
+	grid.cell_size = Vector2(cell_size, cell_size)
+	grid.jumping_enabled = true
+	grid.diagonal_mode = AStarGrid2D.DIAGONAL_MODE_ONLY_IF_NO_OBSTACLES
+	grid.update()
 
-func force_draw(): queue_redraw()
+func force_draw(): 
+	queue_redraw()
+	if map != null:
+		map.queue_redraw()
+
 func update_ui(): $UILayer/UIControl.update()
-
-func add_debug_turrets():
-	var prev_mouse_mode = mouse_mode
-	mouse_mode = TdEnums.MOUSE_MODE.TURRET
-	for coords in [Vector2(0, -1), Vector2(0, 3)]:
-		handle_click(coords)
-	mouse_mode = TdEnums.MOUSE_MODE.CANNON
-	for coords in [Vector2(-2, 1)]:
-		handle_click(coords)
-	mouse_mode = TdEnums.MOUSE_MODE.FLAME_THROWER
-	for coords in [Vector2(-3, -1)]:
-		handle_click(coords)
-	mouse_mode = prev_mouse_mode

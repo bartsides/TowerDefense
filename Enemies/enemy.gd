@@ -34,7 +34,7 @@ func _physics_process(delta):
 
 func update_nav():
 	$UpdateNavTimer.stop()
-	if check_if_at_end():
+	if is_at_end():
 		return
 	var astar_grid = td.astar_grid as AStarGrid2D
 	var nav_start = map.local_to_map(position)
@@ -46,7 +46,7 @@ func update_nav():
 		# Round to handle when both directions have a value not zero ie (0.707107, 0.707107)
 		dir.x = roundf(dir.x)
 		dir.y = roundf(dir.y)
-		path[0] += dir*half_cell_size
+		path[0] += dir * half_cell_size
 	for i in range(0, len(path)):
 		# Convert to global coords and move to center of cell
 		path[i] = map.to_global(path[i]) + Vector2(half_cell_size, half_cell_size)
@@ -54,13 +54,13 @@ func update_nav():
 
 func follow_path(delta):
 	if len(path) <= 0:
-		check_if_at_end()
+		is_at_end()
 		return
 	var point = path[0]
 	if position.distance_to(point) <= DISTANCE_MARGIN:
 		path.remove_at(0)
 		if path.size() <= 0:
-			check_if_at_end()
+			is_at_end()
 			return
 		point = path[0]
 	$CollisionShape2D.look_at(point)
@@ -68,7 +68,7 @@ func follow_path(delta):
 	var vel = dir * SPEED * delta
 	move_and_collide(vel)
 
-func check_if_at_end() -> bool:
+func is_at_end() -> bool:
 	if position.distance_to(td.map.end_position) <= END_DISTANCE_MARGIN:
 		call_deferred('kill', true)
 		return true
