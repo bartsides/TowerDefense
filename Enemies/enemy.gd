@@ -101,9 +101,9 @@ func fire_complete():
 	show_fire(false)
 	$Timers/FireTickTimer.stop()
 
-func show_fire(show: bool):
+func show_fire(val: bool):
 	for particle in $FireParticles.get_children():
-		particle.emitting = show
+		particle.emitting = val
 
 func check_health():
 	if health == 0:
