@@ -26,6 +26,7 @@ var enemies_alive = 0
 var total_enemies = 0
 var game_active = true
 var lives = 20
+var gold = 0
 var astar_grid = AStarGrid2D.new()
 var map: LevelTileMap = null
 var current_level: Level = null
@@ -36,25 +37,27 @@ var round_enemy_index = -1
 var round_enemy: Enemy
 
 var levels: Array[Level] = [ \
-	Level.new(load("res://Levels/level1.tscn"), \
+	Level.new(60,
+		load("res://Levels/level1.tscn"),
 		[ \
-			Round.new(2, .1, [alligator_scene, alligator_scene, jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,]), \
+			Round.new(2, .1, [alligator_scene, alligator_scene, jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,]),
 			#Round.new(2, .3, [enemy_scene, fish_scene, enemy_scene, fish_scene, jet_ski_scene, jet_ski_scene, jet_ski_scene]), \
 			#Round.new(2, .5, [jet_ski_scene, jet_ski_scene, jet_ski_scene, jet_ski_scene, jet_ski_scene, jet_ski_scene, jet_ski_scene]), \
 			#Round.new(2, 1.4, [fish_scene, enemy_scene, fish_scene, enemy_scene, jet_ski_scene, jet_ski_scene, jet_ski_scene]), \
 			#Round.new(2, 1.3, [fish_scene, fish_scene, fish_scene, fish_scene, jet_ski_scene, jet_ski_scene, jet_ski_scene]), \
 			#Round.new(2, 1.2, [enemy_scene, enemy_scene, enemy_scene, enemy_scene]), \
-			Round.new(2, 1.1, [enemy_scene, fish_scene, enemy_scene, fish_scene]), \
-		] \
-	), \
-	Level.new(load("res://Levels/level2.tscn"), \
+			Round.new(2, 1.1, [enemy_scene, fish_scene, enemy_scene, fish_scene]),
+		]
+	),
+	Level.new(400, 
+		load("res://Levels/level2.tscn"),
 		[ \
-			Round.new(2, 2, [fish_scene, fish_scene, enemy_scene, enemy_scene]), \
-			Round.new(2, 2.1, [fish_scene, fish_scene, enemy_scene, enemy_scene]), \
-			Round.new(2, 2.2, [fish_scene, fish_scene, enemy_scene, enemy_scene]), \
-			Round.new(2, 2.3, [fish_scene, fish_scene, enemy_scene, enemy_scene]), \
-		] \
-	), \
+			Round.new(2, 2, [fish_scene, fish_scene, enemy_scene, enemy_scene]),
+			Round.new(2, 2.1, [fish_scene, fish_scene, enemy_scene, enemy_scene]),
+			Round.new(2, 2.2, [fish_scene, fish_scene, enemy_scene, enemy_scene]),
+			Round.new(2, 2.3, [fish_scene, fish_scene, enemy_scene, enemy_scene]),
+		]
+	),
 ]
 
 
@@ -74,6 +77,7 @@ func next_level():
 		print('you have won the game')
 		return
 	current_level = levels[level_index]
+	gold = current_level.starting_gold
 	turret_tile_map.clear_layer(0)
 	for t in $GameLayer/Turrets.get_children():
 		$GameLayer/Turrets.remove_child(t)
@@ -86,6 +90,7 @@ func next_level():
 	update_nav()
 	update_wall_texture_in_ui()
 	$UILayer/UIControl.show_start_level(true)
+	update_ui()
 
 func start_level():
 	$UILayer/UIControl.show_start_level(false)

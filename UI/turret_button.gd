@@ -14,9 +14,13 @@ var focused = false
 var button: TextureButton
 var selected_bg: AtlasTexture
 var unselected_bg: AtlasTexture
+var disabled_val = .4
+var disabled_alpha = .6
+var disabled_mod = Color(disabled_val, disabled_val, disabled_val, disabled_alpha)
 
 func _ready():
 	$PriceLabel.text = str(PRICE)
+	$NinePatchRect.texture = $NinePatchRect.texture.duplicate(true)
 	unselected_bg = $NinePatchRect.texture
 	unselected_bg.region.position.x = 0
 	selected_bg = unselected_bg.duplicate(true)
@@ -27,25 +31,29 @@ func _ready():
 	button.connect("mouse_entered", mouse_entered)
 	button.connect("mouse_exited", mouse_exited)
 	button.connect("pressed", mouse_pressed)
-	update()
+	update_bg()
 
 func mouse_entered():
 	mouse_within = true
-	update()
+	update_bg()
 
 func mouse_exited():
 	mouse_within = false
-	update()
+	update_bg()
 
 func mouse_pressed():
 	click.emit(MOUSE_MODE)
 
-func update():
+func update_bg():
 	$NinePatchRect.texture = selected_bg if mouse_within or focused else unselected_bg
 
-func set_texture(texture):
+func set_texture(texture: Texture):
 	button.texture_normal = texture
 	button.texture_pressed = texture
 	button.texture_hover = texture
 	button.texture_disabled = texture
 	button.texture_focused = texture
+
+func set_disabled(disabled: bool):
+	button.disabled = disabled
+	button.modulate = disabled_mod if disabled else Color(1, 1, 1)
