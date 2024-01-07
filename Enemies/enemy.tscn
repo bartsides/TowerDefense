@@ -1,8 +1,9 @@
-[gd_scene load_steps=10 format=3 uid="uid://lfp4ldguca3u"]
+[gd_scene load_steps=12 format=3 uid="uid://lfp4ldguca3u"]
 
 [ext_resource type="Script" path="res://Enemies/enemy.gd" id="1_3212m"]
 [ext_resource type="Texture2D" uid="uid://cjl2w1oix2g6m" path="res://assets/Shipsheet.png" id="2_sp8ny"]
 [ext_resource type="PackedScene" uid="uid://rnjb41wqawy7" path="res://health_bar.tscn" id="3_jog57"]
+[ext_resource type="Texture2D" uid="uid://dawl6hexxdekd" path="res://assets/Smoke Particle.png" id="5_ollou"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_gtovr"]
 size = Vector2(26, 15)
@@ -43,6 +44,10 @@ animations = [{
 "speed": 4.0
 }]
 
+[sub_resource type="Gradient" id="Gradient_bcks7"]
+offsets = PackedFloat32Array(0.153333, 0.233333, 0.32, 0.493333, 0.82, 0.92, 1)
+colors = PackedColorArray(0.882353, 1, 0, 1, 0.548021, 0.340087, 0, 1, 0.603394, 0.245839, 0.245839, 1, 0.413333, 0.413333, 0.413333, 1, 0.866306, 0.511424, 0.176906, 1, 1, 1, 1, 1, 1, 1, 1, 1)
+
 [node name="Enemy" type="CharacterBody2D" groups=["Enemies"]]
 collision_mask = 2
 motion_mode = 1
@@ -63,5 +68,45 @@ wait_time = 4.0
 [node name="HealthBar" parent="." instance=ExtResource("3_jog57")]
 offset_top = -8.0
 offset_bottom = -8.0
+
+[node name="CPUParticles2D" type="CPUParticles2D" parent="."]
+texture_filter = 3
+amount = 19
+lifetime = 0.3
+speed_scale = 0.3
+explosiveness = 0.24
+randomness = 0.36
+direction = Vector2(0, -1)
+spread = 129.63
+gravity = Vector2(0, -30)
+initial_velocity_min = 29.41
+initial_velocity_max = 50.51
+angular_velocity_min = -87.27
+angular_velocity_max = 500.0
+linear_accel_min = -40.4
+linear_accel_max = 48.48
+scale_amount_min = 0.0
+scale_amount_max = 5.0
+color_ramp = SubResource("Gradient_bcks7")
+hue_variation_min = -0.36
+hue_variation_max = 0.12
+
+[node name="CPUParticles2D2" type="CPUParticles2D" parent="."]
+amount = 4
+lifetime = 0.3
+speed_scale = 0.3
+explosiveness = 0.1
+randomness = 0.15
+texture = ExtResource("5_ollou")
+emission_shape = 3
+emission_rect_extents = Vector2(1, 1)
+direction = Vector2(0, -1)
+spread = 105.0
+gravity = Vector2(0, -100)
+initial_velocity_max = 101.01
+scale_amount_min = 0.5
+scale_amount_max = 2.0
+hue_variation_min = 0.28
+hue_variation_max = 0.28
 
 [connection signal="timeout" from="UpdateNavTimer" to="." method="update_nav"]
