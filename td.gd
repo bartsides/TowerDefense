@@ -262,18 +262,29 @@ func handle_mouse_hover():
 	var hover_position_changed = old_hover_position != new_hover_position
 	hover_position = new_hover_position
 	
-	# Show turret range if hovering over a turret
+	if turret_preview_sprite != null:
+		map.remove_child(turret_preview_sprite)
+		turret_preview_sprite.queue_free()
+	
 	var turret_at_pos = false
 	for turret: Turret in $GameLayer/Turrets.get_children():
+		# Show turret range if hovering over a turret
 		turret.SHOW_RANGE = turret.coords == hover_position
 		if turret.SHOW_RANGE:
 			turret_at_pos = true
 		turret.queue_redraw()
 	
+	var cell_source = map.get_cell_source_id(TdEnums.TILEMAP_LAYERS.MAZE, hover_position)
+	var place_turret = not turret_at_pos \
+			and mouse_mode != TdEnums.MOUSE_MODE.WALL \
+			and not [-1, map.border_source, map.start_end_source].has(cell_source)
+	
+	if not hover_position_changed and not place_turret:
+		return
+	
 	var valid_placement = can_navigate_with_change(hover_position)
 	var blue_green_mod = 1 if valid_placement else 0
 	var mod_color = Color(1, blue_green_mod, blue_green_mod, placement_preview_alpha)
-	var cell_source = map.get_cell_source_id(TdEnums.TILEMAP_LAYERS.MAZE, hover_position)
 	
 	if hover_position_changed:
 		# Handle wall placement preview
@@ -283,11 +294,7 @@ func handle_mouse_hover():
 			preview_map.set_cell(0, hover_position, map.wall_source, Vector2i.ZERO)
 			preview_map.set_layer_modulate(0, mod_color)
 	
-	# Turret placement preview
-	if turret_preview_sprite != null:
-		map.remove_child(turret_preview_sprite)
-		turret_preview_sprite.queue_free()
-	if not turret_at_pos and mouse_mode != TdEnums.MOUSE_MODE.WALL and not [-1, map.border_source, map.start_end_source].has(cell_source):
+	if place_turret:
 		var turret = get_selected_turret_scene() as Turret
 		turret_preview_sprite = turret.get_node("AnimatedSprite2D").duplicate() as AnimatedSprite2D
 		turret_preview_sprite.modulate = mod_color
