@@ -55,7 +55,7 @@ func _target_enemy():
 	var selected_enemy: Enemy = null
 	for enemy in enemies:
 		var dist = enemy.position.distance_to(position)
-		if dist == null || dist > ATTACK_RANGE:
+		if dist == null or dist > ATTACK_RANGE:
 			continue
 		
 		if selected_enemy == null:
@@ -87,9 +87,9 @@ func _target_enemy():
 				select_enemy = enemy.health < selected_enemy.HEALTH
 		if select_enemy:
 			selected_enemy = enemy
-	if selected_enemy == null && target_enemy == null:
+	if selected_enemy == null and target_enemy == null:
 		ready_to_fire = true
-	elif AIM_STYLE == AIM_STYLES.FOCUS_FIRST || AIM_STYLE == AIM_STYLES.FOCUS_LAST:
+	elif AIM_STYLE == AIM_STYLES.FOCUS_FIRST or AIM_STYLE == AIM_STYLES.FOCUS_LAST:
 		if target_enemy == null:
 			target_enemy = selected_enemy
 	else:

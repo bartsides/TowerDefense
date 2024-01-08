@@ -147,7 +147,7 @@ func enemy_killed(enemy: Enemy, reached_end: bool):
 		if lives <= 0:
 			game_over()
 			return
-	if enemies_alive <= 0 && round_enemy_index >= total_enemies - 1:
+	if enemies_alive <= 0 and round_enemy_index >= total_enemies - 1:
 		next_round()
 	update_ui()
 
@@ -182,7 +182,7 @@ func handle_click():
 	
 	if mouse_mode == TdEnums.MOUSE_MODE.WALL:
 		var is_wall = map.wall_source == source_id
-		if !is_wall && !can_navigate_with_change(coords):
+		if !is_wall and !can_navigate_with_change(coords):
 			# Prevent player from blocking path
 			return
 		var new_source_id = map.walkable_source if is_wall else map.wall_source
@@ -239,7 +239,7 @@ func can_navigate_with_change(coords: Vector2) -> bool:
 	var result = true
 	for cell in cells:
 		var path = astar.get_point_path(cell, map.END)
-		if len(path) > 0 && Vector2i(path[0]) == cell:
+		if len(path) > 0 and Vector2i(path[0]) == cell:
 			path.remove_at(0)
 		if len(path) < 1:
 			result = false
@@ -249,52 +249,52 @@ func can_navigate_with_change(coords: Vector2) -> bool:
 func change_mouse_mode(mode: TdEnums.MOUSE_MODE):
 	mouse_mode = mode
 	$UILayer/UIControl.update_mouse_mode(mode)
+	if map != null:
+		handle_mouse_hover()
 
 func _unhandled_input(event):
 	if event is InputEventMouseMotion:
-		# TODO: Fix placement previews colliding with enemies
-		# Remove previous placement previews
-		if turret_preview_sprite != null:
-			map.remove_child(turret_preview_sprite)
-			turret_preview_sprite.queue_free()
-		var new_hover_position = get_mouse_map_cell_pos()
-		if new_hover_position == hover_position:
-			# TODO: Handle scenario where mouse stays in same position but selected turret changes
-			return
+		handle_mouse_hover()
+
+func handle_mouse_hover():
+	var old_hover_position = hover_position
+	var new_hover_position = get_mouse_map_cell_pos()
+	var hover_position_changed = old_hover_position != new_hover_position
+	hover_position = new_hover_position
+	
+	# Show turret range if hovering over a turret
+	var turret_at_pos = false
+	for turret: Turret in $GameLayer/Turrets.get_children():
+		turret.SHOW_RANGE = turret.coords == hover_position
+		if turret.SHOW_RANGE:
+			turret_at_pos = true
+		turret.queue_redraw()
+	
+	var valid_placement = can_navigate_with_change(hover_position)
+	var blue_green_mod = 1 if valid_placement else 0
+	var mod_color = Color(1, blue_green_mod, blue_green_mod, placement_preview_alpha)
+	var cell_source = map.get_cell_source_id(TdEnums.TILEMAP_LAYERS.MAZE, hover_position)
+	
+	if hover_position_changed:
+		# Handle wall placement preview
 		if hover_position != Vector2i.MAX:
-			preview_map.erase_cell(0, hover_position)
-		
-		# Show turret range if hovering over a turret
-		var turret_at_pos = false
-		hover_position = new_hover_position
-		for turret: Turret in $GameLayer/Turrets.get_children():
-			turret.SHOW_RANGE = turret.coords == hover_position
-			if turret.SHOW_RANGE:
-				turret_at_pos = true
-			turret.queue_redraw()
-		if turret_at_pos:
-			return
-		
-		var valid_placement = can_navigate_with_change(hover_position)
-		var blue_green_mod = 1 if valid_placement else 0
-		var mod_color = Color(1, blue_green_mod, blue_green_mod, placement_preview_alpha)
-		
-		var cell_source = map.get_cell_source_id(TdEnums.TILEMAP_LAYERS.MAZE, hover_position)
+			preview_map.erase_cell(0, old_hover_position)
 		if cell_source == map.walkable_source:
-			# Add wall placement preview
 			preview_map.set_cell(0, hover_position, map.wall_source, Vector2i.ZERO)
 			preview_map.set_layer_modulate(0, mod_color)
-		
-		if mouse_mode != TdEnums.MOUSE_MODE.WALL && ![-1, map.border_source, map.start_end_source].has(cell_source):
-			print('adding turret')
-			# Add turret placement preview
-			var turret = get_selected_turret_scene() as Turret
-			turret_preview_sprite = turret.get_node("AnimatedSprite2D").duplicate() as AnimatedSprite2D
-			turret_preview_sprite.modulate = mod_color
-			turret_preview_sprite.position = map.map_to_local(hover_position)
-			turret_preview_sprite.z_as_relative = false
-			turret_preview_sprite.z_index = 5
-			map.add_child(turret_preview_sprite)
+	
+	# Turret placement preview
+	if turret_preview_sprite != null:
+		map.remove_child(turret_preview_sprite)
+		turret_preview_sprite.queue_free()
+	if not turret_at_pos and mouse_mode != TdEnums.MOUSE_MODE.WALL and not [-1, map.border_source, map.start_end_source].has(cell_source):
+		var turret = get_selected_turret_scene() as Turret
+		turret_preview_sprite = turret.get_node("AnimatedSprite2D").duplicate() as AnimatedSprite2D
+		turret_preview_sprite.modulate = mod_color
+		turret_preview_sprite.position = map.map_to_local(hover_position)
+		turret_preview_sprite.z_as_relative = false
+		turret_preview_sprite.z_index = 5
+		map.add_child(turret_preview_sprite)
 
 func game_over():
 	$GameLayer/Timers/SpawnTimer.stop()

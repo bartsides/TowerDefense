@@ -43,7 +43,7 @@ func update_nav():
 	var nav_start = map.local_to_map(position)
 	var nav_end = map.local_to_map(td.map.end_position)
 	path = astar_grid.get_point_path(nav_start, nav_end)
-	if len(path) > 1 && Vector2i(map.local_to_map(path[0])) == nav_start:
+	if len(path) > 1 and Vector2i(map.local_to_map(path[0])) == nav_start:
 		# Move towards center of edge closest to next point
 		var dir = path[0].direction_to(path[1])
 		# Round to handle when both directions have a value not zero ie (0.707107, 0.707107)
