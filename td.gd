@@ -9,6 +9,7 @@ var cannon_scene = preload("res://Turrets/cannon.tscn")
 var flame_thrower_scene = preload("res://Turrets/flame_thrower.tscn")
 var ballista_scene = preload("res://Turrets/ballista.tscn")
 var blob_launcher_scene = preload("res://Turrets/blob_launcher.tscn")
+var hive_scene = preload("res://Turrets/hive.tscn")
 
 var enemy_scene = preload("res://Enemies/enemy.tscn")
 var alligator_scene = preload("res://Enemies/alligator.tscn")
@@ -34,6 +35,7 @@ var level_index = -1
 var round_index = -1
 var round_enemy_index = -1
 var round_enemy: Enemy
+var loot: Loot = Loot.new()
 
 var levels: Array[Level] = [
 	Level.new(200,
@@ -137,6 +139,8 @@ func add_enemy():
 	update_ui()
 
 func enemy_killed(enemy: Enemy, reached_end: bool):
+	var tier = loot.get_tier()
+	print('Loot tier selected: ', tier.number)
 	$GameLayer/Enemies.remove_child(enemy)
 	enemy.queue_free()
 	enemies_alive -= 1
@@ -212,6 +216,8 @@ func get_selected_turret_scene(mode: TdEnums.MOUSE_MODE = mouse_mode) -> Turret:
 			scene = ballista_scene
 		TdEnums.MOUSE_MODE.BLOB_LAUNCHER:
 			scene = blob_launcher_scene
+		TdEnums.MOUSE_MODE.HIVE:
+			scene = hive_scene
 	if scene != null:
 		return scene.instantiate()
 	push_error('Unable to determine selected turret scene from mouse mode $s.' % mouse_mode)

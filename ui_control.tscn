@@ -1,4 +1,4 @@
-[gd_scene load_steps=21 format=3 uid="uid://cnat1ck7efpht"]
+[gd_scene load_steps=23 format=3 uid="uid://cnat1ck7efpht"]
 
 [ext_resource type="Script" path="res://UIControl.gd" id="1_hpe0u"]
 [ext_resource type="Theme" uid="uid://e6e5pfjp1lkf" path="res://Themes/ui.tres" id="2_4am6b"]
@@ -8,6 +8,7 @@
 [ext_resource type="PackedScene" uid="uid://dennemnql8fa0" path="res://UI/turret_button.tscn" id="7_onvll"]
 [ext_resource type="Texture2D" uid="uid://8skxr2tuupj1" path="res://assets/Bow.png" id="7_yjmhc"]
 [ext_resource type="Texture2D" uid="uid://bn1feaduwo5rv" path="res://assets/Green Ball 32.png" id="8_ukgxb"]
+[ext_resource type="Texture2D" uid="uid://byhhcx3200a73" path="res://assets/Hive 2.png" id="9_uigd0"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_q7uk0"]
 bg_color = Color(0.235294, 0.286275, 0.4, 1)
@@ -35,6 +36,10 @@ region = Rect2(32, 0, 32, 32)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_kt2gr"]
 atlas = ExtResource("8_ukgxb")
+region = Rect2(0, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_eakyo"]
+atlas = ExtResource("9_uigd0")
 region = Rect2(0, 0, 32, 32)
 
 [sub_resource type="SystemFont" id="SystemFont_be1u0"]
@@ -233,6 +238,11 @@ TEXTURE = SubResource("AtlasTexture_ry3js")
 layout_mode = 2
 MOUSE_MODE = 5
 TEXTURE = SubResource("AtlasTexture_kt2gr")
+
+[node name="HiveButton" parent="RightSidebar/MarginContainer/TurretButtons" instance=ExtResource("7_onvll")]
+layout_mode = 2
+MOUSE_MODE = 6
+TEXTURE = SubResource("AtlasTexture_eakyo")
 
 [node name="StartButton" type="Button" parent="."]
 layout_mode = 1

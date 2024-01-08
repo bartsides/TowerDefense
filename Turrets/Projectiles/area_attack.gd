@@ -3,7 +3,7 @@ extends Area2D
 @export var LIFESPAN = 1.0
 @export var MAX_ENEMIES_HIT = 100
 
-var damage: Damage = Damage.new(1, 0, 0, 0)
+var damage: Damage = Damage.new(1)
 var dying = false
 
 func fire():

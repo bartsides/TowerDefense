@@ -5,7 +5,7 @@
 [ext_resource type="Script" path="res://Turrets/Projectiles/AnimatedSprite2D.gd" id="3_2ohus"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_q3eu8"]
-size = Vector2(4, 1.99999)
+size = Vector2(4.00001, 1.99999)
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_e3omw"]
 animations = [{

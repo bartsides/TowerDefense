@@ -53,6 +53,8 @@ func _unhandled_input(event):
 		td.change_mouse_mode(TdEnums.MOUSE_MODE.BALLISTA)
 	elif event.is_action_pressed("6"):
 		td.change_mouse_mode(TdEnums.MOUSE_MODE.BLOB_LAUNCHER)
+	elif event.is_action_pressed("7"):
+		td.change_mouse_mode(TdEnums.MOUSE_MODE.HIVE)
 	
 	if event.is_action_pressed("mouse_click"):
 		td.handle_click()

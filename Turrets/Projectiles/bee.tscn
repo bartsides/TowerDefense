@@ -1,0 +1,68 @@
+[gd_scene load_steps=11 format=3 uid="uid://dfhy0h6tjukde"]
+
+[ext_resource type="PackedScene" uid="uid://16wea2ohr4ub" path="res://Turrets/Projectiles/bullet.tscn" id="1_0rf7m"]
+[ext_resource type="Script" path="res://Turrets/Projectiles/bee.gd" id="2_ikxs4"]
+[ext_resource type="Texture2D" uid="uid://d38tbhv4e3ykp" path="res://assets/bee.png" id="2_u7l0b"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_bnq57"]
+radius = 8.01561
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_6imxl"]
+atlas = ExtResource("2_u7l0b")
+region = Rect2(96, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_sruok"]
+atlas = ExtResource("2_u7l0b")
+region = Rect2(128, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ahd40"]
+atlas = ExtResource("2_u7l0b")
+region = Rect2(0, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_8t2hu"]
+atlas = ExtResource("2_u7l0b")
+region = Rect2(32, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_0vnn0"]
+atlas = ExtResource("2_u7l0b")
+region = Rect2(64, 0, 32, 32)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_xajwn"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_6imxl")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_sruok")
+}],
+"loop": true,
+"name": &"death",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ahd40")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_8t2hu")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_0vnn0")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[node name="Bee" instance=ExtResource("1_0rf7m")]
+script = ExtResource("2_ikxs4")
+
+[node name="CollisionShape2D" parent="." index="0"]
+position = Vector2(0, -0.5)
+shape = SubResource("CircleShape2D_bnq57")
+
+[node name="AnimatedSprite2D" parent="." index="2"]
+scale = Vector2(0.421875, 0.421875)
+sprite_frames = SubResource("SpriteFrames_xajwn")
+frame_progress = 0.0874297

@@ -1,0 +1,82 @@
+[gd_scene load_steps=13 format=3 uid="uid://np8ihrf37dfn"]
+
+[ext_resource type="PackedScene" uid="uid://dv1qs465qpw2i" path="res://Turrets/turret.tscn" id="1_8yor0"]
+[ext_resource type="Script" path="res://Turrets/hive.gd" id="2_6rupm"]
+[ext_resource type="Texture2D" uid="uid://byhhcx3200a73" path="res://assets/Hive 2.png" id="2_jj8bx"]
+[ext_resource type="PackedScene" uid="uid://dfhy0h6tjukde" path="res://Turrets/Projectiles/bee.tscn" id="2_w0a4i"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_1yurv"]
+atlas = ExtResource("2_jj8bx")
+region = Rect2(64, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_xsypd"]
+atlas = ExtResource("2_jj8bx")
+region = Rect2(96, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_q4of2"]
+atlas = ExtResource("2_jj8bx")
+region = Rect2(128, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_k82xx"]
+atlas = ExtResource("2_jj8bx")
+region = Rect2(160, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_bd35v"]
+atlas = ExtResource("2_jj8bx")
+region = Rect2(192, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_pt6r6"]
+atlas = ExtResource("2_jj8bx")
+region = Rect2(0, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_2ec5f"]
+atlas = ExtResource("2_jj8bx")
+region = Rect2(32, 0, 32, 32)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_wvkee"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_1yurv")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_xsypd")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_q4of2")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_k82xx")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_bd35v")
+}],
+"loop": true,
+"name": &"attack",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_pt6r6")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_2ec5f")
+}],
+"loop": true,
+"name": &"default",
+"speed": 0.5
+}]
+
+[node name="Hive" instance=ExtResource("1_8yor0")]
+script = ExtResource("2_6rupm")
+ATTACK_RANGE = 1000
+ATTACK_TIME = 1.4
+ROTATES = false
+ATTACK_SOUND = null
+BULLET_SPEED = 20.0
+PROJECTILE_LIFESPAN = 8.0
+PROJECTILE_SCENE = ExtResource("2_w0a4i")
+
+[node name="AnimatedSprite2D" parent="." index="2"]
+sprite_frames = SubResource("SpriteFrames_wvkee")
+frame_progress = 0.414385

@@ -12,19 +12,23 @@ enum AIM_STYLES {
 @export var AIM_STYLE = AIM_STYLES.FIRST
 @export var ATTACK_RANGE = 120
 @export var ATTACK_TIME = 1.0
-@export var BULLET_SPEED = 200.0
 @export var SHOW_RANGE = false
-@export var PROJECTILE_SCENE: PackedScene = preload("res://Turrets/Projectiles/bullet.tscn")
+@export var ROTATES = true
 @export var ATTACK_SOUND: AudioStreamMP3 = null
-@export_group("Damage")
+@export_group("Projectile")
+@export var BULLET_SPEED = 200.0
 @export var PHYSICAL_DAMAGE: float = 3
+@export var PROJECTILE_LIFESPAN: float = 1
+@export var PROJECTILE_SCENE: PackedScene = preload("res://Turrets/Projectiles/bullet.tscn")
+@export_group("Fire")
 @export var FIRE_DAMAGE: float = 0
 @export var FIRE_TIME: float = 0
 @export var FIRE_TICK: float = 0
-@export_subgroup("Secondary Projectile")
+@export_group("Secondary Projectile")
 @export var SEC_PROJ_COUNT: int = 0
 @export var SEC_PROJ_DAMAGE: float = 0
 @export var SEC_PROJ_SPEED: float = 0
+@export var SEC_PROJ_LIFESPAN: float = 1
 
 var damage: Damage
 var target_enemy: Enemy = null
@@ -35,9 +39,9 @@ var range_thickness = .2
 @onready var projectilesNode = get_node("/root/TD/GameLayer/Projectiles")
 
 func _ready():
-	damage = Damage.new(PHYSICAL_DAMAGE, FIRE_DAMAGE, FIRE_TIME, FIRE_TICK,
-			SEC_PROJ_COUNT, SEC_PROJ_DAMAGE,
-			SEC_PROJ_SPEED)
+	damage = Damage.new(PHYSICAL_DAMAGE, PROJECTILE_LIFESPAN, 
+			FIRE_DAMAGE, FIRE_TIME, FIRE_TICK,
+			SEC_PROJ_COUNT, SEC_PROJ_DAMAGE, SEC_PROJ_SPEED, SEC_PROJ_LIFESPAN)
 	if ATTACK_SOUND != null:
 		$AttackAudioPlayer2D.stream = ATTACK_SOUND
 	$AttackTimer.wait_time = ATTACK_TIME
@@ -48,10 +52,14 @@ func _process(_delta):
 		if target_enemy != null:
 			$AttackTimer.stop()
 			ready_to_fire = false
-			look_at(target_enemy.position)
-			_attack()
+			_focus_enemy()
+			attack()
 			$AttackTimer.start()
 	elif target_enemy != null:
+		_focus_enemy()
+
+func _focus_enemy():
+	if ROTATES:
 		look_at(target_enemy.position)
 
 func _target_enemy():
@@ -101,9 +109,10 @@ func _target_enemy():
 	else:
 		target_enemy = selected_enemy
 
-func _attack():
+func attack():
 	if target_enemy == null or PROJECTILE_SCENE == null:
 		return
+	
 	var bullet = PROJECTILE_SCENE.instantiate()
 	bullet.position = to_global($BulletMarker2D.position)
 	bullet.damage = damage

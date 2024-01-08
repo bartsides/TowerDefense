@@ -2,14 +2,13 @@ extends RigidBody2D
 
 class_name Bullet
 
-var damage: Damage = Damage.new(1, 0, 0, 0)
-var lifespan = 1
+var damage: Damage = Damage.new(1)
 var max_enemies_hit = 1
 var dying = false
 
 func fire():
 	if $AnimatedSprite2D: $AnimatedSprite2D.play()
-	$LifespanTimer.wait_time = lifespan
+	$LifespanTimer.wait_time = damage.projectile_lifespan
 	$LifespanTimer.start()
 
 func die():

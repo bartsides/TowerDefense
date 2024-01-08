@@ -4,7 +4,7 @@ extends Bullet
 
 func death_anim_complete():
 	var dir = Vector2.UP
-	var angle: float = 360.0 / float(damage.secondary_projectile_count)
+	var angle: float = TdUtils.get_equal_angle(damage.secondary_projectile_count)
 	for i in range(0, damage.secondary_projectile_count):
 		var blib = blib_scene.instantiate()
 		blib.position = global_position + (dir*2)
@@ -15,5 +15,4 @@ func death_anim_complete():
 		get_parent().add_child(blib)
 		blib.fire()
 		dir = dir.rotated(angle)
-		print('blib')
 	super()
