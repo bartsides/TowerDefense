@@ -1,0 +1,39 @@
+[gd_scene load_steps=6 format=3 uid="uid://knjedmgk6l51"]
+
+[ext_resource type="PackedScene" uid="uid://16wea2ohr4ub" path="res://Turrets/Projectiles/bullet.tscn" id="1_euoev"]
+[ext_resource type="Texture2D" uid="uid://bvs72vtaepdxf" path="res://assets/Green Ball 10px.png" id="2_jr8ow"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_c14e2"]
+radius = 3.5
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ow8q8"]
+atlas = ExtResource("2_jr8ow")
+region = Rect2(0, 0, 10, 10)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_vxsoq"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ow8q8")
+}],
+"loop": true,
+"name": &"death",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ow8q8")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[node name="Blib" instance=ExtResource("1_euoev")]
+collision_mask = 3
+
+[node name="CollisionShape2D" parent="." index="0"]
+shape = SubResource("CircleShape2D_c14e2")
+
+[node name="AnimatedSprite2D" parent="." index="2"]
+sprite_frames = SubResource("SpriteFrames_vxsoq")

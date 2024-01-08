@@ -8,14 +8,12 @@ var turret_scene = preload("res://Turrets/turret.tscn")
 var cannon_scene = preload("res://Turrets/cannon.tscn")
 var flame_thrower_scene = preload("res://Turrets/flame_thrower.tscn")
 var ballista_scene = preload("res://Turrets/ballista.tscn")
+var blob_launcher_scene = preload("res://Turrets/blob_launcher.tscn")
 
 var enemy_scene = preload("res://Enemies/enemy.tscn")
 var alligator_scene = preload("res://Enemies/alligator.tscn")
 var fish_scene = preload("res://Enemies/fish.tscn")
 var jet_ski_scene = preload("res://Enemies/jet_ski.tscn")
-
-@onready var preview_map: TileMap = $GameLayer/PreviewTileMap
-@onready var turret_map: TileMap = $GameLayer/TurretTileMap
 
 var cell_size = 32
 var placement_preview_alpha = 0.4196
@@ -61,6 +59,8 @@ var levels: Array[Level] = [
 	),
 ]
 
+@onready var preview_map: TileMap = $GameLayer/PreviewTileMap
+@onready var turret_map: TileMap = $GameLayer/TurretTileMap
 
 func _ready():
 	change_mouse_mode(TdEnums.MOUSE_MODE.WALL)
@@ -80,9 +80,8 @@ func next_level():
 	current_level = levels[level_index]
 	gold = current_level.starting_gold
 	turret_map.clear_layer(0)
-	for t in $GameLayer/Turrets.get_children():
-		$GameLayer/Turrets.remove_child(t)
-		t.queue_free()
+	remove_children($GameLayer/Turrets)
+	remove_children($GameLayer/Projectiles)
 	if map != null:
 		$GameLayer.remove_child(map)
 		map.queue_free()
@@ -188,10 +187,7 @@ func handle_click():
 		var new_source_id = map.walkable_source if is_wall else map.wall_source
 		map.set_cell(TdEnums.TILEMAP_LAYERS.MAZE, coords, new_source_id, Vector2i.ZERO)
 		update_nav()
-	if mouse_mode == TdEnums.MOUSE_MODE.TURRET \
-	or mouse_mode == TdEnums.MOUSE_MODE.CANNON \
-	or mouse_mode == TdEnums.MOUSE_MODE.FLAME_THROWER \
-	or mouse_mode == TdEnums.MOUSE_MODE.BALLISTA:
+	else:
 		if !can_navigate_with_change(coords):
 			# Prevent player from blocking path
 			return
@@ -203,9 +199,9 @@ func handle_click():
 		turret_map.set_cell(0, coords, 0, Vector2i.ZERO)
 		update_nav()
 
-func get_selected_turret_scene() -> Turret:
+func get_selected_turret_scene(mode: TdEnums.MOUSE_MODE = mouse_mode) -> Turret:
 	var scene = null
-	match mouse_mode:
+	match mode:
 		TdEnums.MOUSE_MODE.TURRET:
 			scene = turret_scene
 		TdEnums.MOUSE_MODE.CANNON:
@@ -214,6 +210,8 @@ func get_selected_turret_scene() -> Turret:
 			scene = flame_thrower_scene
 		TdEnums.MOUSE_MODE.BALLISTA:
 			scene = ballista_scene
+		TdEnums.MOUSE_MODE.BLOB_LAUNCHER:
+			scene = blob_launcher_scene
 	if scene != null:
 		return scene.instantiate()
 	push_error('Unable to determine selected turret scene from mouse mode $s.' % mouse_mode)
@@ -243,7 +241,6 @@ func can_navigate_with_change(coords: Vector2) -> bool:
 			path.remove_at(0)
 		if len(path) < 1:
 			result = false
-	
 	return result
 
 func change_mouse_mode(mode: TdEnums.MOUSE_MODE):
@@ -275,11 +272,13 @@ func handle_mouse_hover():
 		turret.queue_redraw()
 	
 	var cell_source = map.get_cell_source_id(TdEnums.TILEMAP_LAYERS.MAZE, hover_position)
-	var place_turret = not turret_at_pos \
+	var place_turret = \
+			not turret_at_pos \
 			and mouse_mode != TdEnums.MOUSE_MODE.WALL \
 			and not [-1, map.border_source, map.start_end_source].has(cell_source)
 	
 	if not hover_position_changed and not place_turret:
+		# Avoid checking if can navigate with change if not needed
 		return
 	
 	var valid_placement = can_navigate_with_change(hover_position)
@@ -331,3 +330,8 @@ func force_draw():
 		map.queue_redraw()
 
 func update_ui(): $UILayer/UIControl.update()
+
+func remove_children(node: Node):
+	for child in node.get_children():
+		node.remove_child(child)
+		child.queue_free()

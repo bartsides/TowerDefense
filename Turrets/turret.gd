@@ -2,6 +2,13 @@ extends Node2D
 
 class_name Turret
 
+enum AIM_STYLES {
+	FIRST, LAST,
+	CLOSEST, FURTHEST,
+	STRONGEST, WEAKEST,
+	FOCUS_FIRST, FOCUS_LAST,
+}
+
 @export var AIM_STYLE = AIM_STYLES.FIRST
 @export var ATTACK_RANGE = 120
 @export var ATTACK_TIME = 1.0
@@ -14,23 +21,23 @@ class_name Turret
 @export var FIRE_DAMAGE: float = 0
 @export var FIRE_TIME: float = 0
 @export var FIRE_TICK: float = 0
+@export_subgroup("Secondary Projectile")
+@export var SEC_PROJ_COUNT: int = 0
+@export var SEC_PROJ_DAMAGE: float = 0
+@export var SEC_PROJ_SPEED: float = 0
 
 var damage: Damage
 var target_enemy: Enemy = null
 var coords
 var ready_to_fire = true
 var range_thickness = .2
+
 @onready var projectilesNode = get_node("/root/TD/GameLayer/Projectiles")
 
-enum AIM_STYLES {
-	FIRST, LAST,
-	CLOSEST, FURTHEST,
-	STRONGEST, WEAKEST,
-	FOCUS_FIRST, FOCUS_LAST,
-}
-
 func _ready():
-	damage = Damage.new(PHYSICAL_DAMAGE, FIRE_DAMAGE, FIRE_TIME, FIRE_TICK)
+	damage = Damage.new(PHYSICAL_DAMAGE, FIRE_DAMAGE, FIRE_TIME, FIRE_TICK,
+			SEC_PROJ_COUNT, SEC_PROJ_DAMAGE,
+			SEC_PROJ_SPEED)
 	if ATTACK_SOUND != null:
 		$AttackAudioPlayer2D.stream = ATTACK_SOUND
 	$AttackTimer.wait_time = ATTACK_TIME
@@ -57,7 +64,6 @@ func _target_enemy():
 		var dist = enemy.position.distance_to(position)
 		if dist == null or dist > ATTACK_RANGE:
 			continue
-		
 		if selected_enemy == null:
 			selected_enemy = enemy
 			enemy_dist = dist

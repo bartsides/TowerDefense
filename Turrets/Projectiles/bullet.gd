@@ -1,5 +1,7 @@
 extends RigidBody2D
 
+class_name Bullet
+
 var damage: Damage = Damage.new(1, 0, 0, 0)
 var lifespan = 1
 var max_enemies_hit = 1
@@ -15,6 +17,9 @@ func die():
 	$AnimatedSprite2D.play("death")
 	linear_velocity = Vector2i.ZERO
 	collision_layer = 0
+
+func death_anim_complete():
+	kill()
 
 func kill():
 	var parent = get_parent()

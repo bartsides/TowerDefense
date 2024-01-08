@@ -1,4 +1,4 @@
-[gd_scene load_steps=19 format=3 uid="uid://cnat1ck7efpht"]
+[gd_scene load_steps=21 format=3 uid="uid://cnat1ck7efpht"]
 
 [ext_resource type="Script" path="res://UIControl.gd" id="1_hpe0u"]
 [ext_resource type="Theme" uid="uid://e6e5pfjp1lkf" path="res://Themes/ui.tres" id="2_4am6b"]
@@ -7,6 +7,7 @@
 [ext_resource type="Texture2D" uid="uid://xjgcabq3fl3l" path="res://assets/Flamethrow.png" id="5_5vnle"]
 [ext_resource type="PackedScene" uid="uid://dennemnql8fa0" path="res://UI/turret_button.tscn" id="7_onvll"]
 [ext_resource type="Texture2D" uid="uid://8skxr2tuupj1" path="res://assets/Bow.png" id="7_yjmhc"]
+[ext_resource type="Texture2D" uid="uid://bn1feaduwo5rv" path="res://assets/Green Ball 32.png" id="8_ukgxb"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_q7uk0"]
 bg_color = Color(0.235294, 0.286275, 0.4, 1)
@@ -31,6 +32,10 @@ region = Rect2(0, 0, 32, 32)
 [sub_resource type="AtlasTexture" id="AtlasTexture_ry3js"]
 atlas = ExtResource("7_yjmhc")
 region = Rect2(32, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_kt2gr"]
+atlas = ExtResource("8_ukgxb")
+region = Rect2(0, 0, 32, 32)
 
 [sub_resource type="SystemFont" id="SystemFont_be1u0"]
 font_names = PackedStringArray("Indie Flower")
@@ -130,14 +135,23 @@ script = ExtResource("1_hpe0u")
 layout_mode = 1
 offset_left = 6.0
 offset_top = 6.0
-offset_right = 159.0
-offset_bottom = 90.0
+offset_right = 142.0
+offset_bottom = 110.0
 mouse_filter = 1
 
 [node name="CenterContainer" type="CenterContainer" parent="TopLeftPanel"]
 layout_mode = 1
-offset_right = 154.0
-offset_bottom = 62.0
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -63.0
+offset_top = -47.5
+offset_right = 63.0
+offset_bottom = 47.5
+grow_horizontal = 2
+grow_vertical = 2
 
 [node name="VBoxContainer" type="VBoxContainer" parent="TopLeftPanel/CenterContainer"]
 layout_mode = 2
@@ -214,6 +228,11 @@ TEXTURE = SubResource("AtlasTexture_867ya")
 layout_mode = 2
 MOUSE_MODE = 4
 TEXTURE = SubResource("AtlasTexture_ry3js")
+
+[node name="BlobLauncherButton" parent="RightSidebar/MarginContainer/TurretButtons" instance=ExtResource("7_onvll")]
+layout_mode = 2
+MOUSE_MODE = 5
+TEXTURE = SubResource("AtlasTexture_kt2gr")
 
 [node name="StartButton" type="Button" parent="."]
 layout_mode = 1

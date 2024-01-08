@@ -1,0 +1,115 @@
+[gd_scene load_steps=17 format=3 uid="uid://bvju7hg2wy6k1"]
+
+[ext_resource type="PackedScene" uid="uid://dv1qs465qpw2i" path="res://Turrets/turret.tscn" id="1_h1213"]
+[ext_resource type="Texture2D" uid="uid://cg7e65ysdij3n" path="res://assets/White Swirl.png" id="2_fo8rq"]
+[ext_resource type="PackedScene" uid="uid://cra8egk8ffifb" path="res://Turrets/Projectiles/blob.tscn" id="2_q0ju5"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_5xcdx"]
+atlas = ExtResource("2_fo8rq")
+region = Rect2(192, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_jenn3"]
+atlas = ExtResource("2_fo8rq")
+region = Rect2(160, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_htdrp"]
+atlas = ExtResource("2_fo8rq")
+region = Rect2(128, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_6eg4t"]
+atlas = ExtResource("2_fo8rq")
+region = Rect2(96, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_mx36b"]
+atlas = ExtResource("2_fo8rq")
+region = Rect2(64, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_mlejl"]
+atlas = ExtResource("2_fo8rq")
+region = Rect2(32, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_gqny4"]
+atlas = ExtResource("2_fo8rq")
+region = Rect2(288, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_tit6v"]
+atlas = ExtResource("2_fo8rq")
+region = Rect2(256, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_btst2"]
+atlas = ExtResource("2_fo8rq")
+region = Rect2(224, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_4mmnj"]
+atlas = ExtResource("2_fo8rq")
+region = Rect2(192, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_76kwg"]
+atlas = ExtResource("2_fo8rq")
+region = Rect2(160, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_konrc"]
+atlas = ExtResource("2_fo8rq")
+region = Rect2(128, 0, 32, 32)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_cv6ls"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_5xcdx")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_jenn3")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_htdrp")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_6eg4t")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_mx36b")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_mlejl")
+}],
+"loop": true,
+"name": &"attack",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_gqny4")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_tit6v")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_btst2")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_4mmnj")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_76kwg")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_konrc")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[node name="BlobLauncher" instance=ExtResource("1_h1213")]
+ATTACK_TIME = 1.0
+BULLET_SPEED = 100.0
+PROJECTILE_SCENE = ExtResource("2_q0ju5")
+PHYSICAL_DAMAGE = 5.0
+SEC_PROJ_COUNT = 10
+SEC_PROJ_DAMAGE = 3.0
+SEC_PROJ_SPEED = 100.0
+
+[node name="AnimatedSprite2D" parent="." index="2"]
+sprite_frames = SubResource("SpriteFrames_cv6ls")
+animation = &"attack"
