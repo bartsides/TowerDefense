@@ -1,9 +1,14 @@
-[gd_scene load_steps=9 format=3 uid="uid://bytorf21ckj6t"]
+[gd_scene load_steps=11 format=3 uid="uid://bytorf21ckj6t"]
 
 [ext_resource type="PackedScene" uid="uid://dv1qs465qpw2i" path="res://Turrets/turret.tscn" id="1_ytkyn"]
+[ext_resource type="Texture2D" uid="uid://cxb0pv4a1hywb" path="res://assets/Fire tank.png" id="2_03g4c"]
 [ext_resource type="PackedScene" uid="uid://bjalo4lj2w4bx" path="res://Turrets/Projectiles/flame.tscn" id="2_6fupd"]
 [ext_resource type="AudioStream" uid="uid://cn6mpkpjryr47" path="res://assets/sounds/Flame thrower.mp3" id="2_yvuug"]
 [ext_resource type="Texture2D" uid="uid://dolpafh5ovte3" path="res://assets/FireTurret.png" id="4_53828"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_tavgf"]
+atlas = ExtResource("2_03g4c")
+region = Rect2(0, 0, 32, 32)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_3c7fx"]
 atlas = ExtResource("4_53828")
@@ -40,9 +45,11 @@ animations = [{
 }]
 
 [node name="FlameThrower" instance=ExtResource("1_ytkyn")]
-BULLET_SPEED = 200.0
-PROJECTILE_SCENE = ExtResource("2_6fupd")
+MOUSE_MODE = 3
+BUTTON_THUMBNAIL = SubResource("AtlasTexture_tavgf")
 ATTACK_SOUND = ExtResource("2_yvuug")
+PROJECTILE_SCENE = ExtResource("2_6fupd")
+BULLET_SPEED = 200.0
 PHYSICAL_DAMAGE = 0.0
 FIRE_DAMAGE = 1.0
 FIRE_TIME = 4.0

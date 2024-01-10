@@ -35,7 +35,7 @@ var level_index = -1
 var round_index = -1
 var round_enemy_index = -1
 var round_enemy: Enemy
-var loot: Loot = Loot.new()
+var loot_chest: LootChest = LootChest.new()
 
 var levels: Array[Level] = [
 	Level.new(200,
@@ -139,8 +139,6 @@ func add_enemy():
 	update_ui()
 
 func enemy_killed(enemy: Enemy, reached_end: bool):
-	var tier = loot.get_tier()
-	print('Loot tier selected: ', tier.number)
 	$GameLayer/Enemies.remove_child(enemy)
 	enemy.queue_free()
 	enemies_alive -= 1
@@ -153,6 +151,16 @@ func enemy_killed(enemy: Enemy, reached_end: bool):
 	if enemies_alive <= 0 and round_enemy_index >= total_enemies - 1:
 		next_round()
 	update_ui()
+
+func get_loot():
+	# TODO: Only get loot from certain enemies. Walking chest?
+	print("Getting loot")
+	var loot = loot_chest.get_loot()
+	if loot == null:
+		print("All loot unlocked")
+		return
+	print('Unlocked loot: ', loot.scene_path)
+	$UILayer/UIControl.add_turret(loot.scene_path)
 
 func update_nav():
 	var cells = map.get_used_cells(TdEnums.TILEMAP_LAYERS.MAZE)

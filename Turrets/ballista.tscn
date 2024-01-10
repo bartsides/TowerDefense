@@ -1,8 +1,12 @@
-[gd_scene load_steps=10 format=3 uid="uid://by5mnladfc756"]
+[gd_scene load_steps=11 format=3 uid="uid://by5mnladfc756"]
 
 [ext_resource type="PackedScene" uid="uid://dv1qs465qpw2i" path="res://Turrets/turret.tscn" id="1_ktfj8"]
 [ext_resource type="PackedScene" uid="uid://cjvoalj1n7myv" path="res://Turrets/Projectiles/arrow.tscn" id="2_ed2tj"]
 [ext_resource type="Texture2D" uid="uid://8skxr2tuupj1" path="res://assets/Bow.png" id="2_wv1qd"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_qhwjm"]
+atlas = ExtResource("2_wv1qd")
+region = Rect2(32, 0, 32, 32)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_lifnk"]
 atlas = ExtResource("2_wv1qd")
@@ -53,11 +57,12 @@ animations = [{
 }]
 
 [node name="Ballista" instance=ExtResource("1_ktfj8")]
+MOUSE_MODE = 4
+BUTTON_THUMBNAIL = SubResource("AtlasTexture_qhwjm")
 ATTACK_RANGE = 300
 ATTACK_TIME = 0.6
-DAMAGE = 8.0
-BULLET_SPEED = 160.0
 PROJECTILE_SCENE = ExtResource("2_ed2tj")
+BULLET_SPEED = 160.0
 
 [node name="AnimatedSprite2D" parent="." index="2"]
 sprite_frames = SubResource("SpriteFrames_8d5p5")

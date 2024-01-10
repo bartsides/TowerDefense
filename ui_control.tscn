@@ -1,14 +1,9 @@
-[gd_scene load_steps=23 format=3 uid="uid://cnat1ck7efpht"]
+[gd_scene load_steps=12 format=3 uid="uid://cnat1ck7efpht"]
 
 [ext_resource type="Script" path="res://UIControl.gd" id="1_hpe0u"]
 [ext_resource type="Theme" uid="uid://e6e5pfjp1lkf" path="res://Themes/ui.tres" id="2_4am6b"]
 [ext_resource type="Texture2D" uid="uid://cfwxxcc55ap66" path="res://assets/turret.png" id="3_7x5wo"]
-[ext_resource type="Texture2D" uid="uid://chpea5i20id5" path="res://assets/Cannon1.png" id="4_58uoh"]
-[ext_resource type="Texture2D" uid="uid://xjgcabq3fl3l" path="res://assets/Flamethrow.png" id="5_5vnle"]
 [ext_resource type="PackedScene" uid="uid://dennemnql8fa0" path="res://UI/turret_button.tscn" id="7_onvll"]
-[ext_resource type="Texture2D" uid="uid://8skxr2tuupj1" path="res://assets/Bow.png" id="7_yjmhc"]
-[ext_resource type="Texture2D" uid="uid://bn1feaduwo5rv" path="res://assets/Green Ball 32.png" id="8_ukgxb"]
-[ext_resource type="Texture2D" uid="uid://byhhcx3200a73" path="res://assets/Hive 2.png" id="9_uigd0"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_q7uk0"]
 bg_color = Color(0.235294, 0.286275, 0.4, 1)
@@ -17,30 +12,6 @@ corner_radius_top_right = 8
 corner_radius_bottom_right = 8
 corner_radius_bottom_left = 8
 shadow_size = 3
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_lx86f"]
-atlas = ExtResource("4_58uoh")
-region = Rect2(0, 0, 32, 32)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_0rvy6"]
-atlas = ExtResource("5_5vnle")
-region = Rect2(96, 0, 32, 32)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_867ya"]
-atlas = SubResource("AtlasTexture_0rvy6")
-region = Rect2(0, 0, 32, 32)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_ry3js"]
-atlas = ExtResource("7_yjmhc")
-region = Rect2(32, 0, 32, 32)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_kt2gr"]
-atlas = ExtResource("8_ukgxb")
-region = Rect2(0, 0, 32, 32)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_eakyo"]
-atlas = ExtResource("9_uigd0")
-region = Rect2(0, 0, 32, 32)
 
 [sub_resource type="SystemFont" id="SystemFont_be1u0"]
 font_names = PackedStringArray("Indie Flower")
@@ -219,31 +190,6 @@ MOUSE_MODE = 1
 PRICE = 50
 TEXTURE = ExtResource("3_7x5wo")
 
-[node name="CannonButton" parent="RightSidebar/MarginContainer/TurretButtons" instance=ExtResource("7_onvll")]
-layout_mode = 2
-MOUSE_MODE = 2
-TEXTURE = SubResource("AtlasTexture_lx86f")
-
-[node name="FlamethrowerButton" parent="RightSidebar/MarginContainer/TurretButtons" instance=ExtResource("7_onvll")]
-layout_mode = 2
-MOUSE_MODE = 3
-TEXTURE = SubResource("AtlasTexture_867ya")
-
-[node name="BallistaButton" parent="RightSidebar/MarginContainer/TurretButtons" instance=ExtResource("7_onvll")]
-layout_mode = 2
-MOUSE_MODE = 4
-TEXTURE = SubResource("AtlasTexture_ry3js")
-
-[node name="BlobLauncherButton" parent="RightSidebar/MarginContainer/TurretButtons" instance=ExtResource("7_onvll")]
-layout_mode = 2
-MOUSE_MODE = 5
-TEXTURE = SubResource("AtlasTexture_kt2gr")
-
-[node name="HiveButton" parent="RightSidebar/MarginContainer/TurretButtons" instance=ExtResource("7_onvll")]
-layout_mode = 2
-MOUSE_MODE = 6
-TEXTURE = SubResource("AtlasTexture_eakyo")
-
 [node name="StartButton" type="Button" parent="."]
 layout_mode = 1
 anchors_preset = 3
@@ -273,4 +219,34 @@ theme_override_styles/disabled = SubResource("StyleBoxFlat_3bu75")
 theme_override_styles/focus = SubResource("StyleBoxFlat_vhwne")
 text = "Start"
 
+[node name="LootButton" type="Button" parent="."]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -564.0
+offset_top = -116.0
+offset_right = -360.0
+offset_bottom = -41.0
+grow_horizontal = 0
+grow_vertical = 0
+theme = ExtResource("2_4am6b")
+theme_override_colors/font_color = Color(0.823529, 0.823529, 0.823529, 1)
+theme_override_colors/font_pressed_color = Color(0, 0.929412, 0.792157, 1)
+theme_override_colors/font_hover_color = Color(0, 0.929412, 0.792157, 1)
+theme_override_colors/font_focus_color = Color(0, 0.929412, 0.792157, 1)
+theme_override_colors/font_hover_pressed_color = Color(0, 0.929412, 0.792157, 1)
+theme_override_colors/font_disabled_color = Color(0.129412, 0.129412, 0.129412, 1)
+theme_override_fonts/font = SubResource("SystemFont_be1u0")
+theme_override_font_sizes/font_size = 48
+theme_override_styles/normal = SubResource("StyleBoxFlat_dhage")
+theme_override_styles/hover = SubResource("StyleBoxFlat_3p6t1")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_uselw")
+theme_override_styles/disabled = SubResource("StyleBoxFlat_3bu75")
+theme_override_styles/focus = SubResource("StyleBoxFlat_vhwne")
+text = "Get Loot"
+
 [connection signal="pressed" from="StartButton" to="." method="_start_level"]
+[connection signal="pressed" from="LootButton" to="." method="get_loot"]

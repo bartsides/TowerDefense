@@ -9,22 +9,23 @@ enum AIM_STYLES {
 	FOCUS_FIRST, FOCUS_LAST,
 }
 
+@export var MOUSE_MODE = TdEnums.MOUSE_MODE.WALL
+@export var BUTTON_THUMBNAIL: Texture2D = null
+@export var PRICE = 100
 @export var AIM_STYLE = AIM_STYLES.FIRST
 @export var ATTACK_RANGE = 120
 @export var ATTACK_TIME = 1.0
 @export var SHOW_RANGE = false
 @export var ROTATES = true
 @export var ATTACK_SOUND: AudioStreamMP3 = null
-@export_group("Projectile")
+@export_group("Damage")
+@export var PROJECTILE_SCENE: PackedScene = preload("res://Turrets/Projectiles/bullet.tscn")
 @export var BULLET_SPEED = 200.0
 @export var PHYSICAL_DAMAGE: float = 3
 @export var PROJECTILE_LIFESPAN: float = 1
-@export var PROJECTILE_SCENE: PackedScene = preload("res://Turrets/Projectiles/bullet.tscn")
-@export_group("Fire")
 @export var FIRE_DAMAGE: float = 0
 @export var FIRE_TIME: float = 0
 @export var FIRE_TICK: float = 0
-@export_group("Secondary Projectile")
 @export var SEC_PROJ_COUNT: int = 0
 @export var SEC_PROJ_DAMAGE: float = 0
 @export var SEC_PROJ_SPEED: float = 0

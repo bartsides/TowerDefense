@@ -1,7 +1,11 @@
-[gd_scene load_steps=8 format=3 uid="uid://cjgq3fwrv3h4k"]
+[gd_scene load_steps=9 format=3 uid="uid://cjgq3fwrv3h4k"]
 
 [ext_resource type="PackedScene" uid="uid://dv1qs465qpw2i" path="res://Turrets/turret.tscn" id="1_mghsx"]
 [ext_resource type="Texture2D" uid="uid://chpea5i20id5" path="res://assets/Cannon1.png" id="3_2s6ky"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_alur2"]
+atlas = ExtResource("3_2s6ky")
+region = Rect2(0, 0, 32, 32)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_y10ij"]
 atlas = ExtResource("3_2s6ky")
@@ -45,8 +49,9 @@ animations = [{
 }]
 
 [node name="Cannon" instance=ExtResource("1_mghsx")]
+MOUSE_MODE = 2
+BUTTON_THUMBNAIL = SubResource("AtlasTexture_alur2")
 ATTACK_TIME = 1.0
-DAMAGE = 3.0
 BULLET_SPEED = 200.0
 
 [node name="AnimatedSprite2D" parent="." index="2"]

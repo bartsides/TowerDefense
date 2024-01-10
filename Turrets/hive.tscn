@@ -1,9 +1,13 @@
-[gd_scene load_steps=13 format=3 uid="uid://np8ihrf37dfn"]
+[gd_scene load_steps=14 format=3 uid="uid://np8ihrf37dfn"]
 
 [ext_resource type="PackedScene" uid="uid://dv1qs465qpw2i" path="res://Turrets/turret.tscn" id="1_8yor0"]
 [ext_resource type="Script" path="res://Turrets/hive.gd" id="2_6rupm"]
 [ext_resource type="Texture2D" uid="uid://byhhcx3200a73" path="res://assets/Hive 2.png" id="2_jj8bx"]
 [ext_resource type="PackedScene" uid="uid://dfhy0h6tjukde" path="res://Turrets/Projectiles/bee.tscn" id="2_w0a4i"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_uewpg"]
+atlas = ExtResource("2_jj8bx")
+region = Rect2(0, 0, 32, 32)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_1yurv"]
 atlas = ExtResource("2_jj8bx")
@@ -69,13 +73,15 @@ animations = [{
 
 [node name="Hive" instance=ExtResource("1_8yor0")]
 script = ExtResource("2_6rupm")
+MOUSE_MODE = 6
+BUTTON_THUMBNAIL = SubResource("AtlasTexture_uewpg")
 ATTACK_RANGE = 1000
 ATTACK_TIME = 1.4
 ROTATES = false
 ATTACK_SOUND = null
+PROJECTILE_SCENE = ExtResource("2_w0a4i")
 BULLET_SPEED = 20.0
 PROJECTILE_LIFESPAN = 8.0
-PROJECTILE_SCENE = ExtResource("2_w0a4i")
 
 [node name="AnimatedSprite2D" parent="." index="2"]
 sprite_frames = SubResource("SpriteFrames_wvkee")

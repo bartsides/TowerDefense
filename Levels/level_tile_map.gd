@@ -40,25 +40,6 @@ func update_tilemap_sources():
 			else:
 				walkable_source = i
 
-func _unhandled_input(event):
-	if   event.is_action_pressed("1"):
-		td.change_mouse_mode(TdEnums.MOUSE_MODE.WALL)
-	elif event.is_action_pressed("2"):
-		td.change_mouse_mode(TdEnums.MOUSE_MODE.TURRET)
-	elif event.is_action_pressed("3"):
-		td.change_mouse_mode(TdEnums.MOUSE_MODE.CANNON)
-	elif event.is_action_pressed("4"):
-		td.change_mouse_mode(TdEnums.MOUSE_MODE.FLAME_THROWER)
-	elif event.is_action_pressed("5"):
-		td.change_mouse_mode(TdEnums.MOUSE_MODE.BALLISTA)
-	elif event.is_action_pressed("6"):
-		td.change_mouse_mode(TdEnums.MOUSE_MODE.BLOB_LAUNCHER)
-	elif event.is_action_pressed("7"):
-		td.change_mouse_mode(TdEnums.MOUSE_MODE.HIVE)
-	
-	if event.is_action_pressed("mouse_click"):
-		td.handle_click()
-
 func _draw():
 	if !show_paths: return
 	_draw_path(td.astar_grid.get_point_path(START, END))
