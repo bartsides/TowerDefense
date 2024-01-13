@@ -26,9 +26,9 @@ animations = [{
 
 [node name="Turret" type="Node2D"]
 script = ExtResource("1_1bkf4")
-ATTACK_TIME = 0.1
 ATTACK_SOUND = ExtResource("2_muc2o")
 BULLET_SPEED = 260.0
+PHYSICAL_DAMAGE = 2.0
 
 [node name="TargetEnemyTimer" type="Timer" parent="."]
 autostart = true

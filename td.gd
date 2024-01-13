@@ -41,26 +41,27 @@ var levels: Array[Level] = [
 	Level.new(200,
 		load("res://Levels/level1.tscn"),
 		[
-			Round.new(2, .1, [alligator_scene, alligator_scene, jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,jet_ski_scene,]),
+			Round.new(2, 3, [fish_scene,fish_scene,fish_scene,fish_scene,fish_scene,fish_scene,fish_scene,fish_scene,]),
 			#Round.new(2, .3, [enemy_scene, fish_scene, enemy_scene, fish_scene, jet_ski_scene, jet_ski_scene, jet_ski_scene]),
 			#Round.new(2, .5, [jet_ski_scene, jet_ski_scene, jet_ski_scene, jet_ski_scene, jet_ski_scene, jet_ski_scene, jet_ski_scene]),
 			#Round.new(2, 1.4, [fish_scene, enemy_scene, fish_scene, enemy_scene, jet_ski_scene, jet_ski_scene, jet_ski_scene]),
 			#Round.new(2, 1.3, [fish_scene, fish_scene, fish_scene, fish_scene, jet_ski_scene, jet_ski_scene, jet_ski_scene]),
 			#Round.new(2, 1.2, [enemy_scene, enemy_scene, enemy_scene, enemy_scene]),
-			Round.new(2, 1.1, [enemy_scene, fish_scene, enemy_scene, fish_scene]),
+			#Round.new(2, 1.1, [enemy_scene, fish_scene, enemy_scene, fish_scene]),
 		]
 	),
-	Level.new(400, 
-		load("res://Levels/level2.tscn"),
-		[
-			Round.new(2, 2, [fish_scene, fish_scene, enemy_scene, enemy_scene]),
-			Round.new(2, 2.1, [fish_scene, fish_scene, enemy_scene, enemy_scene]),
-			Round.new(2, 2.2, [fish_scene, fish_scene, enemy_scene, enemy_scene]),
-			Round.new(2, 2.3, [fish_scene, fish_scene, enemy_scene, enemy_scene]),
-		]
-	),
+	#Level.new(400, 
+		#load("res://Levels/level2.tscn"),
+		#[
+			#Round.new(2, 2, [fish_scene, fish_scene, enemy_scene, enemy_scene]),
+			#Round.new(2, 2.1, [fish_scene, fish_scene, enemy_scene, enemy_scene]),
+			#Round.new(2, 2.2, [fish_scene, fish_scene, enemy_scene, enemy_scene]),
+			#Round.new(2, 2.3, [fish_scene, fish_scene, enemy_scene, enemy_scene]),
+		#]
+	#),
 ]
 
+@onready var camera: Camera2D = $GameLayer/Camera2D
 @onready var preview_map: TileMap = $GameLayer/PreviewTileMap
 @onready var turret_map: TileMap = $GameLayer/TurretTileMap
 
@@ -198,18 +199,22 @@ func handle_click():
 			return
 		var new_source_id = map.walkable_source if is_wall else map.wall_source
 		map.set_cell(TdEnums.TILEMAP_LAYERS.MAZE, coords, new_source_id, Vector2i.ZERO)
-		update_nav()
 	else:
 		if !can_navigate_with_change(coords):
 			# Prevent player from blocking path
 			return
-		map.set_cell(TdEnums.TILEMAP_LAYERS.MAZE, coords, map.wall_source, Vector2i.ZERO)
 		var t: Turret = get_selected_turret_scene()
+		if t.PRICE > gold:
+			# Can't afford turret
+			return
+		gold -= t.PRICE
 		t.coords = coords
 		t.position = map.map_to_local(coords)
-		$GameLayer/Turrets.add_child(t)
+		map.set_cell(TdEnums.TILEMAP_LAYERS.MAZE, coords, map.wall_source, Vector2i.ZERO)
 		turret_map.set_cell(0, coords, 0, Vector2i.ZERO)
-		update_nav()
+		$GameLayer/Turrets.add_child(t)
+	update_ui()
+	update_nav()
 
 func get_selected_turret_scene(mode: TdEnums.MOUSE_MODE = mouse_mode) -> Turret:
 	var scene = null
@@ -242,7 +247,7 @@ func can_navigate_with_change(coords: Vector2) -> bool:
 	astar.set_point_solid(Vector2i(coords))
 	
 	# Get cell coordinates for starting position and all enemies
-	var cells: Array[Vector2i] = [map.START]
+	var cells: Array[Vector2i] = [map.start_map_position]
 	for enemy in $GameLayer/Enemies.get_children():
 		var cell = map.local_to_map(enemy.position)
 		if !cells.has(cell):
@@ -250,7 +255,7 @@ func can_navigate_with_change(coords: Vector2) -> bool:
 	
 	var result = true
 	for cell in cells:
-		var path = astar.get_point_path(cell, map.END)
+		var path = astar.get_point_path(cell, map.end_map_position)
 		if len(path) > 0 and Vector2i(path[0]) == cell:
 			path.remove_at(0)
 		if len(path) < 1:

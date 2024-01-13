@@ -18,6 +18,7 @@ func connect_button(turret_button: TurretButton):
 	turret_button.connect("click", button_clicked)
 
 func button_clicked(mode: TdEnums.MOUSE_MODE):
+	print('button clicked ', mode)
 	td.change_mouse_mode(mode)
 
 func set_wall_texture(texture: Texture2D):
@@ -65,9 +66,12 @@ func _unhandled_input(event):
 					td.change_mouse_mode(mouse_mode)
 					break
 	
-	if event is InputEventMouseButton:
-		if event.is_action_pressed("mouse_click"):
-			td.handle_click()
+	if event.is_action_pressed("mouse_click"):
+		td.handle_click()
+	
+	if event is InputEventMouseMotion:
+		if event.button_mask == MOUSE_BUTTON_MASK_MIDDLE:
+			td.camera.position -= event.relative * td.camera.zoom
 
 func get_mouse_mode_pressed(number: int):
 	var i = 1

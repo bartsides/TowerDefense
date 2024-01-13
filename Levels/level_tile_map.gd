@@ -2,13 +2,12 @@ extends TileMap
 
 class_name LevelTileMap
 
-@export var START: Vector2
-@export var END: Vector2
-
 @onready var td: TD = get_node("/root/TD")
 
-var start_position: Vector2
-var end_position: Vector2
+var start_position: Vector2 = Vector2.INF
+var start_map_position: Vector2 = Vector2.INF
+var end_position: Vector2 = Vector2.INF
+var end_map_position: Vector2 = Vector2.INF
 var tilemap_sources: Array[TileSetSource] = []
 var walkable_source: int
 var wall_source: int
@@ -20,10 +19,20 @@ var path_color = Color.RED
 
 func _ready():
 	update_tilemap_sources()
-	set_cell(TdEnums.TILEMAP_LAYERS.MAZE, START, start_end_source, Vector2i.ZERO)
-	set_cell(TdEnums.TILEMAP_LAYERS.MAZE, END, start_end_source, Vector2i(9, 0))
-	start_position = map_to_local(START)
-	end_position = map_to_local(END)
+	_set_start_and_end()
+
+func _set_start_and_end():
+	for coords in get_used_cells_by_id(TdEnums.TILEMAP_LAYERS.MAZE, start_end_source):
+		var atlas_coords = get_cell_atlas_coords(TdEnums.TILEMAP_LAYERS.MAZE, coords)
+		if atlas_coords == Vector2i.ZERO:
+			start_map_position = coords
+		else:
+			end_map_position = coords
+	
+	if [start_map_position, end_map_position].has(Vector2.INF):
+		push_error("Unable to find start and or end position in level: ", self)
+	start_position = map_to_local(start_map_position)
+	end_position = map_to_local(end_map_position)
 
 func update_tilemap_sources():
 	tilemap_sources = []
@@ -42,7 +51,7 @@ func update_tilemap_sources():
 
 func _draw():
 	if !show_paths: return
-	_draw_path(td.astar_grid.get_point_path(START, END))
+	_draw_path(td.astar_grid.get_point_path(start_map_position, end_map_position))
 	for enemy in td.get_node("GameLayer/Enemies").get_children():
 		_draw_path(enemy.path)
 

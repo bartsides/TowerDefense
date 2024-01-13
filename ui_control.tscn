@@ -182,12 +182,11 @@ layout_mode = 2
 
 [node name="WallButton" parent="RightSidebar/MarginContainer/TurretButtons" instance=ExtResource("7_onvll")]
 layout_mode = 2
-PRICE = 10
+PRICE = 0
 
 [node name="TurretButton" parent="RightSidebar/MarginContainer/TurretButtons" instance=ExtResource("7_onvll")]
 layout_mode = 2
 MOUSE_MODE = 1
-PRICE = 50
 TEXTURE = ExtResource("3_7x5wo")
 
 [node name="StartButton" type="Button" parent="."]
