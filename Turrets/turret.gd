@@ -14,7 +14,7 @@ enum AIM_STYLES {
 @export var PRICE = 100
 @export var AIM_STYLE = AIM_STYLES.FIRST
 @export var ATTACK_RANGE = 120
-@export var ATTACK_TIME = 1.0
+@export var SPEED = 100
 @export var SHOW_RANGE = false
 @export var ROTATES = true
 @export var ATTACK_SOUND: AudioStreamMP3 = null
@@ -45,7 +45,14 @@ func _ready():
 			SEC_PROJ_COUNT, SEC_PROJ_DAMAGE, SEC_PROJ_SPEED, SEC_PROJ_LIFESPAN)
 	if ATTACK_SOUND != null:
 		$AttackAudioPlayer2D.stream = ATTACK_SOUND
-	$AttackTimer.wait_time = ATTACK_TIME
+	_set_timer()
+
+func _set_timer():
+	var projectiles_per_second = SPEED / 100.0
+	if projectiles_per_second < 0.000001:
+		return
+	$AttackTimer.wait_time = 1 / projectiles_per_second
+	$AttackTimer.start()
 
 func _process(_delta):
 	if ready_to_fire:

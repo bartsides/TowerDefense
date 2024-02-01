@@ -51,7 +51,7 @@ animations = [{
 [node name="Cannon" instance=ExtResource("1_mghsx")]
 MOUSE_MODE = 2
 BUTTON_THUMBNAIL = SubResource("AtlasTexture_alur2")
-ATTACK_TIME = 1.0
+SPEED = 80
 BULLET_SPEED = 200.0
 
 [node name="AnimatedSprite2D" parent="." index="2"]

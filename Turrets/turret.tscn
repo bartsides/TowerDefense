@@ -34,7 +34,6 @@ PHYSICAL_DAMAGE = 2.0
 autostart = true
 
 [node name="AttackTimer" type="Timer" parent="."]
-autostart = true
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 sprite_frames = SubResource("SpriteFrames_kld0v")

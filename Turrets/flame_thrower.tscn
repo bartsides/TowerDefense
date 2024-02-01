@@ -47,6 +47,7 @@ animations = [{
 [node name="FlameThrower" instance=ExtResource("1_ytkyn")]
 MOUSE_MODE = 3
 BUTTON_THUMBNAIL = SubResource("AtlasTexture_tavgf")
+SPEED = 500
 ATTACK_SOUND = ExtResource("2_yvuug")
 PROJECTILE_SCENE = ExtResource("2_6fupd")
 BULLET_SPEED = 200.0

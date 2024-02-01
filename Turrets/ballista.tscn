@@ -60,7 +60,7 @@ animations = [{
 MOUSE_MODE = 4
 BUTTON_THUMBNAIL = SubResource("AtlasTexture_qhwjm")
 ATTACK_RANGE = 300
-ATTACK_TIME = 0.6
+SPEED = 75
 PROJECTILE_SCENE = ExtResource("2_ed2tj")
 BULLET_SPEED = 160.0
 
